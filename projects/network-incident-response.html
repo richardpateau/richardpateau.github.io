@@ -1,1 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Network Incident Response Lab | Richard Pateau</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 55px 20px;
+        }
+
+        header .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        header h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #d1d5db;
+            font-size: 18px;
+        }
+
+        nav {
+            background: white;
+            padding: 18px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        nav .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        nav a {
+            margin-right: 25px;
+            color: #374151;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: auto;
+            padding: 50px 20px;
+        }
+
+        section {
+            margin-bottom: 60px;
+        }
+
+        h2 {
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            margin-bottom: 10px;
+        }
+
+        .overview {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .stat {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .incidents {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .incident {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .incident p {
+            color: #4b5563;
+            margin-bottom: 15px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 9px 14px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .evidence {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .evidence-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        footer {
+            background: #111827;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="container">
+
+        <h1>Network Incident Response Lab</h1>
+
+        <p>
+            Evidence-driven network troubleshooting using Cisco IOS,
+            Wireshark, SolarWinds, Splunk, and structured incident response.
+        </p>
+
+    </div>
+
+</header>
+
+
+<nav>
+
+    <div class="container">
+
+        <a href="../index.html">Portfolio</a>
+
+        <a href="#incidents">Incidents</a>
+
+        <a href="#evidence">Evidence</a>
+
+        <a href="#documentation">Documentation</a>
+
+    </div>
+
+</nav>
+
+
+<main>
+
+
+<section>
+
+    <h2>Project Overview</h2>
+
+    <div class="overview">
+
+        <p>
+
+            A hands-on network operations lab designed to simulate
+            real-world network incidents and an evidence-driven
+            troubleshooting workflow.
+
+        </p>
+
+        <br>
+
+        <p>
+
+            Each incident follows a structured process:
+
+            <strong>
+                Ticket → Symptoms → Investigation → Evidence →
+                Root Cause → Resolution → Verification
+            </strong>
+
+        </p>
+
+
+        <div class="stats">
+
+            <div class="stat">
+                <strong>9</strong>
+                Incidents
+            </div>
+
+            <div class="stat">
+                <strong>7+</strong>
+                Technologies
+            </div>
+
+            <div class="stat">
+                <strong>PCAP</strong>
+                Packet Analysis
+            </div>
+
+            <div class="stat">
+                <strong>CLI</strong>
+                Cisco Evidence
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section id="incidents">
+
+    <h2>Incident Response</h2>
+
+    <div class="incidents">
+
+
+        <div class="incident">
+
+            <h3>INC-001 — DHCP Failure</h3>
+
+            <p>
+                DHCP pool and DORA troubleshooting.
+            </p>
+
+            <a class="button" href="#">
+                View Incident →
+            </a>
+
+        </div>
+
+
+        <div class="incident">
+
+            <h3>INC-002 — OSPF Adjacency</h3>
+
+            <p>
+                OSPF neighbor establishment and area troubleshooting.
+            </p>
+
+            <a class="button" href="#">
+                View Incident →
+            </a>
+
+        </div>
+
+
+        <div class="incident">
+
+            <h3>INC-003 — ACL Failure</h3>
+
+            <p>
+                Investigated traffic filtering and ACL behavior.
+            </p>
+
+            <a class="button" href="#">
+                View Incident →
+            </a>
+
+        </div>
+
+
+        <div class="incident">
+
+            <h3>INC-004 — OSPF EXSTART</h3>
+
+            <p>
+                OSPF adjacency troubleshooting involving MTU behavior.
+            </p>
+
+            <a class="button" href="#">
+                View Incident →
+            </a>
+
+        </div>
+
+
+        <div class="incident">
+
+            <h3>INC-005 — SNMP Monitoring</h3>
+
+            <p>
+                Investigated monitoring and SNMP polling behavior.
+            </p>
+
+            <a class="button" href="#">
+                View Incident →
+            </a>
+
+        </div>
+
+
+        <div class="incident">
+
+            <h3>INC-006 — DHCP Relay</h3>
+
+            <p>
+                Investigated DHCP relay and client address assignment.
+            </p>
+
+            <a class="button" href="#">
+                View Incident →
+            </a>
+
+        </div>
+
+
+        <div class="incident">
+
+            <h3>INC-007 — NAT/PAT</h3>
+
+            <p>
+                Investigated address translation behavior.
+            </p>
+
+            <a class="button" href="#">
+                View Incident →
+            </a>
+
+        </div>
+
+
+        <div class="incident">
+
+            <h3>INC-008 — BGP Advertisement</h3>
+
+            <p>
+                Investigated BGP prefix advertisement and routing behavior.
+            </p>
+
+            <a class="button" href="#">
+                View Incident →
+            </a>
+
+        </div>
+
+
+        <div class="incident">
+
+            <h3>INC-009 — HSRP Failover</h3>
+
+            <p>
+                Investigated gateway redundancy and failover behavior.
+            </p>
+
+            <a class="button" href="#">
+                View Incident →
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<section id="evidence">
+
+    <h2>Proof of Skills</h2>
+
+    <div class="evidence">
+
+
+        <div class="evidence-card">
+
+            <h3>Wireshark & PCAP Analysis</h3>
+
+            <p>
+                Packet captures used to investigate network behavior,
+                isolate faults, and verify network operations.
+            </p>
+
+            <a class="button" href="#">
+                View PCAP Evidence →
+            </a>
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <h3>Cisco CLI</h3>
+
+            <p>
+                Show commands and configuration evidence used during
+                incident investigation and verification.
+            </p>
+
+            <a class="button" href="#">
+                View CLI Evidence →
+            </a>
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <h3>Root Cause Analysis</h3>
+
+            <p>
+                Documented troubleshooting process connecting symptoms,
+                evidence, root cause, remediation, and verification.
+            </p>
+
+            <a class="button" href="#">
+                View RCA Evidence →
+            </a>
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <h3>Monitoring</h3>
+
+            <p>
+                SolarWinds and Splunk evidence used to investigate
+                network health and operational events.
+            </p>
+
+            <a class="button" href="#">
+                View Monitoring →
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section id="documentation">
+
+    <h2>Project Documentation</h2>
+
+    <div class="overview">
+
+        <p>
+            The complete technical implementation, incident
+            documentation, configurations, and supporting artifacts
+            are maintained in the project's GitHub repository.
+        </p>
+
+        <br>
+
+        <a
+            class="button"
+            href="https://github.com/richardpateau/network-incident-response-lab"
+            target="_blank">
+
+            View GitHub Repository →
+
+        </a>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<footer>
+
+    <p>
+        Richard Pateau | Network Engineering Portfolio
+    </p>
+
+</footer>
+
+</body>
+
+</html>
