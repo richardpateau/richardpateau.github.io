@@ -2,10 +2,11 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Richard Pateau | Network Engineer Portfolio</title>
+    <title>Wireshark & PCAP Analysis | Richard Pateau</title>
 
     <style>
 
@@ -25,31 +26,39 @@
         header {
             background: #111827;
             color: white;
-            padding: 60px 20px;
-            text-align: center;
+            padding: 55px 20px;
+        }
+
+        header .container {
+            max-width: 1100px;
+            margin: auto;
         }
 
         header h1 {
-            font-size: 42px;
+            font-size: 38px;
             margin-bottom: 10px;
         }
 
         header p {
-            font-size: 19px;
             color: #d1d5db;
+            font-size: 18px;
         }
 
         nav {
             background: white;
             padding: 18px;
-            text-align: center;
             border-bottom: 1px solid #ddd;
         }
 
+        nav .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
         nav a {
-            margin: 0 15px;
-            text-decoration: none;
+            margin-right: 25px;
             color: #374151;
+            text-decoration: none;
             font-weight: bold;
         }
 
@@ -64,7 +73,7 @@
         }
 
         section {
-            margin-bottom: 60px;
+            margin-bottom: 55px;
         }
 
         h2 {
@@ -72,76 +81,136 @@
             margin-bottom: 20px;
         }
 
-        .intro {
-            font-size: 18px;
-            max-width: 800px;
+        h3 {
+            margin-bottom: 10px;
         }
 
-        .projects {
+        .intro {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .pcaps {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
+            gap: 20px;
         }
 
-        .card {
+        .pcap {
             background: white;
             padding: 25px;
             border-radius: 10px;
             border: 1px solid #ddd;
         }
 
-        .card h3 {
-            margin-bottom: 10px;
+        .pcap p {
+            color: #4b5563;
+            margin-bottom: 15px;
         }
 
-        .card p {
-            margin-bottom: 20px;
-            color: #4b5563;
+        .pcap img {
+            width: 100%;
+            margin-top: 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            cursor: zoom-in;
+            transition: transform 0.2s ease;
+        }
+
+        .pcap img:hover {
+            transform: scale(1.02);
+        }
+
+        .tag {
+            display: inline-block;
+            background: #eef2ff;
+            padding: 5px 9px;
+            border-radius: 5px;
+            font-size: 13px;
+            margin-bottom: 15px;
         }
 
         .button {
             display: inline-block;
-            padding: 10px 16px;
+            padding: 9px 14px;
             background: #2563eb;
             color: white;
             text-decoration: none;
             border-radius: 6px;
+            margin-right: 5px;
         }
 
         .button:hover {
             background: #1d4ed8;
         }
 
-        .skills {
+        .secondary {
+            background: #374151;
+        }
+
+        .secondary:hover {
+            background: #1f2937;
+        }
+
+        .workflow {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
         }
 
-        .skill {
+        .step {
             background: white;
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 8px;
         }
 
-        .skill h3 {
-            margin-bottom: 10px;
+        /*
+         * IMAGE LIGHTBOX
+         */
+
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
         }
 
-        .skill p {
-            margin-bottom: 15px;
-            color: #4b5563;
+        .image-modal.active {
+            display: flex;
         }
 
-        .skill a {
-            color: #2563eb;
-            text-decoration: none;
+        .image-modal img {
+            max-width: 95vw;
+            max-height: 90vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 6px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            cursor: zoom-out;
+        }
+
+        .image-modal .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
             font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            z-index: 10000;
         }
 
-        .skill a:hover {
-            text-decoration: underline;
+        .image-modal .close:hover {
+            color: #d1d5db;
         }
 
         footer {
@@ -152,30 +221,46 @@
         }
 
     </style>
+
 </head>
+
 
 <body>
 
+
 <header>
 
-    <h1>Richard Pateau</h1>
+    <div class="container">
 
-    <p>
-        Junior Network Engineer | Cisco | Network Security | Azure
-    </p>
+        <h1>Wireshark & PCAP Analysis</h1>
+
+        <p>
+            Packet analysis evidence from hands-on network
+            troubleshooting incidents.
+        </p>
+
+    </div>
 
 </header>
 
 
 <nav>
 
-    <a href="#projects">Projects</a>
+    <div class="container">
 
-    <a href="#proof">Proof of Skills</a>
+        <a href="../index.html">
+            Portfolio
+        </a>
 
-    <a href="#operations">Network Operations</a>
+        <a href="../projects/network-incident-response.html">
+            Incident Response Lab
+        </a>
 
-    <a href="#contact">Contact</a>
+        <a href="#pcaps">
+            PCAP Evidence
+        </a>
+
+    </div>
 
 </nav>
 
@@ -185,270 +270,405 @@
 
 <section>
 
-    <h2>Network Engineering Portfolio</h2>
+    <div class="intro">
 
-    <p class="intro">
-
-        Hands-on network engineering projects demonstrating
-        enterprise networking, troubleshooting, routing and switching,
-        network security, packet analysis, monitoring, and cloud
-        connectivity.
-
-    </p>
-
-</section>
-
-
-<section id="projects">
-
-    <h2>Featured Projects</h2>
-
-    <div class="projects">
-
-
-        <div class="card">
-
-            <h3>Network Incident Response Lab</h3>
-
-            <p>
-
-                Nine end-to-end network incidents investigated using
-                Cisco IOS, Wireshark, SolarWinds, Splunk, CLI evidence,
-                packet analysis, root-cause analysis, and verification.
-
-            </p>
-
-            <a class="button"
-               href="projects/network-incident-response.html">
-
-                View Project →
-
-            </a>
-
-        </div>
-
-
-        <div class="card">
-
-            <h3>Meridian Financial Services</h3>
-
-            <p>
-
-                Enterprise multi-site network architecture featuring
-                OSPF, BGP, IPv4/IPv6, HSRP, IPsec VPN, Azure connectivity,
-                firewalls, monitoring, and documentation.
-
-            </p>
-
-            <a class="button" href="#">
-
-                Coming Soon
-
-            </a>
-
-        </div>
-
-
-        <div class="card">
-
-            <h3>Network Automation & Compliance Engine</h3>
-
-            <p>
-
-                Network automation and compliance project demonstrating
-                Python-based network engineering workflows.
-
-            </p>
-
-            <a class="button" href="#">
-
-                Coming Soon
-
-            </a>
-
-        </div>
-
-
-    </div>
-
-</section>
-
-
-<section id="proof">
-
-    <h2>Proof of Skills</h2>
-
-    <div class="skills">
-
-
-        <div class="skill">
-
-            <h3>Wireshark & PCAP Analysis</h3>
-
-            <p>
-
-                Packet captures used to investigate network behavior
-                and validate incidents.
-
-            </p>
-
-            <a href="evidence/wireshark.html">
-
-                View PCAP Evidence →
-
-            </a>
-
-        </div>
-
-
-        <div class="skill">
-
-            <h3>Cisco CLI</h3>
-
-            <p>
-
-                Real troubleshooting commands and verification output
-                from network labs.
-
-            </p>
-
-            <a href="evidence/cisco-cli.html">
-
-                View CLI Evidence →
-
-            </a>
-
-        </div>
-
-
-        <div class="skill">
-
-            <h3>Routing & Switching</h3>
-
-            <p>
-
-                OSPF, BGP, HSRP, VLANs, STP, DHCP, NAT and related
-                troubleshooting scenarios.
-
-            </p>
-
-            <a href="projects/network-incident-response.html">
-
-                View Routing Evidence →
-
-            </a>
-
-        </div>
-
-
-        <div class="skill">
-
-            <h3>Network Troubleshooting</h3>
-
-            <p>
-
-                Incident-driven troubleshooting using symptoms,
-                evidence, root-cause analysis and verification.
-
-            </p>
-
-            <a href="projects/network-incident-response.html">
-
-                View Incidents →
-
-            </a>
-
-        </div>
-
-
-        <div class="skill">
-
-            <h3>Monitoring</h3>
-
-            <p>
-
-                Network monitoring and investigation using SolarWinds
-                and Splunk.
-
-            </p>
-
-            <a href="projects/network-incident-response.html">
-
-                View Monitoring Evidence →
-
-            </a>
-
-        </div>
-
-
-        <div class="skill">
-
-            <h3>Network Operations</h3>
-
-            <p>
-
-                Incident documentation, ticketing workflow,
-                troubleshooting notes and resolution verification.
-
-            </p>
-
-            <a href="#operations">
-
-                View Tickets →
-
-            </a>
-
-        </div>
-
-
-    </div>
-
-</section>
-
-
-<section id="operations">
-
-    <h2>Network Operations</h2>
-
-    <div class="card">
-
-        <h3>Incident Management</h3>
+        <h2>Packet Analysis</h2>
 
         <p>
 
-            Documented network incidents using a structured
-            troubleshooting workflow from initial symptoms through
-            root-cause analysis, remediation, and verification.
+            Wireshark was used as an investigative tool to examine
+            packet-level behavior, identify abnormal network conditions,
+            isolate root causes, and validate troubleshooting findings.
 
         </p>
 
-        <a class="button"
-           href="projects/network-incident-response.html">
+        <br>
 
-            View Incident Tickets →
+        <p>
 
-        </a>
+            The evidence below connects packet captures to documented
+            network incidents rather than presenting packet analysis
+            as an isolated skill.
+
+        </p>
 
     </div>
 
 </section>
 
 
-<section id="contact">
+<section id="pcaps">
 
-    <h2>Contact</h2>
+    <h2>PCAP Evidence</h2>
 
-    <p>
+    <div class="pcaps">
 
-        GitHub:
 
-        <a href="https://github.com/richardpateau">
+        <div class="pcap">
 
-            github.com/richardpateau
+            <span class="tag">DHCP</span>
+
+            <h3>INC-001 — DHCP Failure</h3>
+
+            <p>
+                Analyzed DHCP traffic and the DORA process to
+                investigate client address assignment.
+            </p>
+
+            <a class="button" href="inc-001-dhcp.html">
+                View Analysis →
+            </a>
+
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-001-DHCP-Failure/evidence/pcaps"
+               target="_blank">
+
+                View PCAP →
+
+            </a>
+
+        </div>
+
+
+        <div class="pcap">
+
+            <span class="tag">OSPF</span>
+
+            <h3>INC-002 — OSPF Adjacency Failure</h3>
+
+            <p>
+                Analyzed OSPF control-plane traffic to determine why
+                the expected neighbor adjacency was not forming.
+            </p>
+
+            <a class="button"
+               href="inc-002-ospf.html">
+
+                View Analysis →
+
+            </a>
+
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-002-OSPF-Adjacency-Failure/evidence/pcaps"
+               target="_blank">
+
+                View PCAP →
+
+            </a>
+
+        </div>
+
+
+        <div class="pcap">
+
+            <span class="tag">ACL</span>
+
+            <h3>INC-003 — ACL Traffic Blocked</h3>
+
+            <p>
+                Analyzed ICMP and HTTPS traffic to identify
+                ACL rules blocking required network services.
+            </p>
+
+            <a class="button"
+               href="inc-003-acl.html">
+
+                View Analysis →
+
+            </a>
+
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/pcaps"
+               target="_blank">
+
+                View PCAP →
+
+            </a>
+
+        </div>
+
+
+        <div class="pcap">
+
+            <span class="tag">OSPF / MTU</span>
+
+            <h3>INC-004 — OSPF EXSTART</h3>
+
+            <p>
+                Packet-level investigation of OSPF database
+                exchange behavior during an EXSTART condition.
+            </p>
+
+            <a class="button"
+               href="inc-004-ospf-mtu.html">
+
+                View Analysis →
+
+            </a>
+
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/pcaps"
+               target="_blank">
+
+                View PCAP →
+
+            </a>
+
+        </div>
+
+
+        <div class="pcap">
+
+            <span class="tag">SNMP</span>
+
+            <h3>INC-005 — SNMP Monitoring</h3>
+
+            <p>
+                Examined SNMP traffic associated with network
+                monitoring and device polling, including failed
+                polling and post-remediation verification.
+            </p>
+
+            <a class="button"
+               href="inc-005-snmp.html">
+
+                View Analysis
+
+            </a>
+
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-005-SNMP-Monitoring-Failure/evidence/pcaps"
+               target="_blank">
+
+                View PCAP
+
+            </a>
+
+        </div>
+
+
+        <div class="pcap">
+
+            <span class="tag">DHCP Relay</span>
+
+            <h3>INC-006 — DHCP Relay Failure</h3>
+
+            <p>
+                Examined DHCP relay traffic before and after remediation,
+                including client Discover, relay forwarding, DHCP Offer,
+                and ACK exchanges.
+            </p>
+
+            <a class="button"
+               href="inc-006-dhcp-relay.html">
+
+                View Analysis
+
+            </a>
+
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-006-DHCP-Relay-Failure/evidence/pcaps"
+               target="_blank">
+
+                View PCAP
+
+            </a>
+
+        </div>
+
+
+        <div class="pcap">
+
+            <span class="tag">NAT</span>
+
+            <h3>INC-007 — NAT / PAT</h3>
+
+            <p>
+                Examined NAT packet flows before and after remediation,
+                including failed ICMP traffic, translated requests,
+                and translated replies.
+            </p>
+
+            <a class="button"
+               href="inc-007-nat-pat.html">
+
+                View Analysis
+
+            </a>
+
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-007-NAT-Translation-Failure/evidence/pcaps"
+               target="_blank">
+
+                View PCAP
+
+            </a>
+
+        </div>
+
+
+        <div class="pcap">
+
+            <span class="tag">BGP</span>
+
+            <h3>INC-008 — BGP Route Advertisement Failure</h3>
+
+            <p>
+                Examined BGP packet flows before and after remediation,
+                including route advertisement behavior and post-remediation
+                control-plane verification.
+            </p>
+
+            <a class="button"
+               href="inc-008-bgp.html">
+
+                View Analysis
+
+            </a>
+
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/pcaps"
+               target="_blank">
+
+                View PCAP
+
+            </a>
+
+        </div>
+
+
+        <div class="pcap">
+
+            <span class="tag">HSRP</span>
+
+            <h3>INC-009 — HSRP Failover Failure</h3>
+
+            <p>
+                Analyzed HSRPv2 and ARP traffic during a first-hop
+                redundancy failure, including the failed VIP resolution,
+                HSRP failover behavior, and post-remediation gateway recovery.
+            </p>
+
+            <a class="button"
+               href="inc-009-hsrp.html">
+
+                View Analysis
+
+            </a>
+
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-009-HSRP-Failover-Failure/evidence/pcaps"
+               target="_blank">
+
+                View PCAP
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <h2>Analysis Workflow</h2>
+
+    <div class="workflow">
+
+
+        <div class="step">
+
+            <h3>01 — Capture</h3>
+
+            <p>
+                Obtain packet-level evidence from the affected
+                network segment.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <h3>02 — Filter</h3>
+
+            <p>
+                Isolate relevant protocols and conversations
+                using Wireshark display filters.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <h3>03 — Analyze</h3>
+
+            <p>
+                Examine packet behavior against expected
+                protocol operation.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <h3>04 — Correlate</h3>
+
+            <p>
+                Compare packet evidence with CLI output,
+                monitoring data, and symptoms.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <h3>05 — Verify</h3>
+
+            <p>
+                Confirm the network behavior after remediation.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <div class="intro">
+
+        <h2>Technical Evidence</h2>
+
+        <p>
+
+            PCAP files, screenshots, CLI output, incident
+            documentation, and supporting project artifacts are
+            maintained in the GitHub repository.
+
+        </p>
+
+        <br>
+
+        <a
+            class="button"
+            href="https://github.com/richardpateau/network-incident-response-lab"
+            target="_blank">
+
+            View GitHub Repository →
 
         </a>
 
-    </p>
+    </div>
 
 </section>
 
@@ -456,10 +676,80 @@
 </main>
 
 
+<!-- IMAGE LIGHTBOX -->
+
+<div class="image-modal" id="imageModal">
+
+    <span class="close" id="closeModal">&times;</span>
+
+    <img
+        id="modalImage"
+        src=""
+        alt="Expanded evidence">
+
+</div>
+
+
+<script>
+
+    const modal = document.getElementById("imageModal");
+    const modalImage = document.getElementById("modalImage");
+    const closeModal = document.getElementById("closeModal");
+
+    const evidenceImages = document.querySelectorAll(
+        ".pcap img"
+    );
+
+
+    evidenceImages.forEach(function(image) {
+
+        image.addEventListener("click", function() {
+
+            modalImage.src = this.src;
+            modalImage.alt = this.alt;
+
+            modal.classList.add("active");
+
+        });
+
+    });
+
+
+    closeModal.addEventListener("click", function() {
+
+        modal.classList.remove("active");
+
+    });
+
+
+    modal.addEventListener("click", function(event) {
+
+        if (event.target === modal) {
+
+            modal.classList.remove("active");
+
+        }
+
+    });
+
+
+    document.addEventListener("keydown", function(event) {
+
+        if (event.key === "Escape") {
+
+            modal.classList.remove("active");
+
+        }
+
+    });
+
+</script>
+
+
 <footer>
 
     <p>
-        © 2026 Richard Pateau
+        Richard Pateau | Network Engineering Portfolio
     </p>
 
 </footer>
