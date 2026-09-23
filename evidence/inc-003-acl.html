@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>INC-003 — ACL Traffic Blocked</title>
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f7fa;
+    color: #1f2937;
+}
+
+header {
+    background: #111827;
+    color: white;
+    padding: 35px 20px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 40px 20px;
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-top: 45px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    margin: 20px 0;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.evidence img {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    margin-top: 15px;
+}
+
+pre {
+    background: #111827;
+    color: #e5e7eb;
+    padding: 18px;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.tag {
+    display: inline-block;
+    background: #e5e7eb;
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.button {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 16px;
+    background: #111827;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+.button:hover {
+    opacity: 0.85;
+}
+
+.verification {
+    border: 2px solid #d1d5db;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<div class="container">
+
+<h1>INC-003 — ACL Traffic Blocked</h1>
+
+<p>
+Extended ACL troubleshooting, packet analysis,
+iterative remediation, and security verification.
+</p>
+
+</div>
+
+</header>
+
+
+<div class="container">
+
+
+<!-- INCIDENT SUMMARY -->
+
+<h2>Incident Summary</h2>
+
+<div class="card">
+
+<p>
+
+A client experienced connectivity failures when attempting
+to reach a server over ICMP and HTTPS.
+
+Initial testing demonstrated that both ping and HTTPS
+connectivity were unsuccessful.
+
+</p>
+
+<p>
+
+The investigation used Cisco ACL hit counters, Splunk,
+Wireshark, tcpdump, and packet captures to determine
+whether the traffic was being blocked by the network policy.
+
+</p>
+
+</div>
+
+
+<!-- INITIAL SYMPTOMS -->
+
+<h2>1. Initial Symptoms</h2>
+
+<div class="card">
+
+<span class="tag">CONNECTIVITY</span>
+
+<h3>ICMP Failure</h3>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/02-pc1-ping-fail.png"
+alt="PC ping failure">
+
+
+<h3>HTTPS Failure</h3>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/03-pc1-https-fail.png"
+alt="PC HTTPS failure">
+
+</div>
+
+
+<!-- ACL INVESTIGATION -->
+
+<h2>2. ACL Investigation</h2>
+
+<div class="card">
+
+<span class="tag">CISCO IOS</span>
+
+<h3>show access-lists</h3>
+
+<pre>
+show access-lists
+</pre>
+
+<p>
+
+ACL hit counters were inspected to determine whether
+the affected traffic was matching explicit deny entries.
+
+</p>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/04-r1-show-access-lists-hits-broken.png"
+alt="ACL hit counters showing blocked traffic">
+
+</div>
+
+
+<!-- ROOT CAUSE -->
+
+<h2>3. Root Cause</h2>
+
+<div class="card">
+
+<span class="tag">ROOT CAUSE ANALYSIS</span>
+
+<h3>Multiple ACL Entries Were Blocking Required Traffic</h3>
+
+<p>
+
+The original ACL contained two deny statements that
+affected traffic from the client network to the protected
+server.
+
+</p>
+
+<pre>
+ip access-list extended PROTECT-SERVER
+ deny tcp any host 10.20.20.10 eq 443 log
+ deny ip 10.10.10.0 0.0.0.255 host 10.20.20.10 log
+ permit ip any any
+</pre>
+
+<p>
+
+The first entry explicitly denied HTTPS traffic to the
+server. The second entry broadly denied all IP traffic
+from the 10.10.10.0/24 client network to the server.
+
+</p>
+
+<a
+class="button"
+href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/configs/r1-acl-before.txt"
+target="_blank">
+
+View Original ACL →
+
+</a>
+
+</div>
+
+
+<!-- PACKET ANALYSIS -->
+
+<h2>4. Packet Analysis</h2>
+
+<div class="card">
+
+<span class="tag">WIRESHARK / TCPDUMP</span>
+
+<h3>ICMP Analysis</h3>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/06-wireshark-icmp-overview.png"
+alt="Wireshark ICMP overview">
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/06a-wireshark-icmp-echo-request.png"
+alt="Wireshark ICMP echo request">
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/06b-wireshark-icmp-dest-unreachable.png"
+alt="Wireshark ICMP destination unreachable">
+
+<h3>HTTPS Analysis</h3>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/07-wireshark-https-syn.png"
+alt="Wireshark HTTPS SYN">
+
+<h3>tcpdump Evidence</h3>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/08-tcpdump-icmp.png"
+alt="tcpdump ICMP evidence">
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/09-tcpdump-https.png"
+alt="tcpdump HTTPS evidence">
+
+</div>
+
+
+<!-- FIX 1 -->
+
+<h2>5. Remediation Attempt #1</h2>
+
+<div class="card">
+
+<span class="tag">ITERATIVE TROUBLESHOOTING</span>
+
+<p>
+
+The broad IP deny was removed so that traffic from the
+client subnet could reach the server while preserving
+the explicit HTTPS and Telnet security controls.
+
+</p>
+
+<pre>
+ip access-list extended PROTECT-SERVER
+ deny tcp any host 10.20.20.10 eq 443
+ deny tcp 10.10.10.0 0.0.0.255 host 10.20.20.10 eq 23
+ permit ip any any
+</pre>
+
+<a
+class="button"
+href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/configs/r1-acl-after-fix1.txt"
+target="_blank">
+
+View Fix #1 Configuration →
+
+</a>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/10-r1-acl-fix1-applied.png"
+alt="ACL fix one applied">
+
+<h3>ICMP Verification</h3>
+
+<p>
+
+ICMP connectivity succeeded after the first change,
+confirming that the broad deny had been removed as a
+blocking condition.
+
+</p>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/11-pc1-ping-success-after-fix1.png"
+alt="Ping successful after first ACL fix">
+
+<h3>HTTPS Still Failed</h3>
+
+<p>
+
+HTTPS remained unavailable after Fix #1. This demonstrated
+that another ACL entry was still explicitly denying TCP/443.
+
+</p>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/12-pc1-https-still-fails.png"
+alt="HTTPS still failing after first ACL fix">
+
+</div>
+
+
+<!-- FIX 2 -->
+
+<h2>6. Remediation Attempt #2</h2>
+
+<div class="card">
+
+<span class="tag">ACL REFINEMENT</span>
+
+<p>
+
+The remaining HTTPS deny was removed while the Telnet
+deny was retained.
+
+This restored the required HTTPS service without removing
+the intended Telnet restriction.
+
+</p>
+
+<pre>
+ip access-list extended PROTECT-SERVER
+ deny tcp 10.10.10.0 0.0.0.255 host 10.20.20.10 eq 23
+ permit ip any any
+</pre>
+
+<a
+class="button"
+href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/configs/r1-acl-after-fix2.txt"
+target="_blank">
+
+View Fix #2 Configuration →
+
+</a>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/13-r1-acl-fix2-applied.png"
+alt="ACL fix two applied">
+
+</div>
+
+
+<!-- FINAL VERIFICATION -->
+
+<h2>7. Final Verification</h2>
+
+<div class="card verification">
+
+<span class="tag">VERIFICATION</span>
+
+<h3>HTTPS Restored</h3>
+
+<p>
+
+HTTPS connectivity succeeded after the explicit TCP/443
+deny was removed.
+
+</p>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/14-pc1-https-success.png"
+alt="HTTPS successful after remediation">
+
+<h3>Telnet Remains Blocked</h3>
+
+<p>
+
+The final ACL continued to deny TCP/23 from the client
+network, demonstrating that the required HTTPS service
+was restored without removing the intended Telnet restriction.
+
+</p>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/15-pc1-telnet-blocked-successful.png"
+alt="Telnet remains blocked">
+
+</div>
+
+
+<!-- PACKET VERIFICATION -->
+
+<h2>8. Post-Remediation Packet Verification</h2>
+
+<div class="card">
+
+<span class="tag">PACKET VERIFICATION</span>
+
+<h3>ICMP Reply</h3>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/16-wireshark-icmp-echo-reply.png"
+alt="Wireshark ICMP echo reply">
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/16a-wireshark-reply-details.png"
+alt="Wireshark ICMP reply details">
+
+<h3>HTTPS Handshake</h3>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/17-wireshark-https-full-handshake.png"
+alt="Wireshark HTTPS full handshake">
+
+</div>
+
+
+<!-- PCAPS -->
+
+<h2>9. Packet Capture Files</h2>
+
+<div class="card">
+
+<p>Raw packet captures used during the investigation:</p>
+
+<a
+class="button"
+href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/pcaps/01-icmp-broken.pcap"
+target="_blank">
+
+Broken ICMP PCAP →
+
+</a>
+
+<a
+class="button"
+href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/pcaps/02-tcp443-broken.pcap"
+target="_blank">
+
+Broken HTTPS PCAP →
+
+</a>
+
+<a
+class="button"
+href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/pcaps/03-final-icmp.pcap"
+target="_blank">
+
+Final ICMP PCAP →
+
+</a>
+
+<a
+class="button"
+href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/pcaps/04-tcp443-after.pcap"
+target="_blank">
+
+Final HTTPS PCAP →
+
+</a>
+
+</div>
+
+
+<!-- MONITORING -->
+
+<h2>10. Monitoring Evidence</h2>
+
+<div class="card">
+
+<span class="tag">MONITORING</span>
+
+<h3>Splunk — Initial Investigation</h3>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/05-splunk-acl-log.png"
+alt="Splunk ACL log">
+
+<h3>Splunk — After Remediation</h3>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/18-splunk-after.png"
+alt="Splunk after ACL remediation">
+
+</div>
+
+
+<!-- TICKET -->
+
+<h2>11. Incident Closure</h2>
+
+<div class="card">
+
+<p>
+
+The incident was closed after ICMP and HTTPS connectivity
+were restored, packet captures confirmed successful
+traffic, and the intended Telnet restriction remained
+in place.
+
+</p>
+
+<img
+src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/19-servicenow-resolved.png"
+alt="Resolved ServiceNow-style ACL incident ticket">
+
+</div>
+
+
+<a
+class="button"
+href="../projects/network-incident-response.html">
+
+← Back to Incident Response Lab
+
+</a>
+
+</div>
+
+</body>
+
+</html>
