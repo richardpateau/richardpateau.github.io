@@ -108,6 +108,10 @@
             border-radius: 6px;
         }
 
+        .button:hover {
+            background: #1d4ed8;
+        }
+
         .skills {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -118,7 +122,26 @@
             background: white;
             padding: 20px;
             border: 1px solid #ddd;
-            border-radius: 8px;View Evidence
+            border-radius: 8px;
+        }
+
+        .skill h3 {
+            margin-bottom: 10px;
+        }
+
+        .skill p {
+            margin-bottom: 15px;
+            color: #4b5563;
+        }
+
+        .skill a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .skill a:hover {
+            text-decoration: underline;
         }
 
         footer {
@@ -143,6 +166,7 @@
 
 </header>
 
+
 <nav>
 
     <a href="#projects">Projects</a>
@@ -155,7 +179,9 @@
 
 </nav>
 
+
 <main>
+
 
 <section>
 
@@ -179,6 +205,7 @@
 
     <div class="projects">
 
+
         <div class="card">
 
             <h3>Network Incident Response Lab</h3>
@@ -191,8 +218,11 @@
 
             </p>
 
-            <a href="evidence/wireshark.html">
-                View PCAP Evidence →
+            <a class="button"
+               href="projects/network-incident-response.html">
+
+                View Project →
+
             </a>
 
         </div>
@@ -238,6 +268,7 @@
 
         </div>
 
+
     </div>
 
 </section>
@@ -249,17 +280,22 @@
 
     <div class="skills">
 
+
         <div class="skill">
 
             <h3>Wireshark & PCAP Analysis</h3>
 
             <p>
+
                 Packet captures used to investigate network behavior
                 and validate incidents.
+
             </p>
 
-            <a href="projects/network-incident-response.html">
-                 →
+            <a href="evidence/wireshark.html">
+
+                View PCAP Evidence →
+
             </a>
 
         </div>
@@ -270,12 +306,16 @@
             <h3>Cisco CLI</h3>
 
             <p>
+
                 Real troubleshooting commands and verification output
                 from network labs.
+
             </p>
 
-            <a href="projects/network-incident-response.html">
+            <a href="evidence/cisco-cli.html">
+
                 View CLI Evidence →
+
             </a>
 
         </div>
@@ -286,12 +326,16 @@
             <h3>Routing & Switching</h3>
 
             <p>
+
                 OSPF, BGP, HSRP, VLANs, STP, DHCP, NAT and related
                 troubleshooting scenarios.
+
             </p>
 
             <a href="projects/network-incident-response.html">
-                 →
+
+                View Routing Evidence →
+
             </a>
 
         </div>
@@ -302,12 +346,16 @@
             <h3>Network Troubleshooting</h3>
 
             <p>
+
                 Incident-driven troubleshooting using symptoms,
                 evidence, root-cause analysis and verification.
+
             </p>
 
             <a href="projects/network-incident-response.html">
+
                 View Incidents →
+
             </a>
 
         </div>
@@ -318,12 +366,16 @@
             <h3>Monitoring</h3>
 
             <p>
+
                 Network monitoring and investigation using SolarWinds
                 and Splunk.
+
             </p>
 
             <a href="projects/network-incident-response.html">
-                 →
+
+                View Monitoring Evidence →
+
             </a>
 
         </div>
@@ -334,15 +386,20 @@
             <h3>Network Operations</h3>
 
             <p>
+
                 Incident documentation, ticketing workflow,
                 troubleshooting notes and resolution verification.
+
             </p>
 
             <a href="#operations">
+
                 View Tickets →
+
             </a>
 
         </div>
+
 
     </div>
 
@@ -382,13 +439,19 @@
     <h2>Contact</h2>
 
     <p>
+
         GitHub:
+
         <a href="https://github.com/richardpateau">
+
             github.com/richardpateau
+
         </a>
+
     </p>
 
 </section>
+
 
 </main>
 
@@ -400,6 +463,7 @@
     </p>
 
 </footer>
+
 
 </body>
 
