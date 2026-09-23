@@ -803,8 +803,9 @@
     <h2>Remediation</h2>
 
     <p>
-        The incorrect NAT-INSIDE ACL was removed and replaced with an ACL
-        matching the actual client LAN, 10.10.10.0/24.
+        The NAT-INSIDE ACL was corrected from the incorrect
+        <strong>10.10.20.0/30</strong> source network to the actual client
+        LAN, <strong>10.10.10.0/24</strong>.
     </p>
 
     <pre>no ip access-list standard NAT-INSIDE
