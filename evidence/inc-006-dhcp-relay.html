@@ -375,9 +375,10 @@
                      alt="R1 failed ping to DHCP server">
 
                 <p>
-                    Direct testing toward the DHCP server produced a failure,
-                    requiring further investigation of the remote path and
-                    server-side configuration.
+                    Direct testing to <strong>10.20.20.11</strong> failed, while
+                    connectivity to the DHCP server network was confirmed through
+                    <strong>10.20.20.1</strong>. This indicated that the configured
+                    relay destination did not match the actual DHCP server address.
                 </p>
             </div>
 
@@ -570,22 +571,25 @@
             <h3>DHCP Relay Configuration Failure</h3>
 
             <p>
-                The client was unable to obtain an address because the DHCP
-                relay configuration on R1's client-facing interface was not
-                correctly forwarding DHCP requests to the remote DHCP server.
+                The DHCP relay failure was caused by an incorrect
+                <strong>ip helper-address</strong> configured on R1's
+                client-facing interface.
             </p>
 
             <p>
-                The investigation separated the failure into multiple layers:
-                the client had no DHCP address, R1's local interface was
-                operational, the DHCP server had a configured pool, and packet
-                and debug evidence showed that the expected relay/server
-                transaction was not completing.
+                R1 was configured to forward DHCP requests to
+                <strong>10.20.20.11</strong>, but the actual DHCP server on R2
+                was configured with the address <strong>10.20.20.1</strong>.
+                The R2 DHCP pool itself was correctly configured for the
+                <strong>10.10.10.0/24</strong> client network.
             </p>
 
             <p>
-                The before-state configuration is preserved in the repository
-                for direct comparison with the corrected configuration.
+                The investigation correlated the R1 interface configuration,
+                reachability testing, DHCP server configuration, empty DHCP
+                bindings, packet captures, and Cisco DHCP debug output. This
+                isolated the incorrect relay destination as the root cause rather
+                than a client, routing, or DHCP pool failure.
             </p>
 
             <a class="button"
@@ -610,9 +614,16 @@
             <h3>DHCP Relay Corrected</h3>
 
             <p>
-                The DHCP relay configuration on R1 was corrected so that
-                client DHCP broadcasts could be forwarded toward the remote
-                DHCP server.
+                The DHCP helper address on R1 was corrected from
+                <strong>10.20.20.11</strong> to
+                <strong>10.20.20.1</strong>, matching the actual DHCP server
+                address on R2.
+            </p>
+
+            <p>
+                No changes were required to the client subnet, R1 interface
+                address, routing, or the R2 DHCP pool. The remediation was
+                limited to correcting the DHCP relay destination.
             </p>
 
             <div class="evidence-card">
