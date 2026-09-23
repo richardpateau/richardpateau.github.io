@@ -588,18 +588,23 @@
 
             <h3>OSPF Interface MTU Mismatch</h3>
 
-            <p>
+           <p>
                 The OSPF adjacency between R1 and R2 was unable to progress
-                beyond EXSTART because the connected interfaces were operating
-                with different MTU values.
-            </p>
+                beyond <strong>EXSTART</strong> because the connected interfaces
+                had different MTU values. R1 <strong>GigabitEthernet0/3</strong>
+                was configured with an MTU of <strong>1400</strong>, while R2
+                <strong>GigabitEthernet0/2</strong> was configured with an MTU of
+                <strong>1500</strong>.
+           </p>
 
-            <p>
-                OSPF uses the interface MTU during Database Description packet
-                exchange. The mismatch prevented the routers from successfully
-                completing database synchronization and therefore prevented the
-                adjacency from reaching FULL.
-            </p>
+           <p>
+                Both interfaces were configured for the same
+                <strong>10.10.20.0/30</strong> transit network and the same
+                OSPF <strong>Area 0</strong>, isolating the MTU difference as the
+                relevant adjacency parameter. The mismatch prevented successful
+                Database Description exchange and kept the OSPF neighbor from
+                reaching <strong>FULL</strong>.
+           </p>
 
             <p>
                 The configuration evidence is preserved in the before and after
@@ -633,8 +638,15 @@
             <h3>MTU Corrected</h3>
 
             <p>
-                The affected interface MTU was corrected to match the
-                neighboring OSPF interface.
+                The MTU on R1 <strong>GigabitEthernet0/3</strong> was corrected
+                from <strong>1400</strong> to <strong>1500</strong> to match the
+                MTU on R2 <strong>GigabitEthernet0/2</strong>.
+            </p>
+            
+            <p>
+                No OSPF network statements, area assignments, or IP addressing
+                changes were required. The remediation was limited to correcting
+                the interface MTU mismatch.
             </p>
 
             <div class="evidence-card">
