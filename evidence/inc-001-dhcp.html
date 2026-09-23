@@ -271,21 +271,38 @@
         <h3>4. Root Cause</h3>
 
         <p>
-            The DHCP configuration was incorrect for the affected
-            subnet, preventing successful address assignment.
+            The DHCP pool was configured for the wrong subnet. The client-facing
+            interface on R1 was configured for <strong>10.10.10.0/24</strong>,
+            while the DHCP pool was configured for
+            <strong>10.10.20.0/24</strong> with a default gateway of
+            <strong>10.10.20.1</strong>.
         </p>
 
         <h3>5. Remediation</h3>
 
         <p>
-            The DHCP configuration was corrected.
+            The DHCP pool was corrected to match the client LAN:
+        </p>
+
+        <pre>
+        ip dhcp pool LAN
+         network 10.10.10.0 255.255.255.0
+         default-router 10.10.10.1
+        </pre>
+
+        <p>
+            The DHCP network and default gateway were changed from the incorrect
+            <strong>10.10.20.0/24</strong> and <strong>10.20.20.1</strong>
+            configuration to the correct client LAN values.
         </p>
 
         <h3>6. Verification</h3>
 
         <p>
-            A successful DHCP DORA exchange was observed after
-            remediation, and the DHCP binding was populated.
+            Post-remediation testing confirmed a successful DHCP DORA exchange.
+            Wireshark captured the complete Discover, Offer, Request, and ACK
+            sequence, while Cisco IOS showed a populated DHCP binding for the
+            client. The client successfully received a valid 10.10.10.x address.
         </p>
 
     </div>
