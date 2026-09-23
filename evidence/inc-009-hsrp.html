@@ -297,12 +297,15 @@
 
         A first-hop redundancy failure prevented the expected HSRP
         virtual gateway from remaining available when the primary
-        router failed. Investigation of the HSRP configuration showed
-        that R1 and R2 were configured with different virtual IP
-        addresses. R1 used 10.10.10.1 while R2 was incorrectly
-        configured with 10.10.10.11. The R2 HSRP virtual IP was corrected
-        to 10.10.10.1, after which failover and end-to-end gateway
-        reachability were verified.
+        router failed. Investigation showed that R1 and R2 were
+        configured with different HSRP virtual IP addresses. R1 used
+        10.10.10.1 while R2 was incorrectly configured with
+        10.10.10.11. When R1 failed, R2 transitioned to the Active
+        HSRP state, but for the incorrect virtual IP. The client
+        continued using 10.10.10.1 as its expected default gateway
+        and could not reach that VIP. R2 was corrected to use
+        10.10.10.1, after which HSRP failover and client gateway
+        reachability were successfully verified.
 
     </p>
 
@@ -435,8 +438,9 @@
             <h3>show standby brief</h3>
 
             <p>
-                Used to inspect HSRP group state, active/standby roles,
-                and the configured virtual IP.
+                The HSRP summary showed R1 operating as the Active
+                gateway with priority 110 and the expected virtual IP
+                of 10.10.10.1.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/06-r1-show-standby-brief.png"
@@ -452,8 +456,8 @@
             <h3>show standby</h3>
 
             <p>
-                Used to inspect detailed HSRP state and configuration
-                on R1.
+                Detailed HSRP state was inspected to verify the Active
+                router, virtual IP, priority, and HSRPv2 operation.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/07-r1-show-standby.png"
@@ -474,8 +478,7 @@
 
     <p>
         R2 was then examined to determine whether it was configured to
-        participate in the same HSRP group and use the same virtual
-        gateway address as R1.
+        participate in the same HSRP virtual gateway as R1.
     </p>
 
     <div class="evidence-grid">
@@ -488,8 +491,8 @@
             <h3>R2 Broken Configuration</h3>
 
             <p>
-                The R2 configuration showed a different HSRP virtual IP
-                from the one configured on R1.
+                R2's interface configuration showed a different HSRP
+                virtual IP from the one configured on R1.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/08-r2-show-run-interface-g0-0-broken.png"
@@ -505,8 +508,9 @@
             <h3>R2 HSRP Summary — Broken</h3>
 
             <p>
-                The HSRP summary was inspected to compare R2's group
-                and virtual gateway information with R1.
+                R2 was in the Standby state while R1 was Active, but
+                the output showed that R2's configured virtual IP was
+                10.10.10.11 rather than 10.10.10.1.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/09-r2-show-standby-brief-broken.png"
@@ -522,8 +526,9 @@
             <h3>R2 Detailed HSRP State</h3>
 
             <p>
-                Detailed HSRP state further confirmed the mismatch in
-                the configured virtual IP.
+                Detailed output confirmed that R2 was using virtual IP
+                10.10.10.11 and recognized R1 at 10.10.10.2 as the
+                Active router.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/10-r2-show-standby-broken.png"
@@ -544,7 +549,7 @@
 
     <p>
         The HSRP redundancy configuration was inconsistent between
-        R1 and R2. R1 and R2 were not configured with the same HSRP
+        R1 and R2. The routers were not configured with the same HSRP
         virtual IP address.
     </p>
 
@@ -573,16 +578,23 @@
     <p>
         R1 used <strong>10.10.10.1</strong> as the HSRP virtual IP,
         while R2 incorrectly used <strong>10.10.10.11</strong>.
-        Because the routers were not configured with the same HSRP
-        virtual IP, R2 could not provide the expected backup path for
-        clients using 10.10.10.1 as their default gateway.
     </p>
 
     <p>
-        The priority values were appropriate for the intended primary
-        and secondary roles: R1 had priority 110 and R2 had priority
-        100. The configuration problem was the mismatched virtual IP,
-        not the priority relationship.
+        Because R2 was configured with the different virtual IP
+        10.10.10.11, it could not assume the virtual gateway
+        10.10.10.1 used by the client. When R1 failed, R2 transitioned
+        to the Active state, but it became Active for the incorrect
+        virtual IP. The client therefore continued attempting to
+        resolve 10.10.10.1 and could not reach its expected default
+        gateway.
+    </p>
+
+    <p>
+        The priority values were appropriate for the intended roles:
+        R1 had priority 110 and R2 had priority 100. The configuration
+        problem was the mismatched virtual IP rather than the priority
+        relationship.
     </p>
 
     <a class="button secondary"
@@ -605,9 +617,9 @@
     <h2>HSRP Failover Test</h2>
 
     <p>
-        After establishing the configuration mismatch, R1 was taken
-        offline to simulate a primary gateway failure and test whether
-        R2 could assume the client-facing virtual gateway.
+        R1 was taken offline to simulate failure of the primary
+        gateway and determine whether R2 could provide the expected
+        client-facing virtual gateway.
     </p>
 
     <div class="evidence-grid">
@@ -634,16 +646,16 @@
 
             <span class="tag">Failover Failure</span>
 
-            <h3>R2 After R1 Failed</h3>
+            <h3>R2 Becomes Active</h3>
 
             <p>
-                R2 did not provide the expected 10.10.10.1 virtual
-                gateway because its HSRP configuration referenced
-                10.10.10.11.
+                After R1 failed, R2 transitioned to the Active state.
+                However, R2 was still configured with the incorrect
+                virtual IP of 10.10.10.11.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/12-r2-show-standby-after-r1-failed.png"
-                 alt="R2 HSRP state after R1 failure">
+                 alt="R2 HSRP active after R1 failure">
 
         </div>
 
@@ -655,8 +667,8 @@
             <h3>R2 HSRP Summary After Failure</h3>
 
             <p>
-                The HSRP summary was inspected while R1 was unavailable
-                to confirm the failover state.
+                The HSRP summary confirmed that R2 was Active while
+                the virtual IP remained 10.10.10.11.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/13-r2-show-standby-brief-after-r1-failed.png"
@@ -672,8 +684,8 @@
             <h3>VIP Ping Failure</h3>
 
             <p>
-                PC1 was unable to reach the expected HSRP virtual IP
-                during the failed state.
+                PC1 could not reach the expected HSRP virtual IP
+                10.10.10.1 while R1 was unavailable.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/14-pc1-ping-vip-fail.png"
@@ -693,8 +705,11 @@
     <h2>Packet Capture Analysis</h2>
 
     <p>
-        Packet capture analysis was used to correlate the HSRP control
-        traffic and ARP behavior with the observed gateway failure.
+        Packet capture analysis was used to correlate HSRP control-plane
+        behavior and ARP resolution with the gateway failure. The
+        captures showed that the client continued attempting to resolve
+        the expected virtual gateway, 10.10.10.1, while R2 was operating
+        with the incorrect virtual IP 10.10.10.11.
     </p>
 
     <div class="evidence-grid">
@@ -704,15 +719,15 @@
 
             <span class="tag">tcpdump</span>
 
-            <h3>Captured HSRP Traffic</h3>
+            <h3>HSRP / ARP Traffic Capture</h3>
 
             <p>
-                Captured traffic was reviewed during the failed HSRP
-                condition.
+                tcpdump was used to capture traffic generated during
+                the HSRP failure investigation.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/15-tcpdump.png"
-                 alt="tcpdump HSRP traffic">
+                 alt="tcpdump HSRP and ARP traffic">
 
         </div>
 
@@ -724,8 +739,8 @@
             <h3>HSRP Packet Overview</h3>
 
             <p>
-                The HSRP control-plane exchange was examined to
-                investigate the redundancy behavior.
+                Wireshark was used to inspect HSRPv2 control traffic
+                exchanged between the routers during the failed state.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/16-wireshark-hsrp-overview.png"
@@ -736,18 +751,17 @@
 
         <div class="evidence-card">
 
-            <span class="tag">HSRP</span>
+            <span class="tag">HSRPv2</span>
 
             <h3>HSRP Hello Details</h3>
 
             <p>
-                HSRP hello packets were examined to inspect the
-                redundancy protocol information exchanged between
-                routers.
+                HSRPv2 hello packets were inspected to identify the
+                participating routers and their redundancy state.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/17-wireshark-hsrp-hello-details.png"
-                 alt="Wireshark HSRP hello details">
+                 alt="Wireshark HSRPv2 hello details">
 
         </div>
 
@@ -756,15 +770,16 @@
 
             <span class="tag">ARP</span>
 
-            <h3>ARP Request for HSRP VIP</h3>
+            <h3>Client ARP Request for Expected VIP</h3>
 
             <p>
-                ARP traffic was examined to determine how the client
-                resolved the HSRP virtual gateway.
+                During the failed state, the client repeatedly issued
+                ARP requests asking for 10.10.10.1, the expected HSRP
+                virtual gateway.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/18-wireshark-arp-who-has-vip.png"
-                 alt="Wireshark ARP request for HSRP VIP">
+                 alt="Wireshark ARP requests for 10.10.10.1">
 
         </div>
 
@@ -773,15 +788,17 @@
 
             <span class="tag">ARP Failure</span>
 
-            <h3>No ARP Reply for VIP</h3>
+            <h3>No Expected VIP Response</h3>
 
             <p>
-                The absence of the expected ARP response was correlated
-                with the unavailable virtual gateway.
+                The capture shows repeated ARP requests for 10.10.10.1
+                without the expected response for that VIP. This
+                correlated with the client's inability to reach the
+                expected HSRP virtual gateway after R1 failed.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/19-wireshark-arp-no-reply-vip.png"
-                 alt="Wireshark no ARP reply for HSRP VIP">
+                 alt="Wireshark showing no expected ARP reply for 10.10.10.1">
 
         </div>
 
@@ -827,7 +844,7 @@
 
     <p>
         R2's HSRP virtual IP was corrected to match the HSRP virtual
-        gateway configured on R1.
+        gateway configured on R1 and used by the client.
     </p>
 
     <h3>Incorrect Configuration</h3>
@@ -852,6 +869,7 @@
     </p>
 
     <div class="evidence-grid">
+
 
         <div class="evidence-card">
 
@@ -910,15 +928,16 @@
 
             <span class="tag">HSRP</span>
 
-            <h3>R2 HSRP State — Fixed</h3>
+            <h3>R2 Active with Correct VIP</h3>
 
             <p>
-                R2's HSRP state was verified after the virtual IP
-                correction while R1 remained down.
+                R2 was verified in the Active state while R1 remained
+                down. The HSRP virtual IP was now correctly configured
+                as 10.10.10.1.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/26-r2-show-standby-fixed-r1-still-down.png"
-                 alt="R2 HSRP fixed while R1 remains down">
+                 alt="R2 active with corrected HSRP virtual IP">
 
         </div>
 
@@ -976,17 +995,20 @@
 
         <div class="evidence-card">
 
-            <span class="tag">HSRP</span>
+            <span class="tag">HSRPv2</span>
 
-            <h3>HSRP Keepalives After Recovery</h3>
+            <h3>Post-Remediation HSRP Keepalives</h3>
 
             <p>
-                Post-remediation HSRP control traffic was captured to
-                verify continued redundancy protocol operation.
+                The working capture shows HSRPv2 hello advertisements
+                from both R1 at 10.10.10.2 and R2 at 10.10.10.3.
+                During normal operation, R1 is Active and R2 is
+                Standby, demonstrating continued HSRP control-plane
+                operation after the configuration was corrected.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/30-wireshark-keepalives-after.png"
-                 alt="Wireshark HSRP keepalives after recovery">
+                 alt="Wireshark HSRPv2 keepalives after remediation">
 
         </div>
 
@@ -1009,17 +1031,20 @@
 
     </div>
 
+
     <div style="margin-top:25px;">
 
         <h3>Verification Result</h3>
 
         <p>
             The verification sequence demonstrated recovery of the
-            first-hop gateway: R2 used the corrected HSRP virtual IP,
-            successfully provided the expected virtual gateway while
-            R1 was unavailable, PC1 successfully reached the VIP,
-            Wireshark confirmed successful ICMP and ARP exchanges,
-            and HSRP keepalives were observed after recovery.
+            first-hop gateway. R2 became Active while R1 remained
+            unavailable, R2 used the corrected virtual IP
+            10.10.10.1, and PC1 successfully reached the virtual
+            gateway. Wireshark confirmed successful ARP and ICMP
+            exchanges, while the post-remediation capture showed
+            continued HSRPv2 hello advertisements from both routers
+            during normal operation.
         </p>
 
     </div>
@@ -1057,7 +1082,14 @@
         </li>
 
         <li>
-            The expected 10.10.10.1 gateway became unavailable.
+            R2 transitioned to the Active HSRP state, but its
+            incorrect VIP prevented it from providing the client's
+            expected gateway.
+        </li>
+
+        <li>
+            The client repeatedly attempted to resolve 10.10.10.1
+            during the failed state.
         </li>
 
         <li>
@@ -1065,7 +1097,8 @@
         </li>
 
         <li>
-            R2 successfully provided the expected virtual gateway.
+            R2 successfully provided the expected virtual gateway
+            while R1 remained unavailable.
         </li>
 
         <li>
@@ -1077,8 +1110,8 @@
         </li>
 
         <li>
-            Post-remediation HSRP keepalives confirmed continued
-            protocol operation.
+            Post-remediation HSRPv2 hello traffic confirmed continued
+            redundancy protocol operation.
         </li>
 
     </ul>
@@ -1140,7 +1173,11 @@
         </li>
 
         <li>
-            Verify client impact to the virtual gateway.
+            Verify R2's HSRP state after R1 failure.
+        </li>
+
+        <li>
+            Verify client impact to the expected virtual gateway.
         </li>
 
         <li>
@@ -1152,7 +1189,7 @@
         </li>
 
         <li>
-            Verify HSRP state while R1 remained unavailable.
+            Verify R2 as Active with the corrected virtual IP.
         </li>
 
         <li>
@@ -1164,11 +1201,11 @@
         </li>
 
         <li>
-            Confirm continued HSRP control traffic.
+            Confirm continued HSRPv2 control traffic.
         </li>
 
         <li>
-            Correlate the recovery with Splunk evidence.
+            Correlate recovery with Splunk evidence.
         </li>
 
         <li>
