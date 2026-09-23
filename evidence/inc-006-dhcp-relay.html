@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>INC-006 — DHCP Relay Failure</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f7fa;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 40px 20px;
+        }
+
+        header h1 {
+            max-width: 1100px;
+            margin: 0 auto 10px;
+            font-size: 32px;
+        }
+
+        header p {
+            max-width: 1100px;
+            margin: 0 auto;
+            color: #d1d5db;
+        }
+
+        nav {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 15px 20px;
+        }
+
+        nav div {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        nav a {
+            margin-right: 20px;
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            background: white;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #111827;
+        }
+
+        h3 {
+            color: #1f2937;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .summary-card strong {
+            display: block;
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 5px;
+        }
+
+        .evidence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .evidence-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 18px;
+            background: #fafafa;
+        }
+
+        .evidence-card img {
+            width: 100%;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            margin-top: 12px;
+        }
+
+        .label {
+            display: inline-block;
+            background: #e5e7eb;
+            color: #374151;
+            padding: 4px 9px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .root-cause {
+            border-left: 5px solid #dc2626;
+            background: #fef2f2;
+            padding: 20px;
+        }
+
+        .resolution {
+            border-left: 5px solid #16a34a;
+            background: #f0fdf4;
+            padding: 20px;
+        }
+
+        .verification {
+            border-left: 5px solid #2563eb;
+            background: #eff6ff;
+            padding: 20px;
+        }
+
+        pre {
+            background: #111827;
+            color: #e5e7eb;
+            padding: 18px;
+            border-radius: 7px;
+            overflow-x: auto;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 9px 14px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background: #1d4ed8;
+        }
+
+        .timeline {
+            border-left: 3px solid #2563eb;
+            padding-left: 20px;
+        }
+
+        .timeline-item {
+            margin-bottom: 25px;
+        }
+
+        .timeline-item strong {
+            color: #2563eb;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>INC-006 — DHCP Relay Failure</h1>
+
+    <p>
+        Network incident investigation demonstrating DHCP relay troubleshooting,
+        Cisco IOS verification, packet analysis, DHCP server validation,
+        remediation, and end-to-end connectivity verification.
+    </p>
+</header>
+
+<nav>
+    <div>
+        <a href="../index.html">Portfolio</a>
+        <a href="../projects/network-incident-response.html">Incident Response Lab</a>
+        <a href="wireshark.html">Wireshark Evidence</a>
+        <a href="cisco-cli.html">Cisco CLI Evidence</a>
+    </div>
+</nav>
+
+<main>
+
+    <section>
+        <h2>Incident Summary</h2>
+
+        <div class="summary-grid">
+
+            <div class="summary-card">
+                <strong>Incident</strong>
+                INC-006
+            </div>
+
+            <div class="summary-card">
+                <strong>Category</strong>
+                DHCP / Network Services
+            </div>
+
+            <div class="summary-card">
+                <strong>Technology</strong>
+                DHCP Relay
+            </div>
+
+            <div class="summary-card">
+                <strong>Device</strong>
+                Cisco R1
+            </div>
+
+            <div class="summary-card">
+                <strong>Server</strong>
+                Cisco R2
+            </div>
+
+            <div class="summary-card">
+                <strong>Status</strong>
+                Resolved
+            </div>
+
+        </div>
+
+        <p style="margin-top:25px;">
+            A client connected to the R1 access network was unable to obtain a
+            DHCP address. The DHCP server was located on a different routed
+            network, requiring R1 to operate as a DHCP relay agent.
+        </p>
+
+        <p>
+            The investigation verified the client-facing interface, DHCP relay
+            configuration, routing to the DHCP server, DHCP server pool and
+            bindings, packet captures, and Cisco debug output before correcting
+            the relay configuration.
+        </p>
+    </section>
+
+
+    <section>
+        <h2>1. Initial Symptoms</h2>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">Incident</span>
+
+                <h3>ServiceNow-Style Ticket</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/01-servicenow-ticket.png"
+                     alt="ServiceNow-style DHCP relay incident ticket">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Client</span>
+
+                <h3>No DHCP Address</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/02-pc1-no-dhcp-ip.png"
+                     alt="PC1 without a DHCP address">
+
+                <p>
+                    PC1 failed to obtain an address from the remote DHCP
+                    server.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>2. DHCP Relay Interface Investigation</h2>
+
+        <p>
+            The client-facing interface on R1 was inspected to determine
+            whether the interface was correctly configured for the client
+            subnet and whether DHCP relay functionality was present.
+        </p>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">Cisco IOS</span>
+
+                <h3>R1 Interface Configuration</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/03-r1-show-run-interface-g0-0-broken.png"
+                     alt="R1 broken interface configuration">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Interface State</span>
+
+                <h3>show ip interface</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/04-r1-show-ip-interface-g0-0.png"
+                     alt="R1 interface status">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">DHCP Relay</span>
+
+                <h3>show ip helper-address</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/05-r1-show-ip-helper-address.png"
+                     alt="R1 DHCP helper address configuration">
+
+                <p>
+                    The DHCP relay configuration on the client-facing interface
+                    was inspected as a primary troubleshooting point.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>3. Reachability to the DHCP Server</h2>
+
+        <p>
+            After confirming the local interface, connectivity to the DHCP
+            server was tested independently from the DHCP process.
+        </p>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">Reachability</span>
+
+                <h3>R1 → DHCP Server Network</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/06-r1-ping-10.20.20.1-success.png"
+                     alt="R1 successful ping toward DHCP server network">
+
+                <p>
+                    R1 successfully reached the remote network gateway,
+                    demonstrating routed connectivity toward the DHCP server
+                    segment.
+                </p>
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Reachability</span>
+
+                <h3>R1 → DHCP Server</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/07-r1-ping-10.20.20.11-fail.png"
+                     alt="R1 failed ping to DHCP server">
+
+                <p>
+                    Direct testing toward the DHCP server produced a failure,
+                    requiring further investigation of the remote path and
+                    server-side configuration.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="evidence-card" style="margin-top:20px;">
+
+            <span class="label">Routing</span>
+
+            <h3>Route Verification</h3>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/08-r1-show-ip-route-10.20.20.0.png"
+                 alt="R1 route to DHCP server network">
+
+            <p>
+                The routing table was inspected to determine whether R1 had a
+                valid route toward the DHCP server subnet.
+            </p>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>4. DHCP Server Investigation</h2>
+
+        <p>
+            R2 was then checked to verify that the DHCP server itself had a
+            valid pool and whether any client leases were being created.
+        </p>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">DHCP Server</span>
+
+                <h3>show ip dhcp pool</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/09-r2-show-ip-dhcp-pool.png"
+                     alt="R2 DHCP pool configuration">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">DHCP Server</span>
+
+                <h3>show ip dhcp binding</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/10-r2-show-ip-dhcp-binding-empty.png"
+                     alt="R2 DHCP binding table empty">
+
+                <p>
+                    The absence of a client binding indicated that the DHCP
+                    transaction was not completing at the server.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>5. DHCP Packet Analysis</h2>
+
+        <p>
+            Packet capture was used to determine where the DHCP transaction
+            stopped and whether the client's broadcast was being relayed
+            toward the remote DHCP server.
+        </p>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">tcpdump</span>
+
+                <h3>DHCP Relay Traffic</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/11-tcpdump.png"
+                     alt="tcpdump DHCP relay traffic">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Wireshark</span>
+
+                <h3>Broken DHCP Exchange</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/12-wireshark-overview-broken.png"
+                     alt="Wireshark DHCP relay exchange before remediation">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">DHCP</span>
+
+                <h3>DHCP Discover Details</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/13-wireshark-discover-details.png"
+                     alt="Wireshark DHCP Discover details">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">DHCP Relay</span>
+
+                <h3>Relay Packet Details</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/14-wireshark-relay-details.png"
+                     alt="Wireshark DHCP relay packet details">
+            </div>
+
+        </div>
+
+        <a class="button"
+           href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-006-DHCP-Relay-Failure/evidence/pcaps">
+            View INC-006 PCAP Files →
+        </a>
+    </section>
+
+
+    <section>
+        <h2>6. DHCP Debug Investigation</h2>
+
+        <p>
+            Cisco DHCP debugging was used to correlate the client request with
+            the relay and server-side DHCP processing.
+        </p>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">Debug</span>
+
+                <h3>DHCP Server Events</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/15-debug-dhcp-server-events.png"
+                     alt="DHCP server debug events">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Debug</span>
+
+                <h3>DHCP Server Packet Processing</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/16-debug-dhcp-server-packet.png"
+                     alt="DHCP server packet debug output">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Debug</span>
+
+                <h3>Client MAC Match</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/17-debug-mac-match-pc1.png"
+                     alt="DHCP debug showing PC1 MAC match">
+            </div>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>7. Monitoring Correlation</h2>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">SolarWinds</span>
+
+                <h3>Monitoring Evidence</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/18-solarwinds.png"
+                     alt="SolarWinds DHCP relay incident evidence">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Splunk</span>
+
+                <h3>Logging Evidence</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/19-splunk.png"
+                     alt="Splunk DHCP relay evidence">
+            </div>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>8. Root Cause</h2>
+
+        <div class="root-cause">
+
+            <h3>DHCP Relay Configuration Failure</h3>
+
+            <p>
+                The client was unable to obtain an address because the DHCP
+                relay configuration on R1's client-facing interface was not
+                correctly forwarding DHCP requests to the remote DHCP server.
+            </p>
+
+            <p>
+                The investigation separated the failure into multiple layers:
+                the client had no DHCP address, R1's local interface was
+                operational, the DHCP server had a configured pool, and packet
+                and debug evidence showed that the expected relay/server
+                transaction was not completing.
+            </p>
+
+            <p>
+                The before-state configuration is preserved in the repository
+                for direct comparison with the corrected configuration.
+            </p>
+
+            <a class="button"
+               href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-006-DHCP-Relay-Failure/evidence/configs/r1-dhcp-relay-before.txt">
+                View R1 Before Configuration →
+            </a>
+
+            <a class="button"
+               href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-006-DHCP-Relay-Failure/evidence/configs/r2-dhcp-server.txt">
+                View R2 DHCP Server Configuration →
+            </a>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>9. Remediation</h2>
+
+        <div class="resolution">
+
+            <h3>DHCP Relay Corrected</h3>
+
+            <p>
+                The DHCP relay configuration on R1 was corrected so that
+                client DHCP broadcasts could be forwarded toward the remote
+                DHCP server.
+            </p>
+
+            <div class="evidence-card">
+
+                <span class="label">Configuration Change</span>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/20-r1-helper-fix-applied.png"
+                     alt="R1 DHCP helper address fix applied">
+
+            </div>
+
+            <h3>Post-Change Interface Configuration</h3>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/21-r1-show-run-interface-g0-0-fixed.png"
+                 alt="R1 corrected DHCP relay interface configuration"
+                 style="width:100%; max-width:800px; border:1px solid #d1d5db; border-radius:6px;">
+
+            <p style="margin-top:20px;">
+                The corrected R1 configuration is also preserved as a raw
+                configuration artifact.
+            </p>
+
+            <a class="button"
+               href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-006-DHCP-Relay-Failure/evidence/configs/r1-dhcp-relay-after.txt">
+                View R1 After Configuration →
+            </a>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>10. DHCP Verification</h2>
+
+        <p>
+            After the relay configuration was corrected, the client successfully
+            obtained a DHCP address from the remote DHCP server.
+        </p>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">Client</span>
+
+                <h3>DHCP Address Obtained</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/22-pc1-got-dhcp-ip.png"
+                     alt="PC1 obtained DHCP address">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Client Verification</span>
+
+                <h3>ip a Verification</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/23-pc1-ip-a-verification.png"
+                     alt="PC1 IP address verification">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">DHCP Server</span>
+
+                <h3>DHCP Binding Created</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/24-r2-show-ip-dhcp-binding-after.png"
+                     alt="R2 DHCP binding after remediation">
+
+                <p>
+                    The DHCP server now showed a client binding, confirming
+                    that the DHCP transaction completed successfully.
+                </p>
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Connectivity</span>
+
+                <h3>Client Reachability Restored</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/25-pc1-ping-10.20.20.10-success.png"
+                     alt="PC1 successful ping after DHCP relay remediation">
+            </div>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>11. Post-Remediation Packet Analysis</h2>
+
+        <p>
+            A second packet capture confirmed that the DHCP exchange was
+            completing after the relay configuration was corrected.
+        </p>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">Wireshark</span>
+
+                <h3>Working DHCP Exchange</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/26-wireshark-overview-working.png"
+                     alt="Wireshark working DHCP exchange">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">DHCP Offer</span>
+
+                <h3>Offer Details</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/27-wireshark-offer-details.png"
+                     alt="Wireshark DHCP Offer details">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">DHCP ACK</span>
+
+                <h3>ACK Details</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/28-wireshark-ack-details.png"
+                     alt="Wireshark DHCP ACK details">
+            </div>
+
+        </div>
+
+        <a class="button"
+           href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-006-DHCP-Relay-Failure/evidence/pcaps">
+            View Working and Broken DHCP PCAPs →
+        </a>
+    </section>
+
+
+    <section>
+        <h2>12. Incident Closure</h2>
+
+        <div class="evidence-card">
+
+            <span class="label">Ticket Closure</span>
+
+            <h3>Incident Resolved</h3>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/29-servicenow-resolved.png"
+                 alt="ServiceNow-style DHCP relay incident resolved">
+
+            <p>
+                The incident was closed after DHCP address assignment,
+                DHCP server binding, end-to-end connectivity, and successful
+                packet exchange were verified.
+            </p>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>Investigation Methodology</h2>
+
+        <div class="timeline">
+
+            <div class="timeline-item">
+                <strong>1. Observe</strong>
+                <p>
+                    Confirmed that PC1 could not obtain a DHCP address.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <strong>2. Isolate</strong>
+                <p>
+                    Verified R1 interface state, routing, DHCP server
+                    configuration, and server bindings.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <strong>3. Investigate</strong>
+                <p>
+                    Inspected the DHCP helper configuration and correlated
+                    tcpdump, Wireshark, and Cisco DHCP debug evidence.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <strong>4. Remediate</strong>
+                <p>
+                    Corrected the DHCP relay configuration on R1.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <strong>5. Validate</strong>
+                <p>
+                    Confirmed DHCP address assignment, server-side binding,
+                    successful connectivity, and complete DHCP packet exchange.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>Technical Evidence</h2>
+
+        <p>
+            Complete DHCP relay configurations, packet captures, and
+            screenshots are maintained in the GitHub repository.
+        </p>
+
+        <a class="button"
+           href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-006-DHCP-Relay-Failure">
+            View Full INC-006 GitHub Evidence →
+        </a>
+
+    </section>
+
+</main>
+
+<footer>
+    Richard Pateau — Junior Network Engineer Portfolio
+</footer>
+
+</body>
+</html>
