@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INC-004 — OSPF EXSTART / MTU Mismatch</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f7fa;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 40px 20px;
+        }
+
+        header h1 {
+            max-width: 1100px;
+            margin: 0 auto 10px;
+            font-size: 32px;
+        }
+
+        header p {
+            max-width: 1100px;
+            margin: 0 auto;
+            color: #d1d5db;
+        }
+
+        nav {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 15px 20px;
+        }
+
+        nav div {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        nav a {
+            margin-right: 20px;
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            background: white;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #111827;
+        }
+
+        h3 {
+            color: #1f2937;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .summary-card strong {
+            display: block;
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 5px;
+        }
+
+        .evidence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .evidence-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 18px;
+            background: #fafafa;
+        }
+
+        .evidence-card img {
+            width: 100%;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            margin-top: 12px;
+        }
+
+        .label {
+            display: inline-block;
+            background: #e5e7eb;
+            color: #374151;
+            padding: 4px 9px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .root-cause {
+            border-left: 5px solid #dc2626;
+            background: #fef2f2;
+            padding: 20px;
+        }
+
+        .resolution {
+            border-left: 5px solid #16a34a;
+            background: #f0fdf4;
+            padding: 20px;
+        }
+
+        .verification {
+            border-left: 5px solid #2563eb;
+            background: #eff6ff;
+            padding: 20px;
+        }
+
+        pre {
+            background: #111827;
+            color: #e5e7eb;
+            padding: 18px;
+            border-radius: 7px;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: Consolas, monospace;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 9px 14px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background: #1d4ed8;
+        }
+
+        .timeline {
+            border-left: 3px solid #2563eb;
+            padding-left: 20px;
+        }
+
+        .timeline-item {
+            margin-bottom: 25px;
+        }
+
+        .timeline-item strong {
+            color: #2563eb;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>INC-004 — OSPF EXSTART / MTU Mismatch</h1>
+    <p>
+        Network incident investigation demonstrating OSPF neighbor-state analysis,
+        interface MTU verification, packet capture analysis, remediation, and
+        post-change validation.
+    </p>
+</header>
+
+<nav>
+    <div>
+        <a href="../index.html">Portfolio</a>
+        <a href="../projects/network-incident-response.html">Incident Response Lab</a>
+        <a href="wireshark.html">Wireshark Evidence</a>
+        <a href="cisco-cli.html">Cisco CLI Evidence</a>
+    </div>
+</nav>
+
+<main>
+
+    <section>
+        <h2>Incident Summary</h2>
+
+        <div class="summary-grid">
+
+            <div class="summary-card">
+                <strong>Incident</strong>
+                INC-004
+            </div>
+
+            <div class="summary-card">
+                <strong>Category</strong>
+                Routing / OSPF
+            </div>
+
+            <div class="summary-card">
+                <strong>Failure</strong>
+                OSPF EXSTART
+            </div>
+
+            <div class="summary-card">
+                <strong>Root Cause</strong>
+                MTU Mismatch
+            </div>
+
+            <div class="summary-card">
+                <strong>Environment</strong>
+                Cisco IOS Lab
+            </div>
+
+            <div class="summary-card">
+                <strong>Status</strong>
+                Resolved
+            </div>
+
+        </div>
+
+        <p style="margin-top: 25px;">
+            A client experienced loss of connectivity across an OSPF-routed path.
+            Investigation showed that the OSPF adjacency between R1 and R2 was
+            reaching the <strong>EXSTART</strong> state but was not progressing to
+            FULL.
+        </p>
+
+        <p>
+            The investigation moved from routing-state verification to interface
+            MTU comparison, OSPF interface inspection, configuration review,
+            packet capture analysis, and finally post-remediation verification.
+        </p>
+    </section>
+
+
+    <section>
+        <h2>1. Initial Symptoms</h2>
+
+        <p>
+            The incident began with failed connectivity from the client toward
+            the remote network.
+        </p>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">Connectivity</span>
+                <h3>Client Ping Failure</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/02-pc1-ping-fail.png"
+                     alt="PC1 ping failure">
+
+                <p>
+                    The client could not reach the remote destination, indicating
+                    a routing-path problem requiring further investigation.
+                </p>
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Path Analysis</span>
+                <h3>Traceroute Stops at R1</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/02a-pc1-traceroute-stops-at-R1.png"
+                     alt="Traceroute stopping at R1">
+
+                <p>
+                    Traceroute showed the path stopping at R1, narrowing the
+                    investigation toward the OSPF path beyond the local router.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>2. OSPF Neighbor-State Investigation</h2>
+
+        <p>
+            The first routing check was the OSPF neighbor relationship between
+            R1 and R2.
+        </p>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">R1</span>
+                <h3>OSPF Neighbor — EXSTART</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/03-r1-ospf-neighbor-exstart.png"
+                     alt="R1 OSPF neighbor stuck in EXSTART">
+
+                <p>
+                    R1 showed the neighbor relationship stuck in EXSTART rather
+                    than progressing to FULL.
+                </p>
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">R2</span>
+                <h3>OSPF Neighbor — EXSTART</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/04-r2-ospf-neighbor-exstart.png"
+                     alt="R2 OSPF neighbor stuck in EXSTART">
+
+                <p>
+                    R2 showed the same EXSTART condition, confirming that the
+                    failure was occurring during OSPF adjacency formation.
+                </p>
+            </div>
+
+        </div>
+
+        <p>
+            Because the routers were discovering each other but could not
+            complete database synchronization, the investigation focused on
+            parameters exchanged during OSPF adjacency formation.
+        </p>
+    </section>
+
+
+    <section>
+        <h2>3. Interface MTU Investigation</h2>
+
+        <p>
+            The next step was to compare the interface MTU values on both sides
+            of the OSPF adjacency.
+        </p>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">R1 Interface</span>
+                <h3>R1 MTU</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/05-r1-interface-mtu.png"
+                     alt="R1 interface MTU">
+
+                <p>
+                    R1's interface MTU was inspected as part of the OSPF
+                    adjacency investigation.
+                </p>
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">R2 Interface</span>
+                <h3>R2 MTU</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/06-r2-interface-mtu.png"
+                     alt="R2 interface MTU">
+
+                <p>
+                    R2's corresponding interface was inspected and compared
+                    against R1.
+                </p>
+            </div>
+
+        </div>
+
+        <p>
+            The MTU comparison identified the parameter mismatch responsible
+            for preventing successful OSPF database exchange.
+        </p>
+    </section>
+
+
+    <section>
+        <h2>4. OSPF Interface and Configuration Investigation</h2>
+
+        <p>
+            Interface-level OSPF information and the active OSPF configuration
+            were then reviewed to separate an MTU problem from other possible
+            adjacency parameters.
+        </p>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">R1</span>
+                <h3>OSPF Interface Details</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/07-r1-ospf-interface.png"
+                     alt="R1 OSPF interface details">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">R2</span>
+                <h3>OSPF Interface Details</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/08-r2-ospf-interface.png"
+                     alt="R2 OSPF interface details">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">R1 Configuration</span>
+                <h3>OSPF Running Configuration</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/09-r1-show-run-ospf.png"
+                     alt="R1 OSPF running configuration">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">R2 Configuration</span>
+                <h3>OSPF Running Configuration</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/10-r2-show-run-ospf.png"
+                     alt="R2 OSPF running configuration">
+            </div>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>5. Routing and Adjacency Debugging</h2>
+
+        <p>
+            Additional CLI evidence was collected to determine whether the
+            adjacency failure was preventing the expected OSPF route from being
+            installed.
+        </p>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">Routing</span>
+                <h3>OSPF Route Missing</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/11-r1-route-missing.png"
+                     alt="R1 missing OSPF route">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Debug</span>
+                <h3>R1 OSPF Adjacency Debug</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/12-r1-debug-ospf-adj.png"
+                     alt="R1 OSPF adjacency debug output">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Debug</span>
+                <h3>R2 OSPF Adjacency Debug</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/13-r2-debug-ospf-adj.png"
+                     alt="R2 OSPF adjacency debug output">
+            </div>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>6. Packet Capture Analysis</h2>
+
+        <p>
+            CLI evidence established that the adjacency was stuck in EXSTART.
+            Packet analysis was then used to observe the OSPF exchange directly.
+        </p>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">tcpdump</span>
+                <h3>Captured OSPF Traffic</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/14-tcpdump.png"
+                     alt="tcpdump OSPF traffic">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Wireshark</span>
+                <h3>OSPF Exchange Before Remediation</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/14a-wireshark-before-overview.png"
+                     alt="Wireshark OSPF exchange before remediation">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Packet Analysis</span>
+                <h3>Missing LSR / LSU / LS-Ack Exchange</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/15-wireshark-no-lsr-lsu-lsack.png"
+                     alt="Wireshark showing missing LSR LSU and LS Ack exchange">
+
+                <p>
+                    The capture showed that the expected OSPF database
+                    synchronization sequence was not completing.
+                </p>
+            </div>
+
+        </div>
+
+        <h3>OSPF Hello Details</h3>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/16-wireshark-r1-hello-details.png"
+                     alt="R1 OSPF Hello packet details">
+
+                <p>
+                    R1 OSPF Hello packet details provided packet-level evidence
+                    for the neighbor relationship.
+                </p>
+            </div>
+
+            <div class="evidence-card">
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/17-wireshark-r2-hello-details.png"
+                     alt="R2 OSPF Hello packet details">
+
+                <p>
+                    R2 Hello traffic was compared with the corresponding R1
+                    exchange.
+                </p>
+            </div>
+
+        </div>
+
+        <h3>Database Description Exchange</h3>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/18-wireshark-r1-dbd-details.png"
+                     alt="R1 OSPF DBD packet details">
+
+                <p>
+                    R1 DBD traffic showed the adjacency progressing into the
+                    database exchange phase.
+                </p>
+            </div>
+
+            <div class="evidence-card">
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/19-wireshark-r2-dbd-details.png"
+                     alt="R2 OSPF DBD packet details">
+
+                <p>
+                    R2 DBD traffic was examined alongside R1 to identify why
+                    database synchronization was not completing.
+                </p>
+            </div>
+
+        </div>
+
+        <a class="button"
+           href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/pcaps">
+            View INC-004 PCAP Files →
+        </a>
+    </section>
+
+
+    <section>
+        <h2>7. Root Cause</h2>
+
+        <div class="root-cause">
+
+            <h3>OSPF Interface MTU Mismatch</h3>
+
+            <p>
+                The OSPF adjacency between R1 and R2 was unable to progress
+                beyond EXSTART because the connected interfaces were operating
+                with different MTU values.
+            </p>
+
+            <p>
+                OSPF uses the interface MTU during Database Description packet
+                exchange. The mismatch prevented the routers from successfully
+                completing database synchronization and therefore prevented the
+                adjacency from reaching FULL.
+            </p>
+
+            <p>
+                The configuration evidence is preserved in the before and after
+                configuration files.
+            </p>
+
+            <a class="button"
+               href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/configs/r1-mtu-before.txt">
+                R1 Before Configuration →
+            </a>
+
+            <a class="button"
+               href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/configs/r1-mtu-broken.txt">
+                R1 Broken Configuration →
+            </a>
+
+            <a class="button"
+               href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/configs/r2-mtu-baseline.txt">
+                R2 Baseline Configuration →
+            </a>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>8. Remediation</h2>
+
+        <div class="resolution">
+
+            <h3>MTU Corrected</h3>
+
+            <p>
+                The affected interface MTU was corrected to match the
+                neighboring OSPF interface.
+            </p>
+
+            <div class="evidence-card">
+                <span class="label">Configuration Change</span>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/21-r1-mtu-fix-applied.png"
+                     alt="R1 MTU fix applied">
+            </div>
+
+            <p>
+                The corrected configuration is preserved as part of the
+                incident evidence.
+            </p>
+
+            <a class="button"
+               href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/configs/r1-mtu-after.txt">
+                View R1 After Configuration →
+            </a>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>9. Post-Remediation Verification</h2>
+
+        <p>
+            After the MTU correction, the OSPF adjacency successfully reached
+            FULL and the previously missing OSPF route was installed.
+        </p>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">R1</span>
+                <h3>OSPF Neighbor FULL</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/22-r1-ospf-neighbor-full.png"
+                     alt="R1 OSPF neighbor full">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">R2</span>
+                <h3>OSPF Neighbor FULL</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/23-r2-ospf-neighbor-full.png"
+                     alt="R2 OSPF neighbor full">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">R1 Routing Table</span>
+                <h3>OSPF Route Restored</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/24-r1-route-ospf-fixed.png"
+                     alt="R1 OSPF route restored">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">R2 Routing Table</span>
+                <h3>OSPF Route Verified</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/25-r2-route-ospf-fixed.png"
+                     alt="R2 OSPF route verified">
+            </div>
+
+        </div>
+
+        <div class="verification" style="margin-top: 25px;">
+
+            <h3>Connectivity Verification</h3>
+
+            <p>
+                End-to-end client connectivity was restored after the OSPF
+                adjacency reached FULL and the required route was installed.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/27-pc1-ping-success.png"
+                 alt="PC1 successful ping after remediation"
+                 style="width:100%; max-width:700px; border:1px solid #d1d5db; border-radius:6px;">
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>10. Post-Remediation OSPF Packet Exchange</h2>
+
+        <p>
+            A second packet capture confirmed that OSPF database synchronization
+            completed after the MTU correction.
+        </p>
+
+        <div class="evidence-card">
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/28-wireshark-post-lsr-lsu-lsack.png"
+                 alt="Wireshark showing post-remediation OSPF LSR LSU and LS Ack packets">
+
+            <p>
+                The post-remediation capture showed the expected LSR, LSU, and
+                LS-Ack packet exchange that was absent during the failed
+                adjacency.
+            </p>
+
+        </div>
+
+        <a class="button"
+           href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/pcaps/02-ospf-dbd-working.pcap">
+            View Working OSPF PCAP →
+        </a>
+    </section>
+
+
+    <section>
+        <h2>11. Monitoring and Incident Closure</h2>
+
+        <div class="evidence-grid">
+
+            <div class="evidence-card">
+                <span class="label">Splunk</span>
+                <h3>Before Remediation</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/20-splunk-before.png"
+                     alt="Splunk evidence before remediation">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Splunk</span>
+                <h3>After Remediation</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/29-splunk-after.png"
+                     alt="Splunk evidence after remediation">
+            </div>
+
+            <div class="evidence-card">
+                <span class="label">Ticket Closure</span>
+                <h3>Incident Resolved</h3>
+
+                <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/30-servicenow-resolved.png"
+                     alt="ServiceNow-style incident resolved">
+            </div>
+
+        </div>
+
+        <p>
+            The incident was closed after routing adjacency, route installation,
+            end-to-end connectivity, packet exchange, and monitoring evidence
+            confirmed successful remediation.
+        </p>
+    </section>
+
+
+    <section>
+        <h2>Investigation Methodology</h2>
+
+        <div class="timeline">
+
+            <div class="timeline-item">
+                <strong>1. Observe</strong>
+                <p>
+                    Confirmed client connectivity failure and traceroute
+                    termination.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <strong>2. Isolate</strong>
+                <p>
+                    Checked OSPF neighbor state and identified the adjacency
+                    stuck in EXSTART.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <strong>3. Verify</strong>
+                <p>
+                    Compared interface MTU values, OSPF interface information,
+                    configurations, routing tables, debug output, and packet
+                    captures.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <strong>4. Remediate</strong>
+                <p>
+                    Corrected the MTU mismatch on the affected interface.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <strong>5. Validate</strong>
+                <p>
+                    Confirmed OSPF FULL state, route installation, successful
+                    client connectivity, complete OSPF packet exchange, and
+                    monitoring/ticket closure.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+
+    <section>
+        <h2>Technical Evidence</h2>
+
+        <p>
+            Complete raw configurations, packet captures, and screenshots are
+            maintained in the GitHub repository.
+        </p>
+
+        <a class="button"
+           href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-004-OSPF-MTU-Mismatch">
+            View Full INC-004 GitHub Evidence →
+        </a>
+
+    </section>
+
+</main>
+
+<footer>
+    Richard Pateau — Junior Network Engineer Portfolio
+</footer>
+
+</body>
+</html>
