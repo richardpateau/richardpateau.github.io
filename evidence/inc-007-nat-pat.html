@@ -1,1 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>INC-007 — NAT Translation Failure | Richard Pateau</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 45px 20px;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        header h1 {
+            margin: 0 0 10px;
+            font-size: 34px;
+        }
+
+        header p {
+            margin: 0;
+            color: #cbd5e1;
+            font-size: 16px;
+        }
+
+        nav {
+            background: #1f2937;
+            padding: 15px 20px;
+        }
+
+        nav div {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        nav a {
+            color: #dbeafe;
+            text-decoration: none;
+            margin-right: 20px;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #111827;
+            font-size: 25px;
+        }
+
+        h3 {
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-card {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 18px;
+        }
+
+        .summary-card strong {
+            display: block;
+            color: #111827;
+            margin-bottom: 5px;
+        }
+
+        .evidence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .evidence-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 18px;
+            background: #ffffff;
+        }
+
+        .evidence-card img {
+            width: 100%;
+            margin-top: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e5e7eb;
+            color: #374151;
+            padding: 4px 9px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        pre {
+            background: #111827;
+            color: #e5e7eb;
+            padding: 18px;
+            border-radius: 7px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+
+        .root-cause {
+            border-left: 5px solid #dc2626;
+            background: #fef2f2;
+        }
+
+        .resolution {
+            border-left: 5px solid #16a34a;
+            background: #f0fdf4;
+        }
+
+        .verification {
+            border-left: 5px solid #2563eb;
+            background: #eff6ff;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 12px;
+            margin-right: 8px;
+            padding: 9px 14px;
+            background: #111827;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .button:hover {
+            background: #374151;
+        }
+
+        .button.secondary {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .button.secondary:hover {
+            background: #d1d5db;
+        }
+
+        .methodology {
+            background: #f8fafc;
+            border-left: 5px solid #64748b;
+        }
+
+        ul {
+            padding-left: 22px;
+        }
+
+        footer {
+            text-align: center;
+            color: #6b7280;
+            padding: 30px;
+            font-size: 14px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-content">
+
+        <h1>INC-007 — NAT / PAT Translation Failure</h1>
+
+        <p>
+            Network Incident Response Lab — NAT troubleshooting,
+            packet analysis, Cisco IOS verification, and post-remediation validation.
+        </p>
+
+    </div>
+</header>
+
+
+<nav>
+    <div>
+
+        <a href="../index.html">Home</a>
+
+        <a href="../projects/network-incident-response.html">
+            Incident Response Lab
+        </a>
+
+        <a href="cisco-cli.html">
+            Cisco CLI
+        </a>
+
+        <a href="wireshark.html">
+            Wireshark
+        </a>
+
+    </div>
+</nav>
+
+
+<main>
+
+
+<!-- INCIDENT SUMMARY -->
+
+<section>
+
+    <h2>Incident Summary</h2>
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+            <strong>Incident</strong>
+            INC-007
+        </div>
+
+        <div class="summary-card">
+            <strong>Category</strong>
+            Network / NAT / PAT
+        </div>
+
+        <div class="summary-card">
+            <strong>Platform</strong>
+            Cisco IOS
+        </div>
+
+        <div class="summary-card">
+            <strong>Analysis</strong>
+            Wireshark / tcpdump
+        </div>
+
+        <div class="summary-card">
+            <strong>Monitoring</strong>
+            SolarWinds / Splunk
+        </div>
+
+        <div class="summary-card">
+            <strong>Status</strong>
+            Resolved
+        </div>
+
+    </div>
+
+    <p style="margin-top:25px;">
+
+        A client could reach its local gateway and an internal application
+        server but could not reach the public destination. Investigation
+        focused on routing, NAT configuration, NAT classification,
+        translation state, and packet behavior.
+
+    </p>
+
+</section>
+
+
+<!-- INITIAL SYMPTOMS -->
+
+<section>
+
+    <h2>Initial Symptoms</h2>
+
+    <p>
+        The affected client was able to communicate with the local gateway
+        and an internal application server. Public connectivity, however,
+        failed.
+    </p>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">Client Connectivity</span>
+
+            <h3>Gateway Reachability</h3>
+
+            <p>
+                The client successfully reached its default gateway,
+                establishing local Layer 3 connectivity.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/02-pc1-ping-gateway-success.png"
+                 alt="PC1 successfully pinging gateway">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Internal Connectivity</span>
+
+            <h3>Application Server Reachability</h3>
+
+            <p>
+                The client could reach the internal application server,
+                helping isolate the failure from the local LAN.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/03-pc1-ping-app-server-success.png"
+                 alt="PC1 successfully pinging application server">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Public Connectivity</span>
+
+            <h3>Public Destination Failed</h3>
+
+            <p>
+                Connectivity to the public destination failed despite
+                successful local and internal communication.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/04-pc1-ping-public-fail.png"
+                 alt="PC1 public ping failure">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Path Analysis</span>
+
+            <h3>Traceroute Failure</h3>
+
+            <p>
+                Traceroute was used to identify where public connectivity
+                stopped during the investigation.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/05-pc1-traceroute-public-fail.png"
+                 alt="PC1 traceroute public failure">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- INTERFACE INVESTIGATION -->
+
+<section>
+
+    <h2>Interface Investigation</h2>
+
+    <p>
+        R1 interface state and interface configuration were inspected
+        before investigating the NAT translation process.
+    </p>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">Cisco IOS</span>
+
+            <h3>show ip interface brief</h3>
+
+            <p>
+                Verified interface status and addressing on the router.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/06-r1-show-ip-interface-brief.png"
+                 alt="R1 show ip interface brief">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Inside Interface</span>
+
+            <h3>GigabitEthernet 0/0</h3>
+
+            <p>
+                Inspected the client-facing interface configuration.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/07-r1-show-run-interface-g0-0.png"
+                 alt="R1 GigabitEthernet 0/0 configuration">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Outside Interface</span>
+
+            <h3>GigabitEthernet 0/2</h3>
+
+            <p>
+                Inspected the external-facing interface configuration
+                used for public connectivity.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/08-r1-show-run-interface-g0-2.png"
+                 alt="R1 GigabitEthernet 0/2 configuration">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ROUTING -->
+
+<section>
+
+    <h2>Routing Investigation</h2>
+
+    <p>
+        Routing was verified before treating NAT as the primary fault.
+        The investigation confirmed that the router had the relevant
+        routing information needed for the public path.
+    </p>
+
+    <div class="evidence-card">
+
+        <span class="tag">Routing</span>
+
+        <h3>show ip route</h3>
+
+        <p>
+            Examined the routing table to separate a routing failure from
+            a translation failure.
+        </p>
+
+        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/09-r1-show-ip-route.png"
+             alt="R1 routing table">
+
+    </div>
+
+</section>
+
+
+<!-- NAT CONFIGURATION -->
+
+<section>
+
+    <h2>NAT Configuration Investigation</h2>
+
+    <p>
+        The investigation then moved to the NAT configuration and the
+        access list controlling which inside addresses were eligible
+        for translation.
+    </p>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">NAT</span>
+
+            <h3>show running-config — NAT</h3>
+
+            <p>
+                Inspected the active NAT configuration and translation
+                statements.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/10-r1-show-run-nat.png"
+                 alt="R1 NAT configuration">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">ACL</span>
+
+            <h3>show running-config — Access List</h3>
+
+            <p>
+                Inspected the ACL used by NAT to determine which inside
+                traffic was eligible for translation.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/11-r1-show-run-access-list.png"
+                 alt="R1 NAT access list configuration">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">NAT ACL</span>
+
+            <h3>show access-lists</h3>
+
+            <p>
+                Examined the NAT access-list and its matching behavior
+                during the failed translation attempt.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/12-r1-show-access-list-nat-inside-broken.png"
+                 alt="R1 NAT access list before remediation">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- TRANSLATION STATE -->
+
+<section>
+
+    <h2>NAT Translation Investigation</h2>
+
+    <p>
+        The NAT translation table and statistics provided the key evidence
+        that the client's traffic was not being translated as expected.
+    </p>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">Translation Table</span>
+
+            <h3>show ip nat translations</h3>
+
+            <p>
+                No active translation entry was present during the failed
+                public connectivity test.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/13-r1-show-ip-nat-translations-empty.png"
+                 alt="Empty NAT translation table">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">NAT Statistics</span>
+
+            <h3>show ip nat statistics</h3>
+
+            <p>
+                NAT statistics were inspected to determine whether traffic
+                was being processed by the translation subsystem.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/14-r1-show-ip-nat-statistics-broken.png"
+                 alt="NAT statistics before remediation">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- PACKET ANALYSIS -->
+
+<section>
+
+    <h2>Packet Capture Analysis</h2>
+
+    <p>
+        Packet capture analysis was used to correlate the client request
+        with the router's NAT behavior and determine where the expected
+        translated flow was missing.
+    </p>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">tcpdump</span>
+
+            <h3>Initial Packet Capture</h3>
+
+            <p>
+                Captured traffic during the failed public connectivity
+                attempt for protocol-level analysis.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/15-tcpdump.png"
+                 alt="tcpdump NAT troubleshooting">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Wireshark</span>
+
+            <h3>Broken NAT Flow</h3>
+
+            <p>
+                Examined the failed ICMP flow and packet behavior before
+                remediation.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/15a-wireshark-overview-broken.png"
+                 alt="Wireshark NAT flow before remediation">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">ICMP</span>
+
+            <h3>ICMP Request Details</h3>
+
+            <p>
+                Inspected the ICMP request at packet level to correlate
+                the client traffic with the translation failure.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/16-wireshark-icmp-request-details.png"
+                 alt="Wireshark ICMP request details">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">ICMP</span>
+
+            <h3>ICMP Reply Details</h3>
+
+            <p>
+                Examined reply behavior associated with the failed
+                communication attempt.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/17-wireshark-icmp-reply-details.png"
+                 alt="Wireshark ICMP reply details">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">ICMP</span>
+
+            <h3>Destination Unreachable</h3>
+
+            <p>
+                An ICMP destination-unreachable response provided
+                additional evidence during path analysis.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/18-wireshark-dest-unreachable.png"
+                 alt="Wireshark destination unreachable">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- MONITORING -->
+
+<section>
+
+    <h2>Monitoring Correlation</h2>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">SolarWinds</span>
+
+            <h3>Network Monitoring</h3>
+
+            <p>
+                SolarWinds monitoring was reviewed during the incident
+                investigation to correlate the connectivity failure.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/19-solarwinds.png"
+                 alt="SolarWinds NAT incident evidence">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Splunk</span>
+
+            <h3>Log Correlation</h3>
+
+            <p>
+                Splunk was reviewed for supporting network and incident
+                evidence during troubleshooting.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/20-splunk.png"
+                 alt="Splunk NAT incident evidence">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ROOT CAUSE -->
+
+<section class="root-cause">
+
+    <h2>Root Cause</h2>
+
+    <p>
+        The investigation isolated the failure to the NAT translation
+        process. The affected inside traffic was not matching the NAT
+        policy as expected, which prevented the router from creating the
+        required translation entry.
+    </p>
+
+    <p>
+        This was supported by the combination of successful internal
+        connectivity, verified routing, inspection of the NAT and ACL
+        configuration, an empty NAT translation table, and packet captures
+        showing the failed public flow.
+    </p>
+
+    <p>
+        The NAT inside ACL/configuration was corrected so the affected
+        client traffic could be translated.
+    </p>
+
+</section>
+
+
+<!-- REMEDIATION -->
+
+<section class="resolution">
+
+    <h2>Remediation</h2>
+
+    <p>
+        The NAT configuration was corrected on R1 and the NAT access-list
+        was updated so the affected inside traffic could participate in
+        translation.
+    </p>
+
+    <div class="evidence-card">
+
+        <span class="tag">Configuration Change</span>
+
+        <h3>NAT Fix Applied</h3>
+
+        <p>
+            The remediation was captured immediately after the
+            configuration change.
+        </p>
+
+        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/21-r1-nat-fix-applied.png"
+             alt="R1 NAT fix applied">
+
+    </div>
+
+</section>
+
+
+<!-- POST REMEDIATION -->
+
+<section class="verification">
+
+    <h2>Post-Remediation Verification</h2>
+
+    <p>
+        Verification confirmed that the NAT policy was now matching
+        traffic and that active translations were being created.
+    </p>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">ACL Verification</span>
+
+            <h3>NAT ACL After Fix</h3>
+
+            <p>
+                Verified the corrected NAT access-list configuration.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/22-r1-show-access-list-nat-inside-fixed.png"
+                 alt="NAT access list after remediation">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Translation</span>
+
+            <h3>show ip nat translations</h3>
+
+            <p>
+                Active NAT translation entries appeared after the fix,
+                confirming that the router was translating the affected
+                traffic.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/23-r1-show-ip-nat-translations-after.png"
+                 alt="NAT translations after remediation">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Statistics</span>
+
+            <h3>show ip nat statistics</h3>
+
+            <p>
+                NAT statistics were reviewed after remediation to confirm
+                translation activity.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/24-r1-show-ip-nat-statistics-after.png"
+                 alt="NAT statistics after remediation">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Connectivity</span>
+
+            <h3>Public Ping Successful</h3>
+
+            <p>
+                The affected client successfully reached the public
+                destination after the NAT correction.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/25-pc1-ping-public-success.png"
+                 alt="PC1 public ping successful">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Path Verification</span>
+
+            <h3>Public Traceroute Successful</h3>
+
+            <p>
+                Traceroute successfully completed after remediation,
+                providing additional end-to-end path verification.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/26-pc1-traceroute-public-success.png"
+                 alt="PC1 public traceroute successful">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- DEBUG -->
+
+<section>
+
+    <h2>NAT Debug Verification</h2>
+
+    <div class="evidence-card">
+
+        <span class="tag">Cisco IOS Debug</span>
+
+        <h3>debug ip nat</h3>
+
+        <p>
+            NAT debug output provided additional protocol-level evidence
+            that translation was occurring after remediation.
+        </p>
+
+        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/30-debug-ip-nat-after.png"
+             alt="Cisco debug ip nat after remediation">
+
+    </div>
+
+</section>
+
+
+<!-- POST REMEDIATION PACKET ANALYSIS -->
+
+<section>
+
+    <h2>Post-Remediation Packet Analysis</h2>
+
+    <p>
+        Wireshark was used again after remediation to verify that the
+        public traffic flow was now functioning through the NAT boundary.
+    </p>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">Wireshark</span>
+
+            <h3>Working NAT Flow</h3>
+
+            <p>
+                The post-remediation capture shows the working public
+                connectivity flow.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/27-wireshark-overview-working.png"
+                 alt="Wireshark working NAT flow">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">NAT</span>
+
+            <h3>Translated Request</h3>
+
+            <p>
+                Examined the translated request after the NAT policy
+                correction.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/28-wireshark-after-nat-request.png"
+                 alt="Wireshark NAT request after remediation">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">NAT</span>
+
+            <h3>Translated Reply</h3>
+
+            <p>
+                Examined the corresponding reply traffic after the
+                translation became operational.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/29-wireshark-after-nat-reply.png"
+                 alt="Wireshark NAT reply after remediation">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- INCIDENT CLOSURE -->
+
+<section>
+
+    <h2>Incident Closure</h2>
+
+    <p>
+        The NAT translation failure was resolved and verified through
+        multiple independent checks:
+    </p>
+
+    <ul>
+
+        <li>
+            NAT ACL configuration corrected.
+        </li>
+
+        <li>
+            NAT translation entries populated after remediation.
+        </li>
+
+        <li>
+            NAT statistics confirmed translation activity.
+        </li>
+
+        <li>
+            Public ping succeeded.
+        </li>
+
+        <li>
+            Public traceroute succeeded.
+        </li>
+
+        <li>
+            Wireshark confirmed the working NAT request and reply flow.
+        </li>
+
+        <li>
+            NAT debug output provided additional verification.
+        </li>
+
+        <li>
+            ServiceNow-style incident record was closed.
+        </li>
+
+    </ul>
+
+    <div class="evidence-card">
+
+        <span class="tag">Incident Closure</span>
+
+        <h3>ServiceNow Resolution Evidence</h3>
+
+        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/31-servicenow-resolved.png"
+             alt="ServiceNow NAT incident resolved">
+
+    </div>
+
+</section>
+
+
+<!-- METHODOLOGY -->
+
+<section class="methodology">
+
+    <h2>Investigation Methodology</h2>
+
+    <p>
+        The incident followed a structured network troubleshooting workflow:
+    </p>
+
+    <ol>
+
+        <li>
+            Confirm the client symptom.
+        </li>
+
+        <li>
+            Verify local gateway connectivity.
+        </li>
+
+        <li>
+            Verify internal application connectivity.
+        </li>
+
+        <li>
+            Test the public destination.
+        </li>
+
+        <li>
+            Verify interface state and addressing.
+        </li>
+
+        <li>
+            Verify routing.
+        </li>
+
+        <li>
+            Inspect NAT configuration and NAT ACL behavior.
+        </li>
+
+        <li>
+            Inspect NAT translation and statistics.
+        </li>
+
+        <li>
+            Correlate packet captures with router state.
+        </li>
+
+        <li>
+            Apply the NAT correction.
+        </li>
+
+        <li>
+            Verify translation entries and statistics.
+        </li>
+
+        <li>
+            Validate public connectivity and traceroute.
+        </li>
+
+        <li>
+            Confirm the working packet flow in Wireshark.
+        </li>
+
+        <li>
+            Document and close the incident.
+        </li>
+
+    </ol>
+
+</section>
+
+
+<!-- TECHNICAL EVIDENCE -->
+
+<section>
+
+    <h2>Technical Evidence</h2>
+
+    <p>
+        The complete raw evidence is maintained in the GitHub repository.
+    </p>
+
+    <a class="button"
+       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-007-NAT-Translation-Failure">
+        View Full Incident Repository →
+    </a>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-007-NAT-Translation-Failure/evidence/pcaps">
+        View PCAPs
+    </a>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-007-NAT-Translation-Failure/evidence/configs">
+        View Configurations
+    </a>
+
+    <br>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-007-NAT-Translation-Failure/evidence/configs/r1-nat-before.txt">
+        Before Configuration
+    </a>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-007-NAT-Translation-Failure/evidence/configs/r1-nat-after.txt">
+        After Configuration
+    </a>
+
+</section>
+
+
+</main>
+
+
+<footer>
+
+    Network Incident Response Lab — Richard Pateau
+
+</footer>
+
+</body>
+</html>
