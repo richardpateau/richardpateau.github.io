@@ -256,29 +256,57 @@
 
             <span class="tag">OSPF</span>
 
-            <h3>INC-002 — OSPF Adjacency</h3>
+            <h3>INC-002 — OSPF Adjacency Failure</h3>
 
             <p>
-
-                Examined OSPF packet behavior while investigating
-                an adjacency that failed to reach FULL state.
-
+                Analyzed OSPF control-plane traffic to determine why
+                the expected neighbor adjacency was not forming.
             </p>
 
-            <a class="button" href="#">
+            <a class="button"
+               href="inc-002-ospf.html">
 
-                View Analysis
+                View Analysis →
 
             </a>
 
-            <a class="button secondary" href="#">
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-002-OSPF-Adjacency-Failure/evidence/pcaps"
+               target="_blank">
 
-                PCAP
+                View PCAP →
 
             </a>
 
         </div>
 
+        <div class="pcap">
+
+            <span class="tag">ACL</span>
+
+            <h3>INC-003 — ACL Traffic Blocked</h3>
+
+            <p>
+                Analyzed ICMP and HTTPS traffic to identify
+                ACL rules blocking required network services.
+            </p>
+
+            <a class="button"
+               href="inc-003-acl.html">
+
+                View Analysis →
+
+            </a>
+
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/pcaps"
+               target="_blank">
+
+                View PCAP →
+
+            </a>
+
+        </div>
 
         <div class="pcap">
 
@@ -293,15 +321,15 @@
 
             </p>
 
-            <a class="button" href="#">
-
-                View Analysis
-
+            <a class="button" href="inc-004-ospf-mtu.html">
+                View Analysis →
             </a>
 
-            <a class="button secondary" href="#">
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/pcaps"
+               target="_blank">
 
-                PCAP
+                View PCAP →
 
             </a>
 
@@ -315,22 +343,41 @@
             <h3>INC-005 — SNMP Monitoring</h3>
 
             <p>
-
                 Examined SNMP traffic associated with network
-                monitoring and device polling.
-
+                monitoring and device polling, including failed
+                polling and post-remediation verification.
             </p>
 
-            <a class="button" href="#">
-
+            <a class="button" href="inc-005-snmp.html">
                 View Analysis
-
             </a>
 
-            <a class="button secondary" href="#">
-
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-005-SNMP-Monitoring-Failure/evidence/pcaps">
                 PCAP
+            </a>
 
+        </div>
+
+        <div class="pcap">
+
+            <span class="tag">DHCP Relay</span>
+
+            <h3>INC-006 — DHCP Relay Failure</h3>
+
+            <p>
+                Examined DHCP relay traffic before and after remediation,
+                including client Discover, relay forwarding, DHCP Offer,
+                and ACK exchanges.
+            </p>
+
+            <a class="button" href="inc-006-dhcp-relay.html">
+                View Analysis
+            </a>
+
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-006-DHCP-Relay-Failure/evidence/pcaps">
+                PCAP
             </a>
 
         </div>
@@ -343,22 +390,41 @@
             <h3>INC-007 — NAT / PAT</h3>
 
             <p>
-
-                Examined packet flows to understand address
-                translation behavior during troubleshooting.
-
+                Examined NAT packet flows before and after remediation,
+                including failed ICMP traffic, translated requests,
+                and translated replies.
             </p>
 
-            <a class="button" href="#">
-
+            <a class="button" href="inc-007-nat-pat.html">
                 View Analysis
-
             </a>
 
-            <a class="button secondary" href="#">
-
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-007-NAT-Translation-Failure/evidence/pcaps">
                 PCAP
+            </a>
 
+        </div>
+
+        <div class="pcap">
+
+            <span class="tag">BGP</span>
+
+            <h3>INC-008 — BGP Route Advertisement Failure</h3>
+
+            <p>
+                Examined BGP packet flows before and after remediation,
+                including route advertisement behavior and post-remediation
+                control-plane verification.
+            </p>
+
+            <a class="button" href="inc-008-bgp.html">
+                View Analysis
+            </a>
+
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/pcaps">
+                PCAP
             </a>
 
         </div>
@@ -366,27 +432,23 @@
 
         <div class="pcap">
 
-            <span class="tag">HSRP / ARP</span>
+            <span class="tag">HSRP</span>
 
-            <h3>INC-009 — HSRP Failover</h3>
+            <h3>INC-009 — HSRP Failover Failure</h3>
 
             <p>
-
-                Examined HSRP and ARP behavior during gateway
-                redundancy and failover troubleshooting.
-
+                Analyzed HSRPv2 and ARP traffic during a first-hop redundancy
+                failure, including the failed VIP resolution, HSRP failover
+                behavior, and post-remediation gateway recovery.
             </p>
 
-            <a class="button" href="#">
-
+            <a class="button" href="inc-009-hsrp.html">
                 View Analysis
-
             </a>
 
-            <a class="button secondary" href="#">
-
+            <a class="button secondary"
+               href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-009-HSRP-Failover-Failure/evidence/pcaps">
                 PCAP
-
             </a>
 
         </div>
