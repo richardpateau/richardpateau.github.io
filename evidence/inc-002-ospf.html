@@ -379,10 +379,68 @@ View Working OSPF PCAP →
 
 </div>
 
+<!-- ROOT CAUSE -->
 
+<h2>7. Root Cause</h2>
+
+<div class="card">
+
+    <span class="tag">ROOT CAUSE</span>
+
+    <h3>OSPF Area Mismatch</h3>
+
+    <p>
+        The OSPF adjacency failed because R1 and R2 assigned the shared
+        <strong>10.10.20.0/30</strong> transit network to different OSPF
+        areas. R1 placed the transit network in <strong>Area 0</strong>,
+        while R2 placed it in <strong>Area 1</strong>.
+    </p>
+
+    <p>
+        The mismatch prevented the routers from forming the expected OSPF
+        neighbor relationship and prevented the affected routes from being
+        learned through OSPF.
+    </p>
+
+    <p>
+        The configuration evidence and packet captures were correlated to
+        isolate the OSPF area assignment as the root cause rather than an
+        underlying IP connectivity failure.
+    </p>
+
+</div>
+
+
+<!-- REMEDIATION -->
+
+<h2>8. Remediation</h2>
+
+<div class="card">
+
+    <span class="tag">REMEDIATION</span>
+
+    <h3>R2 OSPF Area Corrected</h3>
+
+    <p>
+        The OSPF configuration on R2 was corrected so that the shared
+        <strong>10.10.20.0/30</strong> transit network was assigned to
+        <strong>Area 0</strong>, matching R1.
+    </p>
+
+    <pre>
+router ospf 1
+ network 10.10.20.0 0.0.0.3 area 0
+    </pre>
+
+    <p>
+        No IP addressing changes were required. The remediation corrected
+        the OSPF area assignment on R2.
+    </p>
+
+</div>
 <!-- VERIFICATION -->
 
-<h2>7. Post-Remediation Verification</h2>
+<h2>9. Post-Remediation Verification</h2>
 
 <div class="card verification">
 
@@ -436,7 +494,7 @@ alt="PC connectivity restored">
 
 <!-- POST REMEDIATION PACKETS -->
 
-<h2>8. Post-Remediation OSPF Packet Exchange</h2>
+<h2>10. Post-Remediation OSPF Packet Exchange</h2>
 
 <div class="card">
 
@@ -478,7 +536,7 @@ alt="OSPF Link State Acknowledgment details">
 
 <!-- MONITORING -->
 
-<h2>9. Monitoring Evidence</h2>
+<h2>11. Monitoring Evidence</h2>
 
 <div class="card">
 
@@ -501,7 +559,7 @@ alt="Splunk post-remediation evidence">
 
 <!-- TICKET -->
 
-<h2>10. Incident Closure</h2>
+<h2>12. Incident Closure</h2>
 
 <div class="card">
 
