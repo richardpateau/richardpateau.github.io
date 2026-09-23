@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>INC-001 DHCP Failure | Richard Pateau</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 50px 20px;
+        }
+
+        header .container,
+        nav .container,
+        main {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        header h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #d1d5db;
+            font-size: 18px;
+        }
+
+        nav {
+            background: white;
+            padding: 18px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        nav a {
+            margin-right: 25px;
+            text-decoration: none;
+            color: #374151;
+            font-weight: bold;
+        }
+
+        main {
+            padding: 50px 20px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 18px;
+        }
+
+        h3 {
+            margin-bottom: 10px;
+        }
+
+        .card {
+            background: white;
+            padding: 28px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .summary div {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .label {
+            display: block;
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .evidence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .evidence {
+            background: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .evidence img {
+            width: 100%;
+            margin-top: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .button {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 10px;
+            margin-right: 5px;
+        }
+
+        .secondary {
+            background: #374151;
+        }
+
+        pre {
+            background: #111827;
+            color: #e5e7eb;
+            padding: 20px;
+            overflow-x: auto;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        footer {
+            background: #111827;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="container">
+
+        <h1>INC-001 — DHCP Failure</h1>
+
+        <p>
+            DHCP address-assignment failure investigated using
+            Wireshark, Cisco IOS, Splunk, and SolarWinds.
+        </p>
+
+    </div>
+
+</header>
+
+
+<nav>
+
+    <a href="../index.html">Portfolio</a>
+
+    <a href="wireshark.html">Wireshark</a>
+
+    <a href="../projects/network-incident-response.html">
+        Incident Response Lab
+    </a>
+
+</nav>
+
+
+<main>
+
+
+<section>
+
+    <h2>Incident Summary</h2>
+
+    <div class="card">
+
+        <p>
+
+            A client was unable to obtain an IP address through DHCP.
+            The investigation followed an evidence-driven workflow
+            beginning with the client symptom and progressing through
+            packet analysis, Cisco CLI investigation, configuration
+            review, remediation, and post-remediation verification.
+
+        </p>
+
+        <div class="summary">
+
+            <div>
+                <span class="label">Category</span>
+                DHCP
+            </div>
+
+            <div>
+                <span class="label">Protocol</span>
+                DHCP / UDP
+            </div>
+
+            <div>
+                <span class="label">Tools</span>
+                Wireshark / Cisco IOS
+            </div>
+
+            <div>
+                <span class="label">Status</span>
+                Resolved
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <h2>Investigation</h2>
+
+    <div class="card">
+
+        <h3>1. Client Symptom</h3>
+
+        <p>
+            The client was unable to obtain an IP address.
+        </p>
+
+        <h3>2. Packet Analysis</h3>
+
+        <p>
+            Wireshark showed the client transmitting DHCP Discover
+            traffic without receiving the expected DHCP response.
+        </p>
+
+        <h3>3. Cisco CLI Investigation</h3>
+
+        <p>
+            Cisco IOS commands were used to inspect the DHCP pool,
+            interface state, bindings, and configuration.
+        </p>
+
+        <h3>4. Root Cause</h3>
+
+        <p>
+            The DHCP configuration was incorrect for the affected
+            subnet, preventing successful address assignment.
+        </p>
+
+        <h3>5. Remediation</h3>
+
+        <p>
+            The DHCP configuration was corrected.
+        </p>
+
+        <h3>6. Verification</h3>
+
+        <p>
+            A successful DHCP DORA exchange was observed after
+            remediation, and the DHCP binding was populated.
+        </p>
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <h2>Cisco CLI Evidence</h2>
+
+    <div class="card">
+
+        <p>
+            Commands used during the investigation included:
+        </p>
+
+<pre>
+show ip dhcp pool
+
+show ip interface brief
+
+show ip dhcp binding
+
+show running-config
+
+</pre>
+
+        <a class="button"
+           href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-001-DHCP-Failure/evidence/configs"
+           target="_blank">
+
+            View Configuration Evidence →
+
+        </a>
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <h2>Wireshark Evidence</h2>
+
+    <div class="evidence-grid">
+
+
+        <div class="evidence">
+
+            <h3>Initial DHCP Discover</h3>
+
+            <p>
+                Initial packet capture showing the client transmitting
+                DHCP Discover traffic.
+            </p>
+
+            <img
+                src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-001-DHCP-Failure/evidence/screenshots/03-wireshark-discover-only.png"
+                alt="Wireshark DHCP Discover">
+
+        </div>
+
+
+        <div class="evidence">
+
+            <h3>Successful DORA</h3>
+
+            <p>
+                Post-remediation capture showing the successful
+                DHCP exchange.
+            </p>
+
+            <img
+                src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-001-DHCP-Failure/evidence/screenshots/08-wireshark-successful-dora.png"
+                alt="Wireshark successful DHCP DORA">
+
+        </div>
+
+
+        <div class="evidence">
+
+            <h3>DHCP Offer</h3>
+
+            <p>
+                Packet-level evidence of the DHCP Offer after
+                remediation.
+            </p>
+
+            <img
+                src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-001-DHCP-Failure/evidence/screenshots/08a-wireshark-offer-packet-details.png"
+                alt="Wireshark DHCP Offer">
+
+        </div>
+
+
+        <div class="evidence">
+
+            <h3>DHCP Request</h3>
+
+            <p>
+                Packet-level evidence of the client DHCP Request.
+            </p>
+
+            <img
+                src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-001-DHCP-Failure/evidence/screenshots/08b-wireshark-request-packet-details.png"
+                alt="Wireshark DHCP Request">
+
+        </div>
+
+
+        <div class="evidence">
+
+            <h3>DHCP ACK</h3>
+
+            <p>
+                Packet-level evidence confirming the DHCP ACK.
+            </p>
+
+            <img
+                src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-001-DHCP-Failure/evidence/screenshots/08c-wireshark-ack-packet-details.png"
+                alt="Wireshark DHCP ACK">
+
+        </div>
+
+    </div>
+
+
+    <br>
+
+    <a class="button"
+       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-001-DHCP-Failure/evidence/pcaps"
+       target="_blank">
+
+        View / Download PCAP →
+
+    </a>
+
+</section>
+
+
+<section>
+
+    <h2>Before & After Verification</h2>
+
+    <div class="evidence-grid">
+
+
+        <div class="evidence">
+
+            <h3>Before Remediation</h3>
+
+            <p>
+                DHCP binding table was empty while the client
+                was unable to obtain an address.
+            </p>
+
+            <img
+                src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-001-DHCP-Failure/evidence/screenshots/06-show-ip-dhcp-binding-empty.png"
+                alt="Empty DHCP binding table">
+
+        </div>
+
+
+        <div class="evidence">
+
+            <h3>After Remediation</h3>
+
+            <p>
+                DHCP binding was populated after the successful
+                DORA exchange.
+            </p>
+
+            <img
+                src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-001-DHCP-Failure/evidence/screenshots/10-post-remediation-show-ip-dhcp-binding.png"
+                alt="Post remediation DHCP binding">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <h2>Ticket & Monitoring Evidence</h2>
+
+    <div class="card">
+
+        <p>
+            The incident also includes ticketing and monitoring
+            evidence documenting the operational workflow.
+        </p>
+
+        <a class="button"
+           href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-001-DHCP-Failure/evidence/screenshots"
+           target="_blank">
+
+            View Incident Screenshots →
+
+        </a>
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <div class="card">
+
+        <h2>Full Technical Repository</h2>
+
+        <p>
+            Configuration files, PCAPs, screenshots, incident
+            documentation, and supporting evidence are maintained
+            in the project repository.
+        </p>
+
+        <a class="button"
+           href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-001-DHCP-Failure"
+           target="_blank">
+
+            View INC-001 on GitHub →
+
+        </a>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<footer>
+
+    <p>
+        Richard Pateau | Network Engineering Portfolio
+    </p>
+
+</footer>
+
+
+</body>
+
+</html>
