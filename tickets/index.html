@@ -94,7 +94,7 @@
 
         .tickets {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
             gap: 20px;
         }
 
@@ -103,12 +103,7 @@
             padding: 25px;
             border-radius: 10px;
             border: 1px solid #ddd;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .ticket:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .ticket p {
@@ -122,7 +117,7 @@
             padding: 5px 9px;
             border-radius: 5px;
             font-size: 13px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .status {
@@ -133,7 +128,45 @@
             border-radius: 5px;
             font-size: 13px;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+        }
+
+        .ticket-images {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .ticket-image {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .ticket-image img {
+            width: 100%;
+            height: 190px;
+            object-fit: contain;
+            display: block;
+            background: #111827;
+            border-radius: 5px;
+            cursor: zoom-in;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .ticket-image img:hover {
+            opacity: 0.9;
+            transform: scale(1.015);
+        }
+
+        .image-label {
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #4b5563;
+            padding: 7px 3px 2px;
         }
 
         .button {
@@ -172,6 +205,78 @@
             color: white;
             text-align: center;
             padding: 30px;
+        }
+
+        /* LIGHTBOX */
+
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 95vw;
+            max-height: 90vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+
+        .lightbox-close {
+            position: fixed;
+            top: 18px;
+            right: 28px;
+            color: white;
+            font-size: 42px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            z-index: 10000;
+        }
+
+        .lightbox-close:hover {
+            color: #d1d5db;
+        }
+
+        .lightbox-caption {
+            position: fixed;
+            bottom: 18px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+
+            header h1 {
+                font-size: 30px;
+            }
+
+            .ticket-images {
+                grid-template-columns: 1fr;
+            }
+
+            .ticket-image img {
+                height: 220px;
+            }
+
+            .lightbox {
+                padding: 15px;
+            }
+
         }
 
     </style>
@@ -235,8 +340,8 @@
         <p>
             This section documents nine simulated network operations
             incidents using a ServiceNow-style ticketing workflow.
-            Each incident records the reported symptom, investigation,
-            evidence, root cause, remediation, and verification.
+            Each incident includes visual ticket evidence showing
+            the incident record and its final resolution.
         </p>
 
         <br>
@@ -245,6 +350,12 @@
             These are <strong>lab incidents</strong> created as part
             of the Network Incident Response Lab and are not presented
             as production employment experience.
+        </p>
+
+        <br>
+
+        <p>
+            <strong>Click any ticket screenshot to enlarge it.</strong>
         </p>
 
     </div>
@@ -264,7 +375,6 @@
         <div class="ticket">
 
             <span class="tag">DHCP</span>
-
             <span class="status">Resolved</span>
 
             <h3>INC-001 — DHCP Failure</h3>
@@ -274,10 +384,39 @@
                 DHCP pool was configured for the wrong subnet.
             </p>
 
-            <a
-                class="button"
-                href="inc-001-dhcp.html"
-            >
+            <div class="ticket-images">
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-001-DHCP-Failure/evidence/screenshots/01-servicenow-ticket.png"
+                        alt="INC-001 DHCP ServiceNow-style incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Incident Created
+                    </div>
+
+                </div>
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-001-DHCP-Failure/evidence/screenshots/11-service-now-resolved.png"
+                        alt="INC-001 DHCP resolved incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Resolved
+                    </div>
+
+                </div>
+
+            </div>
+
+            <a class="button" href="inc-001-dhcp.html">
                 View Ticket →
             </a>
 
@@ -289,7 +428,6 @@
         <div class="ticket">
 
             <span class="tag">OSPF</span>
-
             <span class="status">Resolved</span>
 
             <h3>INC-002 — OSPF Adjacency Failure</h3>
@@ -299,10 +437,39 @@
                 transit network was assigned to different OSPF areas.
             </p>
 
-            <a
-                class="button"
-                href="../evidence/inc-002-ospf.html"
-            >
+            <div class="ticket-images">
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-002-OSPF-Adjacency-Failure/evidence/screenshots/01-service-now-ticket.png"
+                        alt="INC-002 OSPF incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Incident Created
+                    </div>
+
+                </div>
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-002-OSPF-Adjacency-Failure/evidence/screenshots/17-service-now-resolved.png"
+                        alt="INC-002 OSPF resolved incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Resolved
+                    </div>
+
+                </div>
+
+            </div>
+
+            <a class="button" href="../evidence/inc-002-ospf.html">
                 View Incident →
             </a>
 
@@ -314,7 +481,6 @@
         <div class="ticket">
 
             <span class="tag">ACL</span>
-
             <span class="status">Resolved</span>
 
             <h3>INC-003 — ACL Traffic Blocked</h3>
@@ -324,10 +490,39 @@
                 incorrect ACL entries.
             </p>
 
-            <a
-                class="button"
-                href="../evidence/inc-003-acl.html"
-            >
+            <div class="ticket-images">
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/01-servicenow-ticket.png"
+                        alt="INC-003 ACL incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Incident Created
+                    </div>
+
+                </div>
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/19-servicenow-resolved.png"
+                        alt="INC-003 ACL resolved incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Resolved
+                    </div>
+
+                </div>
+
+            </div>
+
+            <a class="button" href="../evidence/inc-003-acl.html">
                 View Incident →
             </a>
 
@@ -339,7 +534,6 @@
         <div class="ticket">
 
             <span class="tag">OSPF / MTU</span>
-
             <span class="status">Resolved</span>
 
             <h3>INC-004 — OSPF EXSTART</h3>
@@ -349,10 +543,39 @@
                 because of an MTU mismatch between neighboring routers.
             </p>
 
-            <a
-                class="button"
-                href="../evidence/inc-004-ospf-mtu.html"
-            >
+            <div class="ticket-images">
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/01-servicenow-ticket.png"
+                        alt="INC-004 OSPF MTU incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Incident Created
+                    </div>
+
+                </div>
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-004-OSPF-MTU-Mismatch/evidence/screenshots/30-servicenow-resolved.png"
+                        alt="INC-004 OSPF MTU resolved incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Resolved
+                    </div>
+
+                </div>
+
+            </div>
+
+            <a class="button" href="../evidence/inc-004-ospf-mtu.html">
                 View Incident →
             </a>
 
@@ -364,7 +587,6 @@
         <div class="ticket">
 
             <span class="tag">SNMP</span>
-
             <span class="status">Resolved</span>
 
             <h3>INC-005 — SNMP Monitoring Failure</h3>
@@ -374,10 +596,39 @@
                 because of an SNMP community-string mismatch.
             </p>
 
-            <a
-                class="button"
-                href="../evidence/inc-005-snmp.html"
-            >
+            <div class="ticket-images">
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-005-SNMP-Monitoring-Failure/evidence/screenshots/01-servicenow-ticket.png"
+                        alt="INC-005 SNMP incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Incident Created
+                    </div>
+
+                </div>
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-005-SNMP-Monitoring-Failure/evidence/screenshots/23-servicenow-resolved.png"
+                        alt="INC-005 SNMP resolved incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Resolved
+                    </div>
+
+                </div>
+
+            </div>
+
+            <a class="button" href="../evidence/inc-005-snmp.html">
                 View Incident →
             </a>
 
@@ -389,7 +640,6 @@
         <div class="ticket">
 
             <span class="tag">DHCP Relay</span>
-
             <span class="status">Resolved</span>
 
             <h3>INC-006 — DHCP Relay Failure</h3>
@@ -399,10 +649,39 @@
                 referenced the wrong DHCP server address.
             </p>
 
-            <a
-                class="button"
-                href="../evidence/inc-006-dhcp-relay.html"
-            >
+            <div class="ticket-images">
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/01-servicenow-ticket.png"
+                        alt="INC-006 DHCP Relay incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Incident Created
+                    </div>
+
+                </div>
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/29-servicenow-resolved.png"
+                        alt="INC-006 DHCP Relay resolved incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Resolved
+                    </div>
+
+                </div>
+
+            </div>
+
+            <a class="button" href="../evidence/inc-006-dhcp-relay.html">
                 View Incident →
             </a>
 
@@ -414,7 +693,6 @@
         <div class="ticket">
 
             <span class="tag">NAT / PAT</span>
-
             <span class="status">Resolved</span>
 
             <h3>INC-007 — NAT Translation Failure</h3>
@@ -424,10 +702,39 @@
                 because the NAT ACL matched the wrong network.
             </p>
 
-            <a
-                class="button"
-                href="../evidence/inc-007-nat-pat.html"
-            >
+            <div class="ticket-images">
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/01-servicenow-ticket.png"
+                        alt="INC-007 NAT incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Incident Created
+                    </div>
+
+                </div>
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/31-servicenow-resolved.png"
+                        alt="INC-007 NAT resolved incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Resolved
+                    </div>
+
+                </div>
+
+            </div>
+
+            <a class="button" href="../evidence/inc-007-nat-pat.html">
                 View Incident →
             </a>
 
@@ -439,7 +746,6 @@
         <div class="ticket">
 
             <span class="tag">BGP</span>
-
             <span class="status">Resolved</span>
 
             <h3>INC-008 — BGP Route Advertisement</h3>
@@ -449,10 +755,39 @@
                 network prefix was configured for advertisement.
             </p>
 
-            <a
-                class="button"
-                href="../evidence/inc-008-bgp.html"
-            >
+            <div class="ticket-images">
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/01-servicenow-ticket.png"
+                        alt="INC-008 BGP incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Incident Created
+                    </div>
+
+                </div>
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/30-servicenow-resolved.png"
+                        alt="INC-008 BGP resolved incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Resolved
+                    </div>
+
+                </div>
+
+            </div>
+
+            <a class="button" href="../evidence/inc-008-bgp.html">
                 View Incident →
             </a>
 
@@ -464,7 +799,6 @@
         <div class="ticket">
 
             <span class="tag">HSRP</span>
-
             <span class="status">Resolved</span>
 
             <h3>INC-009 — HSRP Failover Failure</h3>
@@ -474,10 +808,39 @@
                 because the routers used different virtual IP addresses.
             </p>
 
-            <a
-                class="button"
-                href="../evidence/inc-009-hsrp.html"
-            >
+            <div class="ticket-images">
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/01-servicenow-ticket.png"
+                        alt="INC-009 HSRP incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Incident Created
+                    </div>
+
+                </div>
+
+                <div class="ticket-image">
+
+                    <img
+                        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/34-servicenow-resolved.png"
+                        alt="INC-009 HSRP resolved incident ticket"
+                        onclick="openLightbox(this.src, this.alt)"
+                    >
+
+                    <div class="image-label">
+                        Resolved
+                    </div>
+
+                </div>
+
+            </div>
+
+            <a class="button" href="../evidence/inc-009-hsrp.html">
                 View Incident →
             </a>
 
@@ -495,7 +858,6 @@
 
     <div class="workflow">
 
-
         <div class="step">
 
             <h3>01 — Report</h3>
@@ -505,7 +867,6 @@
             </p>
 
         </div>
-
 
         <div class="step">
 
@@ -517,7 +878,6 @@
 
         </div>
 
-
         <div class="step">
 
             <h3>03 — Identify</h3>
@@ -527,7 +887,6 @@
             </p>
 
         </div>
-
 
         <div class="step">
 
@@ -540,7 +899,6 @@
 
         </div>
 
-
         <div class="step">
 
             <h3>05 — Verify</h3>
@@ -551,7 +909,6 @@
             </p>
 
         </div>
-
 
     </div>
 
@@ -568,6 +925,89 @@
     </p>
 
 </footer>
+
+
+<!-- LIGHTBOX -->
+
+<div
+    class="lightbox"
+    id="lightbox"
+    onclick="closeLightbox(event)"
+>
+
+    <span
+        class="lightbox-close"
+        onclick="closeLightbox(event)"
+    >
+        &times;
+    </span>
+
+    <img
+        id="lightbox-image"
+        src=""
+        alt=""
+    >
+
+    <div
+        class="lightbox-caption"
+        id="lightbox-caption"
+    ></div>
+
+</div>
+
+
+<script>
+
+    function openLightbox(src, alt) {
+
+        const lightbox = document.getElementById("lightbox");
+        const image = document.getElementById("lightbox-image");
+        const caption = document.getElementById("lightbox-caption");
+
+        image.src = src;
+        image.alt = alt;
+
+        caption.textContent = alt;
+
+        lightbox.classList.add("active");
+
+        document.body.style.overflow = "hidden";
+    }
+
+
+    function closeLightbox(event) {
+
+        if (
+            event.target.id === "lightbox" ||
+            event.target.classList.contains("lightbox-close")
+        ) {
+
+            const lightbox = document.getElementById("lightbox");
+
+            lightbox.classList.remove("active");
+
+            document.body.style.overflow = "";
+
+        }
+
+    }
+
+
+    document.addEventListener("keydown", function(event) {
+
+        if (event.key === "Escape") {
+
+            const lightbox = document.getElementById("lightbox");
+
+            lightbox.classList.remove("active");
+
+            document.body.style.overflow = "";
+
+        }
+
+    });
+
+</script>
 
 
 </body>
