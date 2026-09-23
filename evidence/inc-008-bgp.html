@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>INC-008 — BGP Route Advertisement Failure | Richard Pateau</title>
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Cisco CLI Evidence | Richard Pateau</title>
 
     <style>
 
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f4f6f8;
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
             color: #1f2937;
             line-height: 1.6;
         }
@@ -23,119 +27,83 @@
         header {
             background: #111827;
             color: white;
-            padding: 45px 20px;
+            padding: 55px 20px;
         }
 
-        .header-content {
+        header .container,
+        nav .container,
+        main {
             max-width: 1100px;
             margin: auto;
         }
 
         header h1 {
-            margin: 0 0 10px;
-            font-size: 34px;
+            font-size: 38px;
+            margin-bottom: 10px;
         }
 
         header p {
-            margin: 0;
-            color: #cbd5e1;
-            font-size: 16px;
+            color: #d1d5db;
+            font-size: 18px;
         }
 
         nav {
-            background: #1f2937;
-            padding: 15px 20px;
-        }
-
-        nav div {
-            max-width: 1100px;
-            margin: auto;
+            background: white;
+            padding: 18px 20px;
+            border-bottom: 1px solid #ddd;
         }
 
         nav a {
-            color: #dbeafe;
+            margin-right: 25px;
+            color: #374151;
             text-decoration: none;
-            margin-right: 20px;
-            font-size: 14px;
-        }
-
-        nav a:hover {
-            color: white;
+            font-weight: bold;
         }
 
         main {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 0 20px;
+            padding: 50px 20px;
         }
 
         section {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 55px;
         }
 
         h2 {
-            margin-top: 0;
-            color: #111827;
-            font-size: 25px;
+            font-size: 30px;
+            margin-bottom: 20px;
         }
 
         h3 {
-            color: #1f2937;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
-        .summary-grid {
+        .intro,
+        .command {
+            background: white;
+            padding: 28px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .command-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-        }
-
-        .summary-card {
-            background: #f8fafc;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 18px;
-        }
-
-        .summary-card strong {
-            display: block;
-            color: #111827;
-            margin-bottom: 5px;
-        }
-
-        .evidence-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 20px;
         }
 
-        .evidence-card {
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 18px;
-            background: #ffffff;
+        .command {
+            display: flex;
+            flex-direction: column;
         }
 
-        .evidence-card img {
-            width: 100%;
-            margin-top: 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-        }
-
-        .tag {
+        .category {
             display: inline-block;
-            background: #e5e7eb;
-            color: #374151;
-            padding: 4px 9px;
+            background: #eef2ff;
+            padding: 5px 9px;
             border-radius: 5px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 8px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            width: fit-content;
         }
 
         pre {
@@ -144,82 +112,93 @@
             padding: 18px;
             border-radius: 7px;
             overflow-x: auto;
-            font-size: 14px;
+            margin: 15px 0;
         }
 
-        .root-cause {
-            border-left: 5px solid #dc2626;
-            background: #fef2f2;
-        }
-
-        .resolution {
-            border-left: 5px solid #16a34a;
-            background: #f0fdf4;
-        }
-
-        .verification {
-            border-left: 5px solid #2563eb;
-            background: #eff6ff;
-        }
-
-        .methodology {
-            background: #f8fafc;
-            border-left: 5px solid #64748b;
+        .purpose {
+            color: #4b5563;
+            margin-bottom: 15px;
         }
 
         .button {
             display: inline-block;
-            margin-top: 12px;
-            margin-right: 8px;
             padding: 9px 14px;
-            background: #111827;
+            background: #2563eb;
             color: white;
             text-decoration: none;
             border-radius: 6px;
-            font-size: 14px;
+            margin-top: auto;
+            width: fit-content;
         }
 
-        .button:hover {
+        .secondary {
             background: #374151;
         }
 
-        .button.secondary {
-            background: #e5e7eb;
-            color: #111827;
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
         }
 
-        .button.secondary:hover {
-            background: #d1d5db;
-        }
-
-        ul,
-        ol {
-            padding-left: 22px;
+        .step {
+            background: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
         }
 
         footer {
+            background: #111827;
+            color: white;
             text-align: center;
-            color: #6b7280;
             padding: 30px;
-            font-size: 14px;
+        }
+
+        .verification {
+            margin-top: 40px;
+            padding: 30px;
+            border: 2px solid #d1d5db;
+            border-radius: 10px;
+            background: #f9fafb;
+        }
+
+        .verification h2 {
+            margin-top: 8px;
+        }
+
+        .verification pre {
+            background: #111827;
+            color: #e5e7eb;
+            padding: 18px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+
+        .verification .category {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
     </style>
+
 </head>
+
 
 <body>
 
 
 <header>
 
-    <div class="header-content">
+    <div class="container">
 
-        <h1>INC-008 — BGP Route Advertisement Failure</h1>
+        <h1>Cisco CLI Evidence</h1>
 
         <p>
-            Network Incident Response Lab — BGP troubleshooting,
-            route advertisement analysis, packet capture, monitoring,
-            and post-remediation verification.
+            Cisco IOS commands used to investigate, diagnose,
+            remediate, and verify network incidents.
         </p>
 
     </div>
@@ -229,20 +208,45 @@
 
 <nav>
 
-    <div>
+    <div class="container">
 
-        <a href="../index.html">Home</a>
+        <a href="../index.html">
+            Portfolio
+        </a>
 
         <a href="../projects/network-incident-response.html">
             Incident Response Lab
         </a>
 
-        <a href="cisco-cli.html">
-            Cisco CLI
+        <a href="#routing">
+            Routing
+        </a>
+        <a href="#bgp">
+            BGP
+        </a>
+        <a href="#hsrp">
+            HSRP
         </a>
 
-        <a href="wireshark.html">
-            Wireshark
+        <a href="#switching">
+            Switching
+        </a>
+
+        <a href="#dhcp">
+            DHCP
+        </a>
+
+        <a href="#acl">
+            ACL
+        </a>
+        <a href="#snmp">
+            SNMP
+        </a>
+        <a href="#dhcp-relay">
+            DHCP Relay
+        </a>
+        <a href="#nat">
+            NAT / PAT
         </a>
 
     </div>
@@ -253,960 +257,1705 @@
 <main>
 
 
-<!-- INCIDENT SUMMARY -->
-
 <section>
 
-    <h2>Incident Summary</h2>
+    <div class="intro">
 
-    <div class="summary-grid">
+        <h2>CLI as Evidence</h2>
 
-        <div class="summary-card">
-            <strong>Incident</strong>
-            INC-008
-        </div>
+        <p>
 
-        <div class="summary-card">
-            <strong>Category</strong>
-            Network / BGP
-        </div>
+            Cisco IOS commands were used as investigative and
+            verification tools throughout the Network Incident
+            Response Lab.
 
-        <div class="summary-card">
-            <strong>Protocol</strong>
-            BGP
-        </div>
+        </p>
 
-        <div class="summary-card">
-            <strong>Analysis</strong>
-            Wireshark / tcpdump
-        </div>
+        <br>
 
-        <div class="summary-card">
-            <strong>Monitoring</strong>
-            SolarWinds / Splunk
-        </div>
+        <p>
 
-        <div class="summary-card">
-            <strong>Status</strong>
-            Resolved
-        </div>
+            Each command below is connected to an incident where
+            it was used to answer a specific troubleshooting question,
+            rather than being presented as a memorized command list.
 
-    </div>
-
-    <p style="margin-top:25px;">
-
-        A public-facing destination was unreachable because R1 was
-        configured to advertise 10.10.100.0/24 instead of the actual
-        10.10.10.0/24 destination. The investigation verified the BGP
-        session, examined route advertisement from R1 and the ISP
-        perspective, analyzed BGP packet captures, corrected the network
-        statement, and verified end-to-end reachability.
-
-    </p>
-
-</section>
-
-
-<!-- INITIAL SYMPTOMS -->
-
-<section>
-
-    <h2>Initial Symptoms</h2>
-
-    <p>
-        The incident began with failed connectivity to the web server's
-        destination. The investigation first established that the failure
-        was not caused by a local interface or basic routing condition
-        on R1.
-    </p>
-
-    <div class="evidence-grid">
-
-        <div class="evidence-card">
-
-            <span class="tag">Incident</span>
-
-            <h3>ServiceNow-Style Ticket</h3>
-
-            <p>
-                The incident was documented and tracked through the
-                network operations workflow.
-            </p>
-
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/01-servicenow-ticket.png"
-                 alt="INC-008 ServiceNow-style incident ticket">
-
-        </div>
-
-
-        <div class="evidence-card">
-
-            <span class="tag">Connectivity</span>
-
-            <h3>Web Server Ping Failure</h3>
-
-            <p>
-                The public destination was unreachable during the
-                initial connectivity test.
-            </p>
-
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/02-web-server-ping-fail.png"
-                 alt="Web server ping failure">
-
-        </div>
+        </p>
 
     </div>
 
 </section>
 
 
-<!-- INTERFACE AND ROUTING -->
+<section id="routing">
 
-<section>
+    <h2>Routing</h2>
 
-    <h2>Interface and Local Routing Investigation</h2>
+    <div class="command-grid">
 
-    <p>
-        R1 was checked first to confirm that the relevant interface and
-        local routing state were operational before moving into
-        BGP-specific troubleshooting.
-    </p>
 
-    <div class="evidence-grid">
+        <div class="command">
 
-        <div class="evidence-card">
+            <span class="category">OSPF</span>
 
-            <span class="tag">Cisco IOS</span>
+            <h3>show ip ospf neighbor</h3>
 
-            <h3>show ip interface brief</h3>
+<pre>
+show ip ospf neighbor
+</pre>
 
-            <p>
-                Used to verify interface state and addressing on R1.
+            <p class="purpose">
+
+                Used to determine whether an OSPF neighbor relationship
+                was established and what state the adjacency had reached.
+
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/03-r1-show-ip-interface-brief.png"
-                 alt="R1 show ip interface brief">
+            <a class="button"
+               href="../evidence/inc-002-ospf.html">
+
+                View OSPF Evidence →
+
+            </a>
 
         </div>
 
 
-        <div class="evidence-card">
+        <div class="command">
 
-            <span class="tag">Routing</span>
+            <span class="category">Routing</span>
 
-            <h3>show ip route 10.10.10.0</h3>
+            <h3>show ip route</h3>
 
-            <p>
-                Used to determine whether the affected destination network
-                was present in the local routing table.
+<pre>
+show ip route
+</pre>
+
+            <p class="purpose">
+
+                Used to verify whether expected routes were present
+                in the routing table after troubleshooting.
+
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/04-r1-show-ip-route-10.10.10.0.png"
-                 alt="R1 route lookup for 10.10.10.0">
+            <a class="button secondary"
+               href="../projects/network-incident-response.html">
+
+                View Project →
+
+            </a>
 
         </div>
 
-    </div>
 
-</section>
+        <div class="command">
 
-
-<!-- BGP SESSION -->
-
-<section>
-
-    <h2>BGP Session Investigation</h2>
-
-    <p>
-        BGP neighbor and session state were inspected to determine whether
-        the peering relationship itself was operational.
-    </p>
-
-    <div class="evidence-grid">
-
-        <div class="evidence-card">
-
-            <span class="tag">BGP</span>
+            <span class="category">BGP</span>
 
             <h3>show ip bgp summary</h3>
 
-            <p>
-                Used to verify BGP neighbor state and session health.
+<pre>
+show ip bgp summary
+</pre>
+
+            <p class="purpose">
+
+                Used to verify BGP peer state and confirm whether
+                the BGP session was established.
+
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/05-r1-show-ip-bgp-summary.png"
-                 alt="R1 BGP summary">
+            <a class="button secondary"
+               href="../projects/network-incident-response.html">
+
+                View Incident →
+
+            </a>
 
         </div>
 
 
-        <div class="evidence-card">
+        <div class="command">
 
-            <span class="tag">BGP</span>
-
-            <h3>show ip bgp neighbors</h3>
-
-            <p>
-                Used to inspect detailed BGP neighbor information and
-                verify the peering relationship.
-            </p>
-
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/06-r1-show-ip-bgp-neighbors.png"
-                 alt="R1 BGP neighbor details">
-
-        </div>
-
-
-        <div class="evidence-card">
-
-            <span class="tag">BGP RIB</span>
+            <span class="category">BGP</span>
 
             <h3>show ip bgp</h3>
 
-            <p>
-                Used to inspect BGP routes known to R1.
+<pre>
+show ip bgp
+</pre>
+
+            <p class="purpose">
+
+                Used to inspect BGP-learned prefixes and determine
+                whether the expected network was present.
+
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/07-r1-show-ip-bgp.png"
-                 alt="R1 BGP table">
+            <a class="button secondary"
+               href="../projects/network-incident-response.html">
+
+                View Incident →
+
+            </a>
 
         </div>
 
-
-        <div class="evidence-card">
-
-            <span class="tag">BGP Prefix</span>
-
-            <h3>show ip bgp 10.10.10.0</h3>
-
-            <p>
-                Used to investigate the affected prefix and determine
-                how BGP was handling the route.
-            </p>
-
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/08-r1-show-ip-bgp-10.10.10.0.png"
-                 alt="R1 BGP lookup for 10.10.10.0">
-
-        </div>
 
     </div>
 
 </section>
 
+<section id="hsrp">
 
-<!-- CONFIGURATION INVESTIGATION -->
+    <h2>INC-009 — HSRP CLI Evidence</h2>
 
-<section>
-
-    <h2>BGP Configuration Investigation</h2>
-
-    <p>
-        The active BGP configuration was inspected after confirming the
-        BGP session state and examining the affected prefix.
+    <p style="margin-bottom: 25px; color: #4b5563;">
+        Cisco IOS HSRP commands were used to verify the Active and
+        Standby gateway roles, compare the HSRP virtual IP configuration
+        between R1 and R2, investigate the failover condition, and
+        verify the corrected virtual gateway after remediation.
     </p>
 
-    <div class="evidence-card">
 
-        <span class="tag">Configuration</span>
-
-        <h3>show running-config — BGP</h3>
-
-        <p>
-            The BGP configuration was reviewed to determine why the
-            affected prefix was not being advertised as expected.
-        </p>
-
-        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/09-r1-show-run-section-bgp-broken.png"
-             alt="R1 broken BGP configuration">
-
-    </div>
-
-</section>
+    <div class="command-grid">
 
 
-<!-- ROUTE ADVERTISEMENT -->
+        <div class="command">
 
-<section>
+            <span class="category">HSRP Configuration</span>
 
-    <h2>Route Advertisement Investigation</h2>
+            <h3>R1 — show running-config interface</h3>
 
-    <p>
-        The next step was to determine whether R1 was actually advertising
-        the affected prefix to its BGP neighbor.
-    </p>
+            <pre>show running-config interface GigabitEthernet0/0</pre>
 
-    <div class="evidence-grid">
-
-        <div class="evidence-card">
-
-            <span class="tag">BGP Advertisement</span>
-
-            <h3>Advertised Routes — Before Remediation</h3>
-
-            <p>
-                The advertised-route output was examined to determine
-                whether the affected prefix was being sent to the ISP.
+            <p class="purpose">
+                Used to inspect R1's LAN interface and verify the
+                configured HSRP virtual IP, priority, and preemption.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/10-r1-advertised-routes-broken.png"
-                 alt="R1 advertised routes before remediation">
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/05-r1-show-run-interface-g0-0.png"
+                 alt="R1 HSRP interface configuration"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
 
         </div>
 
 
-        <div class="evidence-card">
+        <div class="command">
 
-            <span class="tag">ISP BGP</span>
+            <span class="category">HSRP State</span>
 
-            <h3>ISP BGP Summary</h3>
+            <h3>R1 — show standby brief</h3>
 
-            <p>
-                The ISP-side BGP session was checked to correlate the
-                customer router's advertisement with the provider's
-                perspective.
+            <pre>show standby brief</pre>
+
+            <p class="purpose">
+                Used to verify R1's HSRP group, priority, Active state,
+                and virtual IP.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/11-isp-show-ip-bgp-summary.png"
-                 alt="ISP BGP summary">
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/06-r1-show-standby-brief.png"
+                 alt="R1 show standby brief"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
 
         </div>
 
 
-        <div class="evidence-card">
+        <div class="command">
 
-            <span class="tag">ISP BGP Table</span>
+            <span class="category">HSRP Detail</span>
 
-            <h3>show ip bgp</h3>
+            <h3>R1 — show standby</h3>
 
-            <p>
-                The ISP's BGP table was inspected to determine whether
-                the affected prefix had been learned.
+            <pre>show standby</pre>
+
+            <p class="purpose">
+                Used to inspect detailed HSRP state, virtual IP,
+                Active router, priority, and HSRPv2 operation.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/12-isp-show-ip-bgp.png"
-                 alt="ISP BGP table">
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/07-r1-show-standby.png"
+                 alt="R1 show standby"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
 
         </div>
 
 
-        <div class="evidence-card">
+        <div class="command">
 
-            <span class="tag">Prefix Analysis</span>
+            <span class="category">Broken Configuration</span>
 
-            <h3>ISP Prefix Lookup</h3>
+            <h3>R2 — show running-config interface</h3>
 
-            <p>
-                The specific affected prefix was examined from the
-                ISP perspective.
+            <pre>show running-config interface GigabitEthernet0/0</pre>
+
+            <p class="purpose">
+                Used to compare R2's HSRP configuration with R1 and
+                identify the mismatched virtual IP.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/13-isp-show-ip-bgp-10.10.10.0.png"
-                 alt="ISP BGP lookup for affected prefix">
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/08-r2-show-run-interface-g0-0-broken.png"
+                 alt="R2 broken HSRP interface configuration"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+            <p style="margin-top:15px; color:#4b5563;">
+                R2 was configured with
+                <strong>10.10.10.11</strong> instead of the expected
+                HSRP virtual IP <strong>10.10.10.1</strong>.
+            </p>
 
         </div>
 
 
-        <div class="evidence-card">
+        <div class="command">
 
-            <span class="tag">Routing</span>
+            <span class="category">HSRP State</span>
 
-            <h3>ISP Routing Table</h3>
+            <h3>R2 — show standby brief</h3>
 
-            <p>
-                The ISP routing table was checked to determine whether
-                the affected destination had a usable route.
+            <pre>show standby brief</pre>
+
+            <p class="purpose">
+                Used to verify R2's HSRP role and compare its virtual
+                IP with the client-facing gateway.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/14-isp-show-ip-route-10.10.10.0.png"
-                 alt="ISP route lookup for affected prefix">
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/09-r2-show-standby-brief-broken.png"
+                 alt="R2 broken HSRP summary"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
 
         </div>
 
 
-        <div class="evidence-card">
+        <div class="command">
 
-            <span class="tag">BGP Advertisement</span>
+            <span class="category">HSRP Detail</span>
 
-            <h3>ISP Advertised Routes</h3>
+            <h3>R2 — show standby</h3>
 
-            <p>
-                The ISP's advertised-route information was reviewed as
-                part of the end-to-end BGP investigation.
+            <pre>show standby</pre>
+
+            <p class="purpose">
+                Used to inspect the detailed HSRP state and confirm
+                the incorrect virtual IP before failover testing.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/15-isp-advertised-routes.png"
-                 alt="ISP advertised routes">
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- PACKET ANALYSIS -->
-
-<section>
-
-    <h2>BGP Packet Analysis</h2>
-
-    <p>
-        Packet capture analysis was used to correlate the BGP control-plane
-        behavior with the routing information observed on R1 and the ISP.
-    </p>
-
-    <div class="evidence-grid">
-
-        <div class="evidence-card">
-
-            <span class="tag">tcpdump</span>
-
-            <h3>BGP Traffic Capture</h3>
-
-            <p>
-                Captured BGP traffic during the investigation for
-                protocol-level analysis.
-            </p>
-
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/16-tcpdump.png"
-                 alt="tcpdump BGP traffic">
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/10-r2-show-standby-broken.png"
+                 alt="R2 broken HSRP detail"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
 
         </div>
 
 
-        <div class="evidence-card">
+        <div class="command">
 
-            <span class="tag">Wireshark</span>
+            <span class="category">Failover Testing</span>
 
-            <h3>BGP Flow — Before Remediation</h3>
+            <h3>R2 — show standby after R1 failure</h3>
 
-            <p>
-                Examined the BGP packet exchange associated with the
-                failed route advertisement.
+            <pre>show standby</pre>
+
+            <p class="purpose">
+                Used after R1 failed to verify whether R2 transitioned
+                to the Active state and whether it was providing the
+                expected virtual gateway.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/17-wireshark-overview-broken.png"
-                 alt="Wireshark BGP flow before remediation">
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/12-r2-show-standby-after-r1-failed.png"
+                 alt="R2 active after R1 failure"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
 
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- MONITORING -->
-
-<section>
-
-    <h2>Monitoring Correlation</h2>
-
-    <div class="evidence-grid">
-
-        <div class="evidence-card">
-
-            <span class="tag">SolarWinds</span>
-
-            <h3>Network Monitoring</h3>
-
-            <p>
-                SolarWinds was used to correlate the routing condition
-                with network monitoring information.
+            <p style="margin-top:15px; color:#4b5563;">
+                R2 transitioned to <strong>Active</strong>, but the
+                virtual IP remained <strong>10.10.10.11</strong>.
+                The expected client gateway was 10.10.10.1.
             </p>
-
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/18-solarwinds-dashboard.png"
-                 alt="SolarWinds dashboard during BGP incident">
 
         </div>
 
 
-        <div class="evidence-card">
+        <div class="command">
 
-            <span class="tag">SolarWinds</span>
+            <span class="category">Failover Verification</span>
 
-            <h3>Routing Insights — Before</h3>
+            <h3>R2 — show standby brief after R1 failure</h3>
 
-            <p>
-                Routing information was reviewed from the monitoring
-                platform during the failed state.
+            <pre>show standby brief</pre>
+
+            <p class="purpose">
+                Used to confirm the Active state after the simulated
+                primary-router failure.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/19-solarwinds-routing-insights-before.png"
-                 alt="SolarWinds routing insights before remediation">
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/13-r2-show-standby-brief-after-r1-failed.png"
+                 alt="R2 HSRP summary after R1 failure"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
 
         </div>
 
 
-        <div class="evidence-card">
+        <div class="command">
 
-            <span class="tag">SolarWinds</span>
+            <span class="category">Post-Remediation</span>
 
-            <h3>Routing Neighbors</h3>
+            <h3>R2 — show standby with corrected VIP</h3>
 
-            <p>
-                BGP neighbor status was correlated with the routing
-                investigation.
+            <pre>show standby</pre>
+
+            <p class="purpose">
+                Used after remediation to verify that R2 was Active
+                with the correct HSRP virtual IP while R1 remained
+                unavailable.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/20-solarwinds-routing-neighbors-up.png"
-                 alt="SolarWinds routing neighbors">
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/26-r2-show-standby-fixed-r1-still-down.png"
+                 alt="R2 active with corrected HSRP virtual IP"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+            <p style="margin-top:15px; color:#4b5563;">
+                R2 was Active with the corrected virtual IP
+                <strong>10.10.10.1</strong>.
+            </p>
 
         </div>
 
 
-        <div class="evidence-card">
+        <div class="command">
 
-            <span class="tag">Splunk</span>
+            <span class="category">Post-Remediation</span>
 
-            <h3>Log Correlation</h3>
+            <h3>R2 — show running-config interface</h3>
 
-            <p>
-                Splunk was reviewed for supporting network and incident
-                evidence.
-            </p>
+            <pre>show running-config interface GigabitEthernet0/0</pre>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/21-splunk.png"
-                 alt="Splunk BGP incident evidence">
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- ROOT CAUSE -->
-
-<section class="root-cause">
-
-    <h2>Root Cause</h2>
-
-    <p>
-        The BGP peering session between R1 and the ISP was operational,
-        but R1 was configured to advertise the wrong network.
-    </p>
-
-    <h3>Broken BGP Configuration</h3>
-
-    <pre>router bgp 65000
- bgp log-neighbor-changes
- neighbor 192.0.2.2 remote-as 65001
- network 10.10.100.0 mask 255.255.255.0</pre>
-
-    <p>
-        The affected destination was the
-        <strong>10.10.10.0/24</strong> network, but R1's BGP
-        configuration referenced <strong>10.10.100.0/24</strong>.
-    </p>
-
-    <p>
-        Because the configured BGP network statement did not identify
-        the affected 10.10.10.0/24 prefix, R1 did not advertise that
-        destination to the ISP. The ISP therefore did not have the
-        required route to reach the affected network.
-    </p>
-
-    <h3>Corrected BGP Configuration</h3>
-
-    <pre>router bgp 65000
- bgp log-neighbor-changes
- neighbor 192.0.2.2 remote-as 65001
- network 10.10.10.0 mask 255.255.255.0</pre>
-
-    <p>
-        The BGP network statement was corrected to reference the actual
-        10.10.10.0/24 destination network.
-    </p>
-
-    <p>
-        This conclusion is supported by the before-and-after BGP
-        configurations, R1's advertised-route output, the ISP's BGP
-        table and routing table, packet captures, and successful
-        post-remediation connectivity.
-    </p>
-
-    <a class="button secondary"
-       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/configs/r1-bgp-broken.txt">
-        View Broken Configuration
-    </a>
-
-    <a class="button secondary"
-       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/configs/r1-bgp-fixed.txt">
-        View Fixed Configuration
-    </a>
-
-</section>
-
-
-<!-- REMEDIATION -->
-
-<section class="resolution">
-
-    <h2>Remediation</h2>
-
-    <p>
-    The BGP <strong>network</strong> statement on R1 was corrected from
-    the incorrect <strong>10.10.100.0/24</strong> prefix to the actual
-    destination network, <strong>10.10.10.0/24</strong>.
-    </p>
-
-    <h3>Corrected Configuration</h3>
-
-    <pre>router bgp 65000
- bgp log-neighbor-changes
- neighbor 192.0.2.2 remote-as 65001
- network 10.10.10.0 mask 255.255.255.0</pre>
-
-    <p>
-        This correction caused R1 to advertise the intended
-        10.10.10.0/24 prefix toward the ISP.
-    </p>
-
-    <div class="evidence-card">
-
-        <span class="tag">Configuration Change</span>
-
-        <h3>BGP Configuration After Remediation</h3>
-
-        <p>
-            The corrected BGP configuration was captured after the
-            network statement was changed.
-        </p>
-
-        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/22-r1-show-run-section-bgp-fixed.png"
-             alt="R1 corrected BGP configuration">
-
-    </div>
-
-</section>
-
-
-<!-- POST REMEDIATION -->
-
-<section class="verification">
-
-    <h2>Post-Remediation Verification</h2>
-
-    <p>
-        Verification confirmed that the affected prefix was now present
-        in the BGP process, advertised by R1, learned by the ISP, and
-        reachable end-to-end.
-    </p>
-
-    <div class="evidence-grid">
-
-        <div class="evidence-card">
-
-            <span class="tag">BGP Verification</span>
-
-            <h3>show ip bgp — After</h3>
-
-            <p>
-                Verified the affected prefix in R1's BGP table after
+            <p class="purpose">
+                Used to verify the corrected HSRP configuration after
                 remediation.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/23-r1-show-ip-bgp-after.png"
-                 alt="R1 BGP table after remediation">
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/25-r2-show-run-interface-g0-0-fixed.png"
+                 alt="R2 corrected HSRP configuration"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
 
         </div>
 
 
-        <div class="evidence-card">
+    </div>
 
-            <span class="tag">Advertisement</span>
 
-            <h3>R1 Advertised Routes — After</h3>
+    <div style="margin-top:25px;">
 
-            <p>
-                Confirmed that R1 was advertising the affected prefix
-                after the configuration correction.
+        <h3>HSRP Investigation Result</h3>
+
+        <p>
+            CLI evidence established that R1 was configured as the
+            intended Active gateway with virtual IP 10.10.10.1,
+            while R2 was initially configured with the incorrect
+            virtual IP 10.10.10.11. After R1 failed, R2 transitioned
+            to Active but could not provide the client's expected
+            gateway. Correcting R2's virtual IP to 10.10.10.1 allowed
+            R2 to provide the expected gateway and restore client
+            connectivity.
+        </p>
+
+        <a class="button"
+           href="../evidence/inc-009-hsrp.html">
+            View Full HSRP Investigation →
+        </a>
+
+    </div>
+
+</section>
+
+<section id="switching">
+
+    <h2>Switching</h2>
+
+    <div class="command-grid">
+
+
+        <div class="command">
+
+            <span class="category">VLAN</span>
+
+            <h3>show vlan brief</h3>
+
+<pre>
+show vlan brief
+</pre>
+
+            <p class="purpose">
+
+                Used to verify VLAN existence and switchport
+                membership during Layer 2 troubleshooting.
+
+            </p>
+
+            <a class="button secondary"
+               href="../projects/network-incident-response.html">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">Trunking</span>
+
+            <h3>show interfaces trunk</h3>
+
+<pre>
+show interfaces trunk
+</pre>
+
+            <p class="purpose">
+
+                Used to verify trunk state and VLANs being
+                carried across trunk links.
+
+            </p>
+
+            <a class="button secondary"
+               href="../projects/network-incident-response.html">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">STP</span>
+
+            <h3>show spanning-tree</h3>
+
+<pre>
+show spanning-tree
+</pre>
+
+            <p class="purpose">
+
+                Used to inspect spanning-tree state and
+                Layer 2 topology behavior.
+
+            </p>
+
+            <a class="button secondary"
+               href="../projects/network-incident-response.html">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">EtherChannel</span>
+
+            <h3>show etherchannel summary</h3>
+
+<pre>
+show etherchannel summary
+</pre>
+
+            <p class="purpose">
+
+                Used to verify EtherChannel formation and
+                member interface state.
+
+            </p>
+
+            <a class="button secondary"
+               href="../projects/network-incident-response.html">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<section id="dhcp">
+
+    <h2>INC-001 — DHCP CLI Evidence</h2>
+
+    <p style="margin-bottom: 25px; color: #4b5563;">
+
+        Cisco IOS commands used to isolate the DHCP configuration
+        problem and verify the state of the affected device.
+
+    </p>
+
+
+    <div class="command-grid">
+
+
+        <div class="command">
+
+            <span class="category">DHCP Investigation</span>
+
+            <h3>show ip dhcp pool</h3>
+
+<pre>
+show ip dhcp pool
+</pre>
+
+            <p class="purpose">
+
+                Used to inspect the DHCP pool configuration and
+                identify the incorrect network information.
+
+            </p>
+
+            <img
+                src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-001-DHCP-Failure/evidence/screenshots/04-show-ip-dhcp-pool-wrong.png"
+                alt="Cisco show ip dhcp pool output"
+                style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+            <a class="button"
+               href="../evidence/inc-001-dhcp.html">
+
+                View Incident →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">Interface Verification</span>
+
+            <h3>show ip interface brief</h3>
+
+<pre>
+show ip interface brief
+</pre>
+
+            <p class="purpose">
+
+                Used to verify interface state and addressing
+                during the DHCP investigation.
+
+            </p>
+
+            <img
+                src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-001-DHCP-Failure/evidence/screenshots/05-show-ip-interface-brief.png"
+                alt="Cisco show ip interface brief output"
+                style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+            <a class="button"
+               href="../evidence/inc-001-dhcp.html">
+
+                View Incident →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">DHCP Verification</span>
+
+            <h3>show ip dhcp binding</h3>
+
+<pre>
+show ip dhcp binding
+</pre>
+
+            <p class="purpose">
+
+                Used to determine whether the DHCP server had
+                successfully assigned an address to the client.
+
+            </p>
+
+            <img
+                src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-001-DHCP-Failure/evidence/screenshots/06-show-ip-dhcp-binding-empty.png"
+                alt="Empty DHCP binding table"
+                style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+            <a class="button"
+               href="../evidence/inc-001-dhcp.html">
+
+                View Incident →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">Configuration</span>
+
+            <h3>show running-config</h3>
+
+<pre>
+show running-config
+</pre>
+
+            <p class="purpose">
+
+                Used to inspect the active DHCP configuration and
+                identify the configuration responsible for the failure.
+
+            </p>
+
+            <img
+                src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-001-DHCP-Failure/evidence/screenshots/07-show-running-config-section-dhcp.png"
+                alt="DHCP section of Cisco running configuration"
+                style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+            <a class="button"
+               href="../evidence/inc-001-dhcp.html">
+
+                View Incident →
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+<div class="verification">
+
+    <span class="category">POST-REMEDIATION VERIFICATION</span>
+
+    <h2>DHCP Lease Verification</h2>
+
+    <h3>show ip dhcp binding</h3>
+
+<pre>
+show ip dhcp binding
+</pre>
+
+    <p class="purpose">
+
+        Re-ran the DHCP binding check after remediation to verify
+        that the client successfully received a DHCP lease.
+
+    </p>
+
+    <img
+        src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-001-DHCP-Failure/evidence/screenshots/10-post-remediation-show-ip-dhcp-binding.png"
+        alt="Post-remediation DHCP binding showing successful lease"
+        style="width:100%; max-width:1000px; margin-top:20px; border:1px solid #ddd; border-radius:6px;">
+
+    <div style="margin-top:20px;">
+
+        <strong>Verification Result:</strong>
+
+        DHCP lease successfully populated after remediation.
+
+    </div>
+
+    <a class="button"
+       href="inc-001-dhcp.html"
+       style="margin-top:20px; display:inline-block;">
+
+        View Full Incident Analysis →
+
+    </a>
+
+</div>
+<section id="dhcp-relay">
+    <h2>INC-006 — DHCP Relay CLI Evidence</h2>
+
+    <p style="margin-bottom: 25px; color: #4b5563;">
+        Cisco IOS CLI was used to isolate a DHCP relay failure by verifying
+        interface state, DHCP helper configuration, routing, DHCP server
+        bindings, and DHCP protocol behavior.
+    </p>
+
+    <div class="command-grid">
+
+        <div class="command">
+            <span class="category">Interface Verification</span>
+
+            <h3>show ip interface</h3>
+
+            <pre>show ip interface</pre>
+
+            <p class="purpose">
+                Used to verify the client-facing interface and its operational
+                state during DHCP relay troubleshooting.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/04-r1-show-ip-interface-g0-0.png"
+                 alt="R1 show ip interface output"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+        </div>
+
+
+        <div class="command">
+            <span class="category">DHCP Relay</span>
+
+            <h3>show ip helper-address</h3>
+
+            <pre>show ip helper-address</pre>
+
+            <p class="purpose">
+                Used to inspect the DHCP relay configuration on the
+                client-facing interface.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/05-r1-show-ip-helper-address.png"
+                 alt="R1 show ip helper-address output"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+        </div>
+
+
+        <div class="command">
+            <span class="category">Routing</span>
+
+            <h3>show ip route</h3>
+
+            <pre>show ip route</pre>
+
+            <p class="purpose">
+                Used to verify that R1 had a route toward the remote DHCP
+                server network.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/08-r1-show-ip-route-10.20.20.0.png"
+                 alt="R1 route toward DHCP server network"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+        </div>
+
+
+        <div class="command">
+            <span class="category">DHCP Server</span>
+
+            <h3>show ip dhcp pool</h3>
+
+            <pre>show ip dhcp pool</pre>
+
+            <p class="purpose">
+                Used to verify the DHCP server pool and confirm that the
+                server was configured to provide addresses.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/09-r2-show-ip-dhcp-pool.png"
+                 alt="R2 show ip dhcp pool output"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+        </div>
+
+
+        <div class="command">
+            <span class="category">DHCP Server</span>
+
+            <h3>show ip dhcp binding</h3>
+
+            <pre>show ip dhcp binding</pre>
+
+            <p class="purpose">
+                Used to verify whether the DHCP server had created a lease
+                for the affected client.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/10-r2-show-ip-dhcp-binding-empty.png"
+                 alt="R2 empty DHCP binding table"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+        </div>
+
+
+        <div class="command">
+            <span class="category">Troubleshooting</span>
+
+            <h3>DHCP Debug</h3>
+
+            <pre>debug ip dhcp server events</pre>
+
+            <p class="purpose">
+                Used to observe DHCP server-side processing and correlate
+                the client request with the relay transaction.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-006-DHCP-Relay-Failure/evidence/screenshots/15-debug-dhcp-server-events.png"
+                 alt="DHCP server debug events"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+        </div>
+
+    </div>
+
+    <p style="margin-top:25px; color:#4b5563;">
+        The CLI investigation followed a layered troubleshooting process:
+        verify the interface, inspect the relay configuration, verify routing,
+        validate the DHCP server, and correlate protocol-level behavior.
+    </p>
+
+    <a class="button" href="../evidence/inc-006-dhcp-relay.html">
+        View Full DHCP Relay Investigation →
+    </a>
+</section>
+<section id="acl">
+
+    <h2>INC-003 — ACL CLI Evidence</h2>
+
+    <p style="margin-bottom: 25px; color: #4b5563;">
+
+        Cisco IOS ACL inspection was used to determine which
+        security rules were matching the affected traffic
+        during the ACL troubleshooting incident.
+
+    </p>
+
+
+    <div class="command-grid">
+
+
+        <div class="command">
+
+            <span class="category">Network Security</span>
+
+            <h3>show access-lists</h3>
+
+<pre>
+show access-lists
+</pre>
+
+            <p class="purpose">
+
+                Used to inspect ACL entries and hit counters
+                to determine which security rules were
+                matching the affected traffic.
+
+            </p>
+
+            <img
+                src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-003-ACL-Traffic-Blocked/evidence/screenshots/04-r1-show-access-lists-hits-broken.png"
+                alt="Cisco show access-lists output showing ACL hit counters"
+                style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+            <p style="margin-top:15px; color:#4b5563;">
+
+                The ACL hit counters provided CLI evidence that
+                the affected traffic was matching deny entries.
+
+            </p>
+
+            <a class="button"
+               href="../evidence/inc-003-acl.html">
+
+                View Full ACL Investigation →
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+<section id="nat">
+    <h2>INC-007 — NAT / PAT CLI Evidence</h2>
+
+    <p style="margin-bottom: 25px; color: #4b5563;">
+        Cisco IOS CLI was used to isolate a NAT translation failure by
+        verifying interface roles, routing, NAT configuration, the NAT
+        source ACL, translation state, and post-remediation translation
+        activity.
+    </p>
+
+    <div class="command-grid">
+
+        <!-- Interface Verification -->
+
+        <div class="command">
+
+            <span class="category">Interface Verification</span>
+
+            <h3>show ip interface brief</h3>
+
+            <pre>show ip interface brief</pre>
+
+            <p class="purpose">
+                Used to verify interface status and addressing before
+                investigating the NAT configuration.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/06-r1-show-ip-interface-brief.png"
+                 alt="R1 show ip interface brief output"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+
+        <!-- Inside Interface -->
+
+        <div class="command">
+
+            <span class="category">NAT Inside</span>
+
+            <h3>show running-config interface g0/0</h3>
+
+            <pre>show running-config interface GigabitEthernet0/0</pre>
+
+            <p class="purpose">
+                Used to verify that the client-facing interface was
+                configured as the NAT inside interface.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/07-r1-show-run-interface-g0-0.png"
+                 alt="R1 GigabitEthernet0/0 NAT inside configuration"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+
+        <!-- Outside Interface -->
+
+        <div class="command">
+
+            <span class="category">NAT Outside</span>
+
+            <h3>show running-config interface g0/2</h3>
+
+            <pre>show running-config interface GigabitEthernet0/2</pre>
+
+            <p class="purpose">
+                Used to verify that the ISP-facing interface was configured
+                as the NAT outside interface.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/08-r1-show-run-interface-g0-2.png"
+                 alt="R1 GigabitEthernet0/2 NAT outside configuration"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+
+        <!-- Routing -->
+
+        <div class="command">
+
+            <span class="category">Routing</span>
+
+            <h3>show ip route</h3>
+
+            <pre>show ip route</pre>
+
+            <p class="purpose">
+                Used to verify routing information and separate a routing
+                failure from the NAT translation failure.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/09-r1-show-ip-route.png"
+                 alt="R1 routing table"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+
+        <!-- NAT Configuration -->
+
+        <div class="command">
+
+            <span class="category">NAT Configuration</span>
+
+            <h3>show running-config | section nat</h3>
+
+            <pre>show running-config | section nat</pre>
+
+            <p class="purpose">
+                Used to verify NAT inside/outside roles and the PAT overload
+                statement applied to the ISP-facing interface.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/10-r1-show-run-nat.png"
+                 alt="R1 NAT configuration showing PAT overload"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+
+        <!-- NAT ACL Configuration -->
+
+        <div class="command">
+
+            <span class="category">NAT ACL</span>
+
+            <h3>show running-config | section access-list</h3>
+
+            <pre>show running-config | section access-list</pre>
+
+            <p class="purpose">
+                Used to inspect the source ACL referenced by the NAT
+                overload configuration.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/11-r1-show-run-access-list.png"
+                 alt="R1 NAT access list configuration"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+
+        <!-- Broken ACL -->
+
+        <div class="command">
+
+            <span class="category">Troubleshooting</span>
+
+            <h3>show access-lists NAT-INSIDE</h3>
+
+            <pre>show access-lists NAT-INSIDE</pre>
+
+            <p class="purpose">
+                Used to inspect the NAT source ACL and identify that the
+                configured permit statement referenced the wrong network.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/12-r1-show-access-list-nat-inside-broken.png"
+                 alt="R1 NAT-INSIDE ACL showing incorrect source network"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+            <p style="margin-top:15px; color:#4b5563;">
+                The ACL permitted 10.10.20.0/30 even though the affected
+                client LAN was 10.10.10.0/24.
+            </p>
+
+            <a class="button" href="../evidence/inc-007-nat-pat.html">
+                View Full NAT Investigation →
+            </a>
+
+        </div>
+
+
+        <!-- Empty Translations -->
+
+        <div class="command">
+
+            <span class="category">NAT State</span>
+
+            <h3>show ip nat translations</h3>
+
+            <pre>show ip nat translations</pre>
+
+            <p class="purpose">
+                Used to determine whether the affected client traffic was
+                creating NAT translation entries.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/13-r1-show-ip-nat-translations-empty.png"
+                 alt="Empty NAT translation table before remediation"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+            <p style="margin-top:15px; color:#4b5563;">
+                No translation entry was present during the failed
+                connectivity test.
+            </p>
+
+        </div>
+
+
+        <!-- NAT Statistics -->
+
+        <div class="command">
+
+            <span class="category">NAT Statistics</span>
+
+            <h3>show ip nat statistics</h3>
+
+            <pre>show ip nat statistics</pre>
+
+            <p class="purpose">
+                Used to inspect NAT operation and determine whether
+                translations were being created.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/14-r1-show-ip-nat-statistics-broken.png"
+                 alt="R1 NAT statistics before remediation"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+
+        <!-- NAT Debug -->
+
+        <div class="command">
+
+            <span class="category">NAT Debug</span>
+
+            <h3>debug ip nat</h3>
+
+            <pre>debug ip nat</pre>
+
+            <p class="purpose">
+                Used after remediation to observe NAT processing and
+                provide additional evidence that translation was occurring.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/30-debug-ip-nat-after.png"
+                 alt="Cisco debug ip nat after remediation"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+
+        <!-- Fixed ACL -->
+
+        <div class="command">
+
+            <span class="category">Post-Remediation</span>
+
+            <h3>show access-lists NAT-INSIDE</h3>
+
+            <pre>show access-lists NAT-INSIDE</pre>
+
+            <p class="purpose">
+                Used to verify that the corrected ACL matched the actual
+                client LAN after remediation.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/22-r1-show-access-list-nat-inside-fixed.png"
+                 alt="Corrected NAT-INSIDE ACL showing matches"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+            <p style="margin-top:15px; color:#4b5563;">
+                The corrected 10.10.10.0/24 entry recorded three matches,
+                confirming that client traffic was now selecting the NAT
+                policy.
+            </p>
+
+        </div>
+
+
+        <!-- Fixed Translations -->
+
+        <div class="command">
+
+            <span class="category">Post-Remediation</span>
+
+            <h3>show ip nat translations</h3>
+
+            <pre>show ip nat translations</pre>
+
+            <p class="purpose">
+                Used to verify that active NAT translations were created
+                after correcting the source ACL.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/23-r1-show-ip-nat-translations-after.png"
+                 alt="NAT translations populated after remediation"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+
+        <!-- Fixed Statistics -->
+
+        <div class="command">
+
+            <span class="category">Post-Remediation</span>
+
+            <h3>show ip nat statistics</h3>
+
+            <pre>show ip nat statistics</pre>
+
+            <p class="purpose">
+                Used to confirm NAT translation activity after the
+                configuration correction.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/24-r1-show-ip-nat-statistics-after.png"
+                 alt="NAT statistics after remediation"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+    </div>
+
+
+    <div style="margin-top:30px; padding:20px; background:#f8fafc; border-radius:8px;">
+
+        <h3>CLI Investigation Summary</h3>
+
+        <p style="color:#4b5563;">
+            The CLI investigation progressed from interface and routing
+            verification into NAT-specific inspection. The NAT overload
+            statement and inside/outside interface roles were confirmed,
+            while the NAT-INSIDE ACL was found permitting the wrong source
+            network. The empty translation table provided additional
+            evidence of the failure.
+        </p>
+
+        <p style="color:#4b5563;">
+            After correcting the ACL to permit 10.10.10.0/24, the ACL
+            recorded matching traffic and NAT translations populated.
+            NAT statistics and debug output provided additional
+            post-remediation verification.
+        </p>
+
+        <a class="button" href="../evidence/inc-007-nat-pat.html">
+            View Complete Incident Investigation →
+        </a>
+
+    </div>
+
+<section id="bgp">
+
+    <h2>INC-008 — BGP CLI Evidence</h2>
+
+    <p style="margin-bottom: 25px; color: #4b5563;">
+        Cisco IOS BGP commands were used to verify the BGP neighbor
+        relationship, inspect the local BGP table, investigate the
+        affected prefix, verify route advertisements, and confirm
+        the corrected BGP configuration after remediation.
+    </p>
+
+
+    <div class="command-grid">
+
+
+        <div class="command">
+
+            <span class="category">BGP Operations</span>
+
+            <h3>show ip bgp summary</h3>
+
+            <pre>show ip bgp summary</pre>
+
+            <p class="purpose">
+                Used to verify the BGP neighbor relationship and confirm
+                that the BGP peering session was operational.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/05-r1-show-ip-bgp-summary.png"
+                 alt="R1 show ip bgp summary"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+            <p style="margin-top:15px; color:#4b5563;">
+                This established that the investigation needed to continue
+                beyond basic BGP session establishment and focus on route
+                advertisement.
+            </p>
+
+            <a class="button secondary"
+               href="../evidence/inc-008-bgp.html">
+
+                View BGP Evidence →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">BGP Neighbor</span>
+
+            <h3>show ip bgp neighbors</h3>
+
+            <pre>show ip bgp neighbors</pre>
+
+            <p class="purpose">
+                Used to inspect detailed BGP neighbor information and
+                verify the configured remote autonomous system.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/06-r1-show-ip-bgp-neighbors.png"
+                 alt="R1 show ip bgp neighbors"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">BGP Routing Table</span>
+
+            <h3>show ip bgp</h3>
+
+            <pre>show ip bgp</pre>
+
+            <p class="purpose">
+                Used to inspect routes known to the BGP process and
+                investigate the presence of the affected destination.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/07-r1-show-ip-bgp.png"
+                 alt="R1 show ip bgp"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">Prefix Investigation</span>
+
+            <h3>show ip bgp 10.10.10.0</h3>
+
+            <pre>show ip bgp 10.10.10.0</pre>
+
+            <p class="purpose">
+                Used to investigate the affected 10.10.10.0/24 prefix
+                within the local BGP table.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/08-r1-show-ip-bgp-10.10.10.0.png"
+                 alt="R1 BGP lookup for 10.10.10.0"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">BGP Configuration</span>
+
+            <h3>show running-config | section bgp</h3>
+
+            <pre>show running-config | section bgp</pre>
+
+            <p class="purpose">
+                Used to inspect the active BGP configuration and identify
+                the incorrect network statement responsible for the
+                route advertisement failure.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/09-r1-show-run-section-bgp-broken.png"
+                 alt="R1 broken BGP configuration"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+            <p style="margin-top:15px; color:#4b5563;">
+                The configuration showed R1 advertising
+                <strong>10.10.100.0/24</strong> instead of the actual
+                <strong>10.10.10.0/24</strong> destination.
+            </p>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">Route Advertisement</span>
+
+            <h3>Advertised Routes</h3>
+
+            <pre>show ip bgp neighbors 192.0.2.2 advertised-routes</pre>
+
+            <p class="purpose">
+                Used to verify which prefixes R1 was advertising to the
+                ISP neighbor.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/10-r1-advertised-routes-broken.png"
+                 alt="R1 advertised routes before remediation"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">Post-Remediation</span>
+
+            <h3>show running-config | section bgp</h3>
+
+            <pre>show running-config | section bgp</pre>
+
+            <p class="purpose">
+                Used after remediation to verify that the BGP network
+                statement referenced the correct destination prefix.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/22-r1-show-run-section-bgp-fixed.png"
+                 alt="R1 corrected BGP configuration"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">Post-Remediation</span>
+
+            <h3>show ip bgp</h3>
+
+            <pre>show ip bgp</pre>
+
+            <p class="purpose">
+                Used after remediation to confirm the affected prefix
+                was present in the BGP table.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/23-r1-show-ip-bgp-after.png"
+                 alt="R1 BGP table after remediation"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">Post-Remediation</span>
+
+            <h3>Advertised Routes — After</h3>
+
+            <pre>show ip bgp neighbors 192.0.2.2 advertised-routes</pre>
+
+            <p class="purpose">
+                Used to verify that R1 was now advertising the
+                10.10.10.0/24 prefix to the ISP.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/24-r1-advertised-routes-after.png"
-                 alt="R1 advertised routes after remediation">
+                 alt="R1 advertised routes after remediation"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
 
         </div>
 
-
-        <div class="evidence-card">
-
-            <span class="tag">ISP BGP</span>
-
-            <h3>ISP BGP Table — After</h3>
-
-            <p>
-                Confirmed that the ISP learned the affected prefix after
-                the corrected advertisement was received.
-            </p>
-
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/25-isp-show-ip-bgp-after.png"
-                 alt="ISP BGP table after remediation">
-
-        </div>
-
-
-        <div class="evidence-card">
-
-            <span class="tag">Prefix Verification</span>
-
-            <h3>ISP Prefix Lookup — After</h3>
-
-            <p>
-                Verified the affected prefix from the ISP perspective
-                after remediation.
-            </p>
-
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/26-isp-show-ip-bgp-10.10.10.0-after.png"
-                 alt="ISP BGP prefix after remediation">
-
-        </div>
-
-
-        <div class="evidence-card">
-
-            <span class="tag">Routing</span>
-
-            <h3>ISP Routing Table — After</h3>
-
-            <p>
-                Confirmed that the affected destination was now present
-                in the ISP routing table.
-            </p>
-
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/27-isp-show-ip-route-10.10.10.0-after.png"
-                 alt="ISP route after remediation">
-
-        </div>
-
-
-        <div class="evidence-card">
-
-            <span class="tag">End-to-End</span>
-
-            <h3>Public Ping Successful</h3>
-
-            <p>
-                The ISP successfully reached the destination after the
-                BGP advertisement was restored.
-            </p>
-
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/28-isp-ping-10.10.10.10-success.png"
-                 alt="ISP successfully pinging 10.10.10.10">
-
-        </div>
 
     </div>
 
-</section>
 
+    <div style="margin-top:25px;">
 
-<!-- POST REMEDIATION PACKET ANALYSIS -->
-
-<section>
-
-    <h2>Post-Remediation BGP Packet Analysis</h2>
-
-    <div class="evidence-card">
-
-        <span class="tag">Wireshark</span>
-
-        <h3>BGP Flow — After Remediation</h3>
+        <h3>BGP Investigation Result</h3>
 
         <p>
-            The post-remediation packet capture was reviewed to verify
-            the working BGP control-plane exchange.
+            CLI evidence established that the BGP session itself was
+            operational. The failure was isolated to the configured
+            network advertisement. R1 originally referenced
+            <strong>10.10.100.0/24</strong> instead of
+            <strong>10.10.10.0/24</strong>. After correcting the network
+            statement, the affected prefix appeared in the BGP table,
+            was advertised to the ISP, and end-to-end connectivity was
+            restored.
         </p>
 
-        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/29-wireshark-overview-after.png"
-             alt="Wireshark BGP flow after remediation">
+        <a class="button"
+           href="../evidence/inc-008-bgp.html">
+            View Full BGP Investigation →
+        </a>
+
+    </div>
+
+</section>
+<section id="snmp">
+    <h2>INC-005 — SNMP CLI Evidence</h2>
+
+    <p style="margin-bottom: 25px; color: #4b5563;">
+        Cisco IOS CLI was used to isolate an SNMP monitoring failure by
+        verifying interface state, ACLs, SNMP configuration, community
+        configuration, and SNMP protocol activity.
+    </p>
+
+    <div class="command-grid">
+
+        <div class="command">
+            <span class="category">Interface Verification</span>
+
+            <h3>show ip interface brief</h3>
+
+            <pre>show ip interface brief</pre>
+
+            <p class="purpose">
+                Used to verify that the monitored router interfaces were
+                operational and reachable before investigating SNMP.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-005-SNMP-Monitoring-Failure/evidence/screenshots/07-r1-show-ip-interface-brief.png"
+                 alt="Cisco show ip interface brief output"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+        </div>
+
+
+        <div class="command">
+            <span class="category">Network Security</span>
+
+            <h3>show access-lists</h3>
+
+            <pre>show access-lists</pre>
+
+            <p class="purpose">
+                Used to inspect ACL configuration and determine whether
+                monitoring traffic could be filtered.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-005-SNMP-Monitoring-Failure/evidence/screenshots/08-r1-show-access-lists.png"
+                 alt="Cisco show access-lists output"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+        </div>
+
+
+        <div class="command">
+            <span class="category">SNMP</span>
+
+            <h3>show snmp</h3>
+
+            <pre>show snmp</pre>
+
+            <p class="purpose">
+                Used to inspect the operational state and statistics of the
+                SNMP subsystem.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-005-SNMP-Monitoring-Failure/evidence/screenshots/10-r1-show-snmp.png"
+                 alt="Cisco show snmp output"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+        </div>
+
+
+        <div class="command">
+            <span class="category">SNMP</span>
+
+            <h3>show snmp community</h3>
+
+            <pre>show snmp community</pre>
+
+            <p class="purpose">
+                Used to inspect the configured SNMP community information
+                during monitoring troubleshooting.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-005-SNMP-Monitoring-Failure/evidence/screenshots/11-r1-show-snmp-community.png"
+                 alt="Cisco show snmp community output"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+        </div>
+
+
+        <div class="command">
+            <span class="category">Troubleshooting</span>
+
+            <h3>debug snmp</h3>
+
+            <pre>debug snmp</pre>
+
+            <p class="purpose">
+                Used to observe SNMP activity on R1 and correlate polling
+                behavior with the monitoring failure.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-005-SNMP-Monitoring-Failure/evidence/screenshots/12-r1-debug-snmp.png"
+                 alt="Cisco debug snmp output"
+                 style="width:100%; margin-top:15px; border:1px solid #ddd; border-radius:6px;">
+        </div>
+
+    </div>
+
+    <p style="margin-top:25px; color:#4b5563;">
+        These commands were used as part of a layered troubleshooting process:
+        verify reachability, inspect security policy, inspect SNMP state,
+        inspect community configuration, and observe protocol behavior.
+    </p>
+
+    <a class="button" href="../evidence/inc-005-snmp.html">
+        View Full SNMP Investigation →
+    </a>
+</section>
+
+<section>
+
+    <h2>Investigation Workflow</h2>
+
+    <div class="workflow">
+
+
+        <div class="step">
+
+            <h3>01 — Observe</h3>
+
+            <p>
+                Identify the symptom and affected service.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <h3>02 — Hypothesize</h3>
+
+            <p>
+                Develop possible causes based on the symptoms.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <h3>03 — Verify</h3>
+
+            <p>
+                Select CLI commands that can confirm or eliminate
+                each hypothesis.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <h3>04 — Remediate</h3>
+
+            <p>
+                Correct the identified configuration or network issue.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <h3>05 — Validate</h3>
+
+            <p>
+                Use CLI and packet evidence to confirm the fix.
+            </p>
+
+        </div>
+
 
     </div>
 
 </section>
 
 
-<!-- INCIDENT CLOSURE -->
-
 <section>
 
-    <h2>Incident Closure</h2>
+    <div class="intro">
 
-    <p>
-        The BGP route advertisement failure was resolved and validated
-        through multiple independent checks:
-    </p>
+        <h2>Full Technical Evidence</h2>
 
-    <ul>
+        <p>
 
-        <li>
-            R1 BGP configuration corrected.
-        </li>
+            Supporting configurations, screenshots, PCAPs,
+            incident documentation, and project artifacts are
+            maintained in the GitHub repository.
 
-        <li>
-            The 10.10.10.0/24 prefix appeared in R1's BGP table.
-        </li>
+        </p>
 
-        <li>
-            R1 advertised the affected prefix.
-        </li>
+        <br>
 
-        <li>
-            The ISP learned the affected prefix.
-        </li>
+        <a
+            class="button"
+            href="https://github.com/richardpateau/network-incident-response-lab"
+            target="_blank">
 
-        <li>
-            The ISP routing table contained the destination.
-        </li>
+            View GitHub Repository →
 
-        <li>
-            End-to-end ping succeeded.
-        </li>
-
-        <li>
-            Post-remediation BGP packet capture confirmed the working
-            control-plane exchange.
-        </li>
-
-        <li>
-            The ServiceNow-style incident was resolved and closed.
-        </li>
-
-    </ul>
-
-
-    <div class="evidence-card">
-
-        <span class="tag">Incident Closure</span>
-
-        <h3>ServiceNow Resolution Evidence</h3>
-
-        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/30-servicenow-resolved.png"
-             alt="INC-008 ServiceNow resolved incident">
+        </a>
 
     </div>
-
-</section>
-
-
-<!-- METHODOLOGY -->
-
-<section class="methodology">
-
-    <h2>Investigation Methodology</h2>
-
-    <p>
-        The incident followed a structured BGP troubleshooting workflow:
-    </p>
-
-    <ol>
-
-        <li>
-            Confirm the public connectivity failure.
-        </li>
-
-        <li>
-            Verify R1 interface state.
-        </li>
-
-        <li>
-            Verify the affected route locally.
-        </li>
-
-        <li>
-            Verify BGP neighbor and session state.
-        </li>
-
-        <li>
-            Inspect the BGP routing table.
-        </li>
-
-        <li>
-            Investigate the specific affected prefix.
-        </li>
-
-        <li>
-            Inspect the BGP configuration.
-        </li>
-
-        <li>
-            Verify advertised routes from R1.
-        </li>
-
-        <li>
-            Correlate R1's advertisements with the ISP BGP table.
-        </li>
-
-        <li>
-            Analyze BGP packet captures.
-        </li>
-
-        <li>
-            Correct the BGP network statement.
-        </li>
-
-        <li>
-            Verify the prefix locally and at the ISP.
-        </li>
-
-        <li>
-            Confirm end-to-end connectivity.
-        </li>
-
-        <li>
-            Validate the working BGP exchange with Wireshark.
-        </li>
-
-        <li>
-            Document and close the incident.
-        </li>
-
-    </ol>
-
-</section>
-
-
-<!-- TECHNICAL EVIDENCE -->
-
-<section>
-
-    <h2>Technical Evidence</h2>
-
-    <p>
-        The complete raw evidence is maintained in the GitHub repository.
-    </p>
-
-    <a class="button"
-       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-008-BGP-Route-Advertisement-Failure">
-        View Full Incident Repository →
-    </a>
-
-    <a class="button secondary"
-       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/pcaps">
-        View PCAPs
-    </a>
-
-    <a class="button secondary"
-       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/configs">
-        View Configurations
-    </a>
-
-    <br>
-
-    <a class="button secondary"
-       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/configs/r1-bgp-broken.txt">
-        Broken Configuration
-    </a>
-
-    <a class="button secondary"
-       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/configs/r1-bgp-fixed.txt">
-        Fixed Configuration
-    </a>
-
-    <a class="button secondary"
-       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/configs/isp-bgp-baseline.txt">
-        ISP Baseline
-    </a>
 
 </section>
 
@@ -1216,10 +1965,13 @@
 
 <footer>
 
-    Network Incident Response Lab — Richard Pateau
+    <p>
+        Richard Pateau | Network Engineering Portfolio
+    </p>
 
 </footer>
 
 
 </body>
+
 </html>
