@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>INC-008 — BGP Route Advertisement Failure | Richard Pateau</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 45px 20px;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        header h1 {
+            margin: 0 0 10px;
+            font-size: 34px;
+        }
+
+        header p {
+            margin: 0;
+            color: #cbd5e1;
+            font-size: 16px;
+        }
+
+        nav {
+            background: #1f2937;
+            padding: 15px 20px;
+        }
+
+        nav div {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        nav a {
+            color: #dbeafe;
+            text-decoration: none;
+            margin-right: 20px;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #111827;
+            font-size: 25px;
+        }
+
+        h3 {
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-card {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 18px;
+        }
+
+        .summary-card strong {
+            display: block;
+            color: #111827;
+            margin-bottom: 5px;
+        }
+
+        .evidence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .evidence-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 18px;
+            background: #ffffff;
+        }
+
+        .evidence-card img {
+            width: 100%;
+            margin-top: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e5e7eb;
+            color: #374151;
+            padding: 4px 9px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        pre {
+            background: #111827;
+            color: #e5e7eb;
+            padding: 18px;
+            border-radius: 7px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+
+        .root-cause {
+            border-left: 5px solid #dc2626;
+            background: #fef2f2;
+        }
+
+        .resolution {
+            border-left: 5px solid #16a34a;
+            background: #f0fdf4;
+        }
+
+        .verification {
+            border-left: 5px solid #2563eb;
+            background: #eff6ff;
+        }
+
+        .methodology {
+            background: #f8fafc;
+            border-left: 5px solid #64748b;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 12px;
+            margin-right: 8px;
+            padding: 9px 14px;
+            background: #111827;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .button:hover {
+            background: #374151;
+        }
+
+        .button.secondary {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .button.secondary:hover {
+            background: #d1d5db;
+        }
+
+        ul,
+        ol {
+            padding-left: 22px;
+        }
+
+        footer {
+            text-align: center;
+            color: #6b7280;
+            padding: 30px;
+            font-size: 14px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+<header>
+
+    <div class="header-content">
+
+        <h1>INC-008 — BGP Route Advertisement Failure</h1>
+
+        <p>
+            Network Incident Response Lab — BGP troubleshooting,
+            route advertisement analysis, packet capture, monitoring,
+            and post-remediation verification.
+        </p>
+
+    </div>
+
+</header>
+
+
+<nav>
+
+    <div>
+
+        <a href="../index.html">Home</a>
+
+        <a href="../projects/network-incident-response.html">
+            Incident Response Lab
+        </a>
+
+        <a href="cisco-cli.html">
+            Cisco CLI
+        </a>
+
+        <a href="wireshark.html">
+            Wireshark
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main>
+
+
+<!-- INCIDENT SUMMARY -->
+
+<section>
+
+    <h2>Incident Summary</h2>
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+            <strong>Incident</strong>
+            INC-008
+        </div>
+
+        <div class="summary-card">
+            <strong>Category</strong>
+            Network / BGP
+        </div>
+
+        <div class="summary-card">
+            <strong>Protocol</strong>
+            BGP
+        </div>
+
+        <div class="summary-card">
+            <strong>Analysis</strong>
+            Wireshark / tcpdump
+        </div>
+
+        <div class="summary-card">
+            <strong>Monitoring</strong>
+            SolarWinds / Splunk
+        </div>
+
+        <div class="summary-card">
+            <strong>Status</strong>
+            Resolved
+        </div>
+
+    </div>
+
+    <p style="margin-top:25px;">
+
+        A public-facing destination was unreachable because R1 was
+        configured to advertise 10.10.100.0/24 instead of the actual
+        10.10.10.0/24 destination. The investigation verified the BGP
+        session, examined route advertisement from R1 and the ISP
+        perspective, analyzed BGP packet captures, corrected the network
+        statement, and verified end-to-end reachability.
+
+    </p>
+
+</section>
+
+
+<!-- INITIAL SYMPTOMS -->
+
+<section>
+
+    <h2>Initial Symptoms</h2>
+
+    <p>
+        The incident began with failed connectivity to the web server's
+        destination. The investigation first established that the failure
+        was not caused by a local interface or basic routing condition
+        on R1.
+    </p>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">Incident</span>
+
+            <h3>ServiceNow-Style Ticket</h3>
+
+            <p>
+                The incident was documented and tracked through the
+                network operations workflow.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/01-servicenow-ticket.png"
+                 alt="INC-008 ServiceNow-style incident ticket">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Connectivity</span>
+
+            <h3>Web Server Ping Failure</h3>
+
+            <p>
+                The public destination was unreachable during the
+                initial connectivity test.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/02-web-server-ping-fail.png"
+                 alt="Web server ping failure">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- INTERFACE AND ROUTING -->
+
+<section>
+
+    <h2>Interface and Local Routing Investigation</h2>
+
+    <p>
+        R1 was checked first to confirm that the relevant interface and
+        local routing state were operational before moving into
+        BGP-specific troubleshooting.
+    </p>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">Cisco IOS</span>
+
+            <h3>show ip interface brief</h3>
+
+            <p>
+                Used to verify interface state and addressing on R1.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/03-r1-show-ip-interface-brief.png"
+                 alt="R1 show ip interface brief">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Routing</span>
+
+            <h3>show ip route 10.10.10.0</h3>
+
+            <p>
+                Used to determine whether the affected destination network
+                was present in the local routing table.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/04-r1-show-ip-route-10.10.10.0.png"
+                 alt="R1 route lookup for 10.10.10.0">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- BGP SESSION -->
+
+<section>
+
+    <h2>BGP Session Investigation</h2>
+
+    <p>
+        BGP neighbor and session state were inspected to determine whether
+        the peering relationship itself was operational.
+    </p>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">BGP</span>
+
+            <h3>show ip bgp summary</h3>
+
+            <p>
+                Used to verify BGP neighbor state and session health.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/05-r1-show-ip-bgp-summary.png"
+                 alt="R1 BGP summary">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">BGP</span>
+
+            <h3>show ip bgp neighbors</h3>
+
+            <p>
+                Used to inspect detailed BGP neighbor information and
+                verify the peering relationship.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/06-r1-show-ip-bgp-neighbors.png"
+                 alt="R1 BGP neighbor details">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">BGP RIB</span>
+
+            <h3>show ip bgp</h3>
+
+            <p>
+                Used to inspect BGP routes known to R1.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/07-r1-show-ip-bgp.png"
+                 alt="R1 BGP table">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">BGP Prefix</span>
+
+            <h3>show ip bgp 10.10.10.0</h3>
+
+            <p>
+                Used to investigate the affected prefix and determine
+                how BGP was handling the route.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/08-r1-show-ip-bgp-10.10.10.0.png"
+                 alt="R1 BGP lookup for 10.10.10.0">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CONFIGURATION INVESTIGATION -->
+
+<section>
+
+    <h2>BGP Configuration Investigation</h2>
+
+    <p>
+        The active BGP configuration was inspected after confirming the
+        BGP session state and examining the affected prefix.
+    </p>
+
+    <div class="evidence-card">
+
+        <span class="tag">Configuration</span>
+
+        <h3>show running-config — BGP</h3>
+
+        <p>
+            The BGP configuration was reviewed to determine why the
+            affected prefix was not being advertised as expected.
+        </p>
+
+        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/09-r1-show-run-section-bgp-broken.png"
+             alt="R1 broken BGP configuration">
+
+    </div>
+
+</section>
+
+
+<!-- ROUTE ADVERTISEMENT -->
+
+<section>
+
+    <h2>Route Advertisement Investigation</h2>
+
+    <p>
+        The next step was to determine whether R1 was actually advertising
+        the affected prefix to its BGP neighbor.
+    </p>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">BGP Advertisement</span>
+
+            <h3>Advertised Routes — Before Remediation</h3>
+
+            <p>
+                The advertised-route output was examined to determine
+                whether the affected prefix was being sent to the ISP.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/10-r1-advertised-routes-broken.png"
+                 alt="R1 advertised routes before remediation">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">ISP BGP</span>
+
+            <h3>ISP BGP Summary</h3>
+
+            <p>
+                The ISP-side BGP session was checked to correlate the
+                customer router's advertisement with the provider's
+                perspective.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/11-isp-show-ip-bgp-summary.png"
+                 alt="ISP BGP summary">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">ISP BGP Table</span>
+
+            <h3>show ip bgp</h3>
+
+            <p>
+                The ISP's BGP table was inspected to determine whether
+                the affected prefix had been learned.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/12-isp-show-ip-bgp.png"
+                 alt="ISP BGP table">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Prefix Analysis</span>
+
+            <h3>ISP Prefix Lookup</h3>
+
+            <p>
+                The specific affected prefix was examined from the
+                ISP perspective.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/13-isp-show-ip-bgp-10.10.10.0.png"
+                 alt="ISP BGP lookup for affected prefix">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Routing</span>
+
+            <h3>ISP Routing Table</h3>
+
+            <p>
+                The ISP routing table was checked to determine whether
+                the affected destination had a usable route.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/14-isp-show-ip-route-10.10.10.0.png"
+                 alt="ISP route lookup for affected prefix">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">BGP Advertisement</span>
+
+            <h3>ISP Advertised Routes</h3>
+
+            <p>
+                The ISP's advertised-route information was reviewed as
+                part of the end-to-end BGP investigation.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/15-isp-advertised-routes.png"
+                 alt="ISP advertised routes">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- PACKET ANALYSIS -->
+
+<section>
+
+    <h2>BGP Packet Analysis</h2>
+
+    <p>
+        Packet capture analysis was used to correlate the BGP control-plane
+        behavior with the routing information observed on R1 and the ISP.
+    </p>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">tcpdump</span>
+
+            <h3>BGP Traffic Capture</h3>
+
+            <p>
+                Captured BGP traffic during the investigation for
+                protocol-level analysis.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/16-tcpdump.png"
+                 alt="tcpdump BGP traffic">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Wireshark</span>
+
+            <h3>BGP Flow — Before Remediation</h3>
+
+            <p>
+                Examined the BGP packet exchange associated with the
+                failed route advertisement.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/17-wireshark-overview-broken.png"
+                 alt="Wireshark BGP flow before remediation">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- MONITORING -->
+
+<section>
+
+    <h2>Monitoring Correlation</h2>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">SolarWinds</span>
+
+            <h3>Network Monitoring</h3>
+
+            <p>
+                SolarWinds was used to correlate the routing condition
+                with network monitoring information.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/18-solarwinds-dashboard.png"
+                 alt="SolarWinds dashboard during BGP incident">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">SolarWinds</span>
+
+            <h3>Routing Insights — Before</h3>
+
+            <p>
+                Routing information was reviewed from the monitoring
+                platform during the failed state.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/19-solarwinds-routing-insights-before.png"
+                 alt="SolarWinds routing insights before remediation">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">SolarWinds</span>
+
+            <h3>Routing Neighbors</h3>
+
+            <p>
+                BGP neighbor status was correlated with the routing
+                investigation.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/20-solarwinds-routing-neighbors-up.png"
+                 alt="SolarWinds routing neighbors">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Splunk</span>
+
+            <h3>Log Correlation</h3>
+
+            <p>
+                Splunk was reviewed for supporting network and incident
+                evidence.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/21-splunk.png"
+                 alt="Splunk BGP incident evidence">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ROOT CAUSE -->
+
+<section class="root-cause">
+
+    <h2>Root Cause</h2>
+
+    <p>
+        The BGP peering session between R1 and the ISP was operational,
+        but R1 was configured to advertise the wrong network.
+    </p>
+
+    <h3>Broken BGP Configuration</h3>
+
+    <pre>router bgp 65000
+ bgp log-neighbor-changes
+ neighbor 192.0.2.2 remote-as 65001
+ network 10.10.100.0 mask 255.255.255.0</pre>
+
+    <p>
+        The affected destination was the
+        <strong>10.10.10.0/24</strong> network, but R1's BGP
+        configuration referenced <strong>10.10.100.0/24</strong>.
+    </p>
+
+    <p>
+        Because the configured BGP network statement did not identify
+        the affected 10.10.10.0/24 prefix, R1 did not advertise that
+        destination to the ISP. The ISP therefore did not have the
+        required route to reach the affected network.
+    </p>
+
+    <h3>Corrected BGP Configuration</h3>
+
+    <pre>router bgp 65000
+ bgp log-neighbor-changes
+ neighbor 192.0.2.2 remote-as 65001
+ network 10.10.10.0 mask 255.255.255.0</pre>
+
+    <p>
+        The BGP network statement was corrected to reference the actual
+        10.10.10.0/24 destination network.
+    </p>
+
+    <p>
+        This conclusion is supported by the before-and-after BGP
+        configurations, R1's advertised-route output, the ISP's BGP
+        table and routing table, packet captures, and successful
+        post-remediation connectivity.
+    </p>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/configs/r1-bgp-broken.txt">
+        View Broken Configuration
+    </a>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/configs/r1-bgp-fixed.txt">
+        View Fixed Configuration
+    </a>
+
+</section>
+
+
+<!-- REMEDIATION -->
+
+<section class="resolution">
+
+    <h2>Remediation</h2>
+
+    <p>
+        The incorrect BGP network statement on R1 was replaced with the
+        actual destination network, 10.10.10.0/24.
+    </p>
+
+    <h3>Corrected Configuration</h3>
+
+    <pre>router bgp 65000
+ bgp log-neighbor-changes
+ neighbor 192.0.2.2 remote-as 65001
+ network 10.10.10.0 mask 255.255.255.0</pre>
+
+    <p>
+        This correction caused R1 to advertise the intended
+        10.10.10.0/24 prefix toward the ISP.
+    </p>
+
+    <div class="evidence-card">
+
+        <span class="tag">Configuration Change</span>
+
+        <h3>BGP Configuration After Remediation</h3>
+
+        <p>
+            The corrected BGP configuration was captured after the
+            network statement was changed.
+        </p>
+
+        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/22-r1-show-run-section-bgp-fixed.png"
+             alt="R1 corrected BGP configuration">
+
+    </div>
+
+</section>
+
+
+<!-- POST REMEDIATION -->
+
+<section class="verification">
+
+    <h2>Post-Remediation Verification</h2>
+
+    <p>
+        Verification confirmed that the affected prefix was now present
+        in the BGP process, advertised by R1, learned by the ISP, and
+        reachable end-to-end.
+    </p>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">BGP Verification</span>
+
+            <h3>show ip bgp — After</h3>
+
+            <p>
+                Verified the affected prefix in R1's BGP table after
+                remediation.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/23-r1-show-ip-bgp-after.png"
+                 alt="R1 BGP table after remediation">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Advertisement</span>
+
+            <h3>R1 Advertised Routes — After</h3>
+
+            <p>
+                Confirmed that R1 was advertising the affected prefix
+                after the configuration correction.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/24-r1-advertised-routes-after.png"
+                 alt="R1 advertised routes after remediation">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">ISP BGP</span>
+
+            <h3>ISP BGP Table — After</h3>
+
+            <p>
+                Confirmed that the ISP learned the affected prefix after
+                the corrected advertisement was received.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/25-isp-show-ip-bgp-after.png"
+                 alt="ISP BGP table after remediation">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Prefix Verification</span>
+
+            <h3>ISP Prefix Lookup — After</h3>
+
+            <p>
+                Verified the affected prefix from the ISP perspective
+                after remediation.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/26-isp-show-ip-bgp-10.10.10.0-after.png"
+                 alt="ISP BGP prefix after remediation">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Routing</span>
+
+            <h3>ISP Routing Table — After</h3>
+
+            <p>
+                Confirmed that the affected destination was now present
+                in the ISP routing table.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/27-isp-show-ip-route-10.10.10.0-after.png"
+                 alt="ISP route after remediation">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">End-to-End</span>
+
+            <h3>Public Ping Successful</h3>
+
+            <p>
+                The ISP successfully reached the destination after the
+                BGP advertisement was restored.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/28-isp-ping-10.10.10.10-success.png"
+                 alt="ISP successfully pinging 10.10.10.10">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- POST REMEDIATION PACKET ANALYSIS -->
+
+<section>
+
+    <h2>Post-Remediation BGP Packet Analysis</h2>
+
+    <div class="evidence-card">
+
+        <span class="tag">Wireshark</span>
+
+        <h3>BGP Flow — After Remediation</h3>
+
+        <p>
+            The post-remediation packet capture was reviewed to verify
+            the working BGP control-plane exchange.
+        </p>
+
+        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/29-wireshark-overview-after.png"
+             alt="Wireshark BGP flow after remediation">
+
+    </div>
+
+</section>
+
+
+<!-- INCIDENT CLOSURE -->
+
+<section>
+
+    <h2>Incident Closure</h2>
+
+    <p>
+        The BGP route advertisement failure was resolved and validated
+        through multiple independent checks:
+    </p>
+
+    <ul>
+
+        <li>
+            R1 BGP configuration corrected.
+        </li>
+
+        <li>
+            The 10.10.10.0/24 prefix appeared in R1's BGP table.
+        </li>
+
+        <li>
+            R1 advertised the affected prefix.
+        </li>
+
+        <li>
+            The ISP learned the affected prefix.
+        </li>
+
+        <li>
+            The ISP routing table contained the destination.
+        </li>
+
+        <li>
+            End-to-end ping succeeded.
+        </li>
+
+        <li>
+            Post-remediation BGP packet capture confirmed the working
+            control-plane exchange.
+        </li>
+
+        <li>
+            The ServiceNow-style incident was resolved and closed.
+        </li>
+
+    </ul>
+
+
+    <div class="evidence-card">
+
+        <span class="tag">Incident Closure</span>
+
+        <h3>ServiceNow Resolution Evidence</h3>
+
+        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/screenshots/30-servicenow-resolved.png"
+             alt="INC-008 ServiceNow resolved incident">
+
+    </div>
+
+</section>
+
+
+<!-- METHODOLOGY -->
+
+<section class="methodology">
+
+    <h2>Investigation Methodology</h2>
+
+    <p>
+        The incident followed a structured BGP troubleshooting workflow:
+    </p>
+
+    <ol>
+
+        <li>
+            Confirm the public connectivity failure.
+        </li>
+
+        <li>
+            Verify R1 interface state.
+        </li>
+
+        <li>
+            Verify the affected route locally.
+        </li>
+
+        <li>
+            Verify BGP neighbor and session state.
+        </li>
+
+        <li>
+            Inspect the BGP routing table.
+        </li>
+
+        <li>
+            Investigate the specific affected prefix.
+        </li>
+
+        <li>
+            Inspect the BGP configuration.
+        </li>
+
+        <li>
+            Verify advertised routes from R1.
+        </li>
+
+        <li>
+            Correlate R1's advertisements with the ISP BGP table.
+        </li>
+
+        <li>
+            Analyze BGP packet captures.
+        </li>
+
+        <li>
+            Correct the BGP network statement.
+        </li>
+
+        <li>
+            Verify the prefix locally and at the ISP.
+        </li>
+
+        <li>
+            Confirm end-to-end connectivity.
+        </li>
+
+        <li>
+            Validate the working BGP exchange with Wireshark.
+        </li>
+
+        <li>
+            Document and close the incident.
+        </li>
+
+    </ol>
+
+</section>
+
+
+<!-- TECHNICAL EVIDENCE -->
+
+<section>
+
+    <h2>Technical Evidence</h2>
+
+    <p>
+        The complete raw evidence is maintained in the GitHub repository.
+    </p>
+
+    <a class="button"
+       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-008-BGP-Route-Advertisement-Failure">
+        View Full Incident Repository →
+    </a>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/pcaps">
+        View PCAPs
+    </a>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/configs">
+        View Configurations
+    </a>
+
+    <br>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/configs/r1-bgp-broken.txt">
+        Broken Configuration
+    </a>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/configs/r1-bgp-fixed.txt">
+        Fixed Configuration
+    </a>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-008-BGP-Route-Advertisement-Failure/evidence/configs/isp-bgp-baseline.txt">
+        ISP Baseline
+    </a>
+
+</section>
+
+
+</main>
+
+
+<footer>
+
+    Network Incident Response Lab — Richard Pateau
+
+</footer>
+
+
+</body>
+</html>
