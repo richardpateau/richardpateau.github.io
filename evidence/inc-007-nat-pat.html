@@ -757,22 +757,40 @@
     <h2>Root Cause</h2>
 
     <p>
-        The investigation isolated the failure to the NAT translation
-        process. The affected inside traffic was not matching the NAT
-        policy as expected, which prevented the router from creating the
-        required translation entry.
+        The NAT overload configuration on R1 was correctly configured to
+        translate traffic from the inside interface out through
+        GigabitEthernet0/2. However, the standard NAT-INSIDE access list
+        referenced the wrong source network.
+    </p>
+
+    <h3>Broken NAT ACL</h3>
+
+    <pre>ip access-list standard NAT-INSIDE
+ permit 10.10.20.0 0.0.0.3</pre>
+
+    <p>
+        The client-facing LAN was configured as
+        <strong>10.10.10.0/24</strong>, so client traffic from that network
+        did not match the NAT-INSIDE ACL. As a result, R1 did not create
+        the required NAT translation entries for the affected traffic.
+    </p>
+
+    <h3>Corrected NAT ACL</h3>
+
+    <pre>ip access-list standard NAT-INSIDE
+ permit 10.10.10.0 0.0.0.255</pre>
+
+    <p>
+        The ACL was corrected to match the actual inside LAN. After the
+        change, the ACL began matching client traffic and NAT translations
+        were created successfully.
     </p>
 
     <p>
-        This was supported by the combination of successful internal
-        connectivity, verified routing, inspection of the NAT and ACL
-        configuration, an empty NAT translation table, and packet captures
-        showing the failed public flow.
-    </p>
-
-    <p>
-        The NAT inside ACL/configuration was corrected so the affected
-        client traffic could be translated.
+        This conclusion was supported by the configuration comparison,
+        empty pre-remediation NAT translations, packet capture analysis,
+        post-remediation ACL match counters, populated NAT translations,
+        and successful public connectivity.
     </p>
 
 </section>
@@ -785,10 +803,23 @@
     <h2>Remediation</h2>
 
     <p>
-        The NAT configuration was corrected on R1 and the NAT access-list
-        was updated so the affected inside traffic could participate in
-        translation.
+        The incorrect NAT-INSIDE ACL was removed and replaced with an ACL
+        matching the actual client LAN, 10.10.10.0/24.
     </p>
+
+    <pre>no ip access-list standard NAT-INSIDE
+
+ip access-list standard NAT-INSIDE
+ permit 10.10.10.0 0.0.0.255</pre>
+
+    <p>
+        Existing NAT translations were then cleared and the configuration
+        was saved so subsequent client traffic would be evaluated against
+        the corrected NAT policy.
+    </p>
+
+    <pre>clear ip nat translation *
+write memory</pre>
 
     <div class="evidence-card">
 
@@ -797,12 +828,13 @@
         <h3>NAT Fix Applied</h3>
 
         <p>
-            The remediation was captured immediately after the
-            configuration change.
+            The configuration change shows the incorrect
+            <strong>10.10.20.0/30</strong> NAT match being replaced with
+            the correct <strong>10.10.10.0/24</strong> client network.
         </p>
 
         <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/21-r1-nat-fix-applied.png"
-             alt="R1 NAT fix applied">
+             alt="R1 NAT ACL correction applied">
 
     </div>
 
@@ -816,8 +848,9 @@
     <h2>Post-Remediation Verification</h2>
 
     <p>
-        Verification confirmed that the NAT policy was now matching
-        traffic and that active translations were being created.
+        Verification confirmed that the corrected NAT-INSIDE ACL was
+        matching traffic from the client LAN and that R1 was successfully
+        creating NAT translations for the affected connections.
     </p>
 
     <div class="evidence-grid">
@@ -826,14 +859,19 @@
 
             <span class="tag">ACL Verification</span>
 
-            <h3>NAT ACL After Fix</h3>
+            <h3>show access-lists NAT-INSIDE</h3>
 
             <p>
-                Verified the corrected NAT access-list configuration.
+                The corrected ACL now permits the actual client LAN,
+                10.10.10.0/24. The ACL recorded three matches, confirming
+                that client traffic was successfully matching the NAT policy.
             </p>
 
+            <pre>Standard IP access list NAT-INSIDE
+    10 permit 10.10.10.0, wildcard bits 0.0.0.255 (3 matches)</pre>
+
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/22-r1-show-access-list-nat-inside-fixed.png"
-                 alt="NAT access list after remediation">
+                 alt="R1 NAT-INSIDE ACL showing three matches">
 
         </div>
 
@@ -845,26 +883,26 @@
             <h3>show ip nat translations</h3>
 
             <p>
-                Active NAT translation entries appeared after the fix,
-                confirming that the router was translating the affected
+                NAT translation entries populated after the ACL correction,
+                confirming that R1 was translating the client's inside
                 traffic.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/23-r1-show-ip-nat-translations-after.png"
-                 alt="NAT translations after remediation">
+                 alt="NAT translations populated after remediation">
 
         </div>
 
 
         <div class="evidence-card">
 
-            <span class="tag">Statistics</span>
+            <span class="tag">NAT Statistics</span>
 
             <h3>show ip nat statistics</h3>
 
             <p>
-                NAT statistics were reviewed after remediation to confirm
-                translation activity.
+                NAT statistics were checked after remediation to confirm
+                translation activity and validate the corrected NAT policy.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/24-r1-show-ip-nat-statistics-after.png"
@@ -880,12 +918,13 @@
             <h3>Public Ping Successful</h3>
 
             <p>
-                The affected client successfully reached the public
-                destination after the NAT correction.
+                The client successfully reached the public destination
+                after the NAT ACL was corrected, confirming restored
+                end-to-end connectivity.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/25-pc1-ping-public-success.png"
-                 alt="PC1 public ping successful">
+                 alt="PC1 successfully pinging public destination">
 
         </div>
 
@@ -898,13 +937,46 @@
 
             <p>
                 Traceroute successfully completed after remediation,
-                providing additional end-to-end path verification.
+                providing an additional verification of the restored
+                public path.
             </p>
 
             <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/26-pc1-traceroute-public-success.png"
                  alt="PC1 public traceroute successful">
 
         </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Packet Analysis</span>
+
+            <h3>Working NAT Flow</h3>
+
+            <p>
+                Wireshark confirmed the post-remediation request and reply
+                traffic, providing packet-level verification of the working
+                NAT path.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/27-wireshark-overview-working.png"
+                 alt="Wireshark working NAT flow after remediation">
+
+        </div>
+
+    </div>
+
+    <div style="margin-top:25px;">
+
+        <h3>Verification Result</h3>
+
+        <p>
+            The verification sequence demonstrated the complete recovery:
+            the corrected ACL matched client traffic, NAT translations
+            populated, NAT statistics reflected translation activity,
+            public ping succeeded, traceroute completed successfully, and
+            Wireshark confirmed the working translated packet flow.
+        </p>
 
     </div>
 
