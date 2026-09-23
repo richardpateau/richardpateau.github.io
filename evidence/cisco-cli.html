@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Cisco CLI Evidence | Richard Pateau</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 55px 20px;
+        }
+
+        header .container,
+        nav .container,
+        main {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        header h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #d1d5db;
+            font-size: 18px;
+        }
+
+        nav {
+            background: white;
+            padding: 18px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        nav a {
+            margin-right: 25px;
+            color: #374151;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        main {
+            padding: 50px 20px;
+        }
+
+        section {
+            margin-bottom: 55px;
+        }
+
+        h2 {
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            margin-bottom: 10px;
+        }
+
+        .intro,
+        .command {
+            background: white;
+            padding: 28px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .command-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .command {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .category {
+            display: inline-block;
+            background: #eef2ff;
+            padding: 5px 9px;
+            border-radius: 5px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            width: fit-content;
+        }
+
+        pre {
+            background: #111827;
+            color: #e5e7eb;
+            padding: 18px;
+            border-radius: 7px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .purpose {
+            color: #4b5563;
+            margin-bottom: 15px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 9px 14px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: auto;
+            width: fit-content;
+        }
+
+        .secondary {
+            background: #374151;
+        }
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .step {
+            background: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        footer {
+            background: #111827;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="container">
+
+        <h1>Cisco CLI Evidence</h1>
+
+        <p>
+            Cisco IOS commands used to investigate, diagnose,
+            remediate, and verify network incidents.
+        </p>
+
+    </div>
+
+</header>
+
+
+<nav>
+
+    <div class="container">
+
+        <a href="../index.html">
+            Portfolio
+        </a>
+
+        <a href="../projects/network-incident-response.html">
+            Incident Response Lab
+        </a>
+
+        <a href="#routing">
+            Routing
+        </a>
+
+        <a href="#switching">
+            Switching
+        </a>
+
+        <a href="#dhcp">
+            DHCP
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main>
+
+
+<section>
+
+    <div class="intro">
+
+        <h2>CLI as Evidence</h2>
+
+        <p>
+
+            Cisco IOS commands were used as investigative and
+            verification tools throughout the Network Incident
+            Response Lab.
+
+        </p>
+
+        <br>
+
+        <p>
+
+            Each command below is connected to an incident where
+            it was used to answer a specific troubleshooting question,
+            rather than being presented as a memorized command list.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+<section id="routing">
+
+    <h2>Routing</h2>
+
+    <div class="command-grid">
+
+
+        <div class="command">
+
+            <span class="category">OSPF</span>
+
+            <h3>show ip ospf neighbor</h3>
+
+<pre>
+show ip ospf neighbor
+</pre>
+
+            <p class="purpose">
+
+                Used to determine whether an OSPF neighbor relationship
+                was established and what state the adjacency had reached.
+
+            </p>
+
+            <a class="button"
+               href="../evidence/inc-001-dhcp.html">
+
+                View Incident Evidence →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">Routing</span>
+
+            <h3>show ip route</h3>
+
+<pre>
+show ip route
+</pre>
+
+            <p class="purpose">
+
+                Used to verify whether expected routes were present
+                in the routing table after troubleshooting.
+
+            </p>
+
+            <a class="button secondary"
+               href="../projects/network-incident-response.html">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">BGP</span>
+
+            <h3>show ip bgp summary</h3>
+
+<pre>
+show ip bgp summary
+</pre>
+
+            <p class="purpose">
+
+                Used to verify BGP peer state and confirm whether
+                the BGP session was established.
+
+            </p>
+
+            <a class="button secondary"
+               href="../projects/network-incident-response.html">
+
+                View Incident →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">BGP</span>
+
+            <h3>show ip bgp</h3>
+
+<pre>
+show ip bgp
+</pre>
+
+            <p class="purpose">
+
+                Used to inspect BGP-learned prefixes and determine
+                whether the expected network was present.
+
+            </p>
+
+            <a class="button secondary"
+               href="../projects/network-incident-response.html">
+
+                View Incident →
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<section id="switching">
+
+    <h2>Switching</h2>
+
+    <div class="command-grid">
+
+
+        <div class="command">
+
+            <span class="category">VLAN</span>
+
+            <h3>show vlan brief</h3>
+
+<pre>
+show vlan brief
+</pre>
+
+            <p class="purpose">
+
+                Used to verify VLAN existence and switchport
+                membership during Layer 2 troubleshooting.
+
+            </p>
+
+            <a class="button secondary"
+               href="../projects/network-incident-response.html">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">Trunking</span>
+
+            <h3>show interfaces trunk</h3>
+
+<pre>
+show interfaces trunk
+</pre>
+
+            <p class="purpose">
+
+                Used to verify trunk state and VLANs being
+                carried across trunk links.
+
+            </p>
+
+            <a class="button secondary"
+               href="../projects/network-incident-response.html">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">STP</span>
+
+            <h3>show spanning-tree</h3>
+
+<pre>
+show spanning-tree
+</pre>
+
+            <p class="purpose">
+
+                Used to inspect spanning-tree state and
+                Layer 2 topology behavior.
+
+            </p>
+
+            <a class="button secondary"
+               href="../projects/network-incident-response.html">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">EtherChannel</span>
+
+            <h3>show etherchannel summary</h3>
+
+<pre>
+show etherchannel summary
+</pre>
+
+            <p class="purpose">
+
+                Used to verify EtherChannel formation and
+                member interface state.
+
+            </p>
+
+            <a class="button secondary"
+               href="../projects/network-incident-response.html">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<section id="dhcp">
+
+    <h2>DHCP Investigation</h2>
+
+    <div class="command-grid">
+
+
+        <div class="command">
+
+            <span class="category">DHCP</span>
+
+            <h3>show ip dhcp pool</h3>
+
+<pre>
+show ip dhcp pool
+</pre>
+
+            <p class="purpose">
+
+                Used to inspect DHCP pool configuration and
+                available address ranges during INC-001.
+
+            </p>
+
+            <a class="button"
+               href="../evidence/inc-001-dhcp.html">
+
+                View INC-001 →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">DHCP</span>
+
+            <h3>show ip dhcp binding</h3>
+
+<pre>
+show ip dhcp binding
+</pre>
+
+            <p class="purpose">
+
+                Used to determine whether the DHCP server had
+                successfully assigned an address to the client.
+
+            </p>
+
+            <a class="button"
+               href="../evidence/inc-001-dhcp.html">
+
+                View INC-001 →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">Interfaces</span>
+
+            <h3>show ip interface brief</h3>
+
+<pre>
+show ip interface brief
+</pre>
+
+            <p class="purpose">
+
+                Used to quickly verify interface state and
+                addressing during the investigation.
+
+            </p>
+
+            <a class="button"
+               href="../evidence/inc-001-dhcp.html">
+
+                View INC-001 →
+
+            </a>
+
+        </div>
+
+
+        <div class="command">
+
+            <span class="category">Configuration</span>
+
+            <h3>show running-config</h3>
+
+<pre>
+show running-config
+</pre>
+
+            <p class="purpose">
+
+                Used to inspect the active configuration and
+                identify the DHCP configuration issue.
+
+            </p>
+
+            <a class="button"
+               href="../evidence/inc-001-dhcp.html">
+
+                View INC-001 →
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <h2>Investigation Workflow</h2>
+
+    <div class="workflow">
+
+
+        <div class="step">
+
+            <h3>01 — Observe</h3>
+
+            <p>
+                Identify the symptom and affected service.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <h3>02 — Hypothesize</h3>
+
+            <p>
+                Develop possible causes based on the symptoms.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <h3>03 — Verify</h3>
+
+            <p>
+                Select CLI commands that can confirm or eliminate
+                each hypothesis.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <h3>04 — Remediate</h3>
+
+            <p>
+                Correct the identified configuration or network issue.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <h3>05 — Validate</h3>
+
+            <p>
+                Use CLI and packet evidence to confirm the fix.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <div class="intro">
+
+        <h2>Full Technical Evidence</h2>
+
+        <p>
+
+            Supporting configurations, screenshots, PCAPs,
+            incident documentation, and project artifacts are
+            maintained in the GitHub repository.
+
+        </p>
+
+        <br>
+
+        <a
+            class="button"
+            href="https://github.com/richardpateau/network-incident-response-lab"
+            target="_blank">
+
+            View GitHub Repository →
+
+        </a>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<footer>
+
+    <p>
+        Richard Pateau | Network Engineering Portfolio
+    </p>
+
+</footer>
+
+
+</body>
+
+</html>
