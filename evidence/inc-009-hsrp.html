@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>INC-009 — HSRP Failover Failure | Richard Pateau</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 45px 20px;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        header h1 {
+            margin: 0 0 10px;
+            font-size: 34px;
+        }
+
+        header p {
+            margin: 0;
+            color: #cbd5e1;
+            font-size: 16px;
+        }
+
+        nav {
+            background: #1f2937;
+            padding: 15px 20px;
+        }
+
+        nav div {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        nav a {
+            color: #dbeafe;
+            text-decoration: none;
+            margin-right: 20px;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #111827;
+            font-size: 25px;
+        }
+
+        h3 {
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-card {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 18px;
+        }
+
+        .summary-card strong {
+            display: block;
+            color: #111827;
+            margin-bottom: 5px;
+        }
+
+        .evidence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .evidence-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 18px;
+            background: #ffffff;
+        }
+
+        .evidence-card img {
+            width: 100%;
+            margin-top: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e5e7eb;
+            color: #374151;
+            padding: 4px 9px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        pre {
+            background: #111827;
+            color: #e5e7eb;
+            padding: 18px;
+            border-radius: 7px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+
+        .root-cause {
+            border-left: 5px solid #dc2626;
+            background: #fef2f2;
+        }
+
+        .resolution {
+            border-left: 5px solid #16a34a;
+            background: #f0fdf4;
+        }
+
+        .verification {
+            border-left: 5px solid #2563eb;
+            background: #eff6ff;
+        }
+
+        .methodology {
+            background: #f8fafc;
+            border-left: 5px solid #64748b;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 12px;
+            margin-right: 8px;
+            padding: 9px 14px;
+            background: #111827;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .button:hover {
+            background: #374151;
+        }
+
+        .button.secondary {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .button.secondary:hover {
+            background: #d1d5db;
+        }
+
+        ul,
+        ol {
+            padding-left: 22px;
+        }
+
+        footer {
+            text-align: center;
+            color: #6b7280;
+            padding: 30px;
+            font-size: 14px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+<header>
+
+    <div class="header-content">
+
+        <h1>INC-009 — HSRP Failover Failure</h1>
+
+        <p>
+            Network Incident Response Lab — HSRP troubleshooting,
+            first-hop redundancy analysis, packet capture, failover
+            testing, monitoring, and post-remediation verification.
+        </p>
+
+    </div>
+
+</header>
+
+
+<nav>
+
+    <div>
+
+        <a href="../index.html">Home</a>
+
+        <a href="../projects/network-incident-response.html">
+            Incident Response Lab
+        </a>
+
+        <a href="cisco-cli.html">
+            Cisco CLI
+        </a>
+
+        <a href="wireshark.html">
+            Wireshark
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main>
+
+
+<!-- INCIDENT SUMMARY -->
+
+<section>
+
+    <h2>Incident Summary</h2>
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+            <strong>Incident</strong>
+            INC-009
+        </div>
+
+        <div class="summary-card">
+            <strong>Category</strong>
+            Network / HSRP
+        </div>
+
+        <div class="summary-card">
+            <strong>Protocol</strong>
+            HSRP
+        </div>
+
+        <div class="summary-card">
+            <strong>Analysis</strong>
+            Wireshark / tcpdump
+        </div>
+
+        <div class="summary-card">
+            <strong>Redundancy</strong>
+            First-Hop Failover
+        </div>
+
+        <div class="summary-card">
+            <strong>Status</strong>
+            Resolved
+        </div>
+
+    </div>
+
+    <p style="margin-top:25px;">
+
+        A first-hop redundancy failure prevented the expected HSRP
+        virtual gateway from remaining available when the primary
+        router failed. Investigation of the HSRP configuration showed
+        that R1 and R2 were configured with different virtual IP
+        addresses. R1 used 10.10.10.1 while R2 was incorrectly
+        configured with 10.10.10.11. The R2 HSRP virtual IP was corrected
+        to 10.10.10.1, after which failover and end-to-end gateway
+        reachability were verified.
+
+    </p>
+
+</section>
+
+
+<!-- INITIAL SYMPTOMS -->
+
+<section>
+
+    <h2>Initial Symptoms</h2>
+
+    <p>
+        The investigation began by establishing the normal gateway
+        behavior and verifying connectivity to both physical router
+        addresses before testing the HSRP failover condition.
+    </p>
+
+    <div class="evidence-grid">
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Incident</span>
+
+            <h3>ServiceNow-Style Ticket</h3>
+
+            <p>
+                The incident was documented and tracked using the
+                network operations workflow.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/01-servicenow-ticket.png"
+                 alt="INC-009 ServiceNow-style incident ticket">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Gateway</span>
+
+            <h3>PC1 Default Gateway</h3>
+
+            <p>
+                The client was inspected to establish the configured
+                default gateway before the failover test.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/02-pc1-default-gateway.png"
+                 alt="PC1 default gateway">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Connectivity</span>
+
+            <h3>Ping to R1</h3>
+
+            <p>
+                PC1 successfully reached R1 at 10.10.10.2 during the
+                initial connectivity verification.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/03-pc1-ping-10.10.10.2-success.png"
+                 alt="PC1 ping to R1">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Connectivity</span>
+
+            <h3>Ping to R2</h3>
+
+            <p>
+                PC1 successfully reached R2 at 10.10.10.3 during the
+                initial connectivity verification.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/04-pc1-ping-10.10.10.3-success.png"
+                 alt="PC1 ping to R2">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- R1 INVESTIGATION -->
+
+<section>
+
+    <h2>R1 HSRP Investigation</h2>
+
+    <p>
+        R1 was inspected to establish the intended HSRP configuration
+        and determine which virtual IP address was configured on the
+        primary router.
+    </p>
+
+    <div class="evidence-grid">
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Configuration</span>
+
+            <h3>R1 Interface Configuration</h3>
+
+            <p>
+                R1's LAN interface was configured with physical address
+                10.10.10.2 and HSRP virtual IP 10.10.10.1.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/05-r1-show-run-interface-g0-0.png"
+                 alt="R1 HSRP interface configuration">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">HSRP</span>
+
+            <h3>show standby brief</h3>
+
+            <p>
+                Used to inspect HSRP group state, active/standby roles,
+                and the configured virtual IP.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/06-r1-show-standby-brief.png"
+                 alt="R1 show standby brief">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">HSRP</span>
+
+            <h3>show standby</h3>
+
+            <p>
+                Used to inspect detailed HSRP state and configuration
+                on R1.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/07-r1-show-standby.png"
+                 alt="R1 show standby">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- R2 INVESTIGATION -->
+
+<section>
+
+    <h2>R2 HSRP Configuration Investigation</h2>
+
+    <p>
+        R2 was then examined to determine whether it was configured to
+        participate in the same HSRP group and use the same virtual
+        gateway address as R1.
+    </p>
+
+    <div class="evidence-grid">
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Configuration</span>
+
+            <h3>R2 Broken Configuration</h3>
+
+            <p>
+                The R2 configuration showed a different HSRP virtual IP
+                from the one configured on R1.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/08-r2-show-run-interface-g0-0-broken.png"
+                 alt="R2 broken HSRP configuration">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">HSRP</span>
+
+            <h3>R2 HSRP Summary — Broken</h3>
+
+            <p>
+                The HSRP summary was inspected to compare R2's group
+                and virtual gateway information with R1.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/09-r2-show-standby-brief-broken.png"
+                 alt="R2 broken HSRP summary">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">HSRP</span>
+
+            <h3>R2 Detailed HSRP State</h3>
+
+            <p>
+                Detailed HSRP state further confirmed the mismatch in
+                the configured virtual IP.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/10-r2-show-standby-broken.png"
+                 alt="R2 broken HSRP state">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ROOT CAUSE -->
+
+<section class="root-cause">
+
+    <h2>Root Cause</h2>
+
+    <p>
+        The HSRP redundancy configuration was inconsistent between
+        R1 and R2. R1 and R2 were not configured with the same HSRP
+        virtual IP address.
+    </p>
+
+    <h3>R1 Baseline Configuration</h3>
+
+    <pre>interface GigabitEthernet0/0
+ description USER-LAN-to-SW1
+ ip address 10.10.10.2 255.255.255.0
+ standby version 2
+ standby 1 ip 10.10.10.1
+ standby 1 priority 110
+ standby 1 preempt
+ no shutdown</pre>
+
+    <h3>R2 Broken Configuration</h3>
+
+    <pre>interface GigabitEthernet0/0
+ description USER-LAN-to-SW1
+ ip address 10.10.10.3 255.255.255.0
+ standby version 2
+ standby 1 ip 10.10.10.11
+ standby 1 priority 100
+ standby 1 preempt
+ no shutdown</pre>
+
+    <p>
+        R1 used <strong>10.10.10.1</strong> as the HSRP virtual IP,
+        while R2 incorrectly used <strong>10.10.10.11</strong>.
+        Because the routers were not configured with the same HSRP
+        virtual IP, R2 could not provide the expected backup path for
+        clients using 10.10.10.1 as their default gateway.
+    </p>
+
+    <p>
+        The priority values were appropriate for the intended primary
+        and secondary roles: R1 had priority 110 and R2 had priority
+        100. The configuration problem was the mismatched virtual IP,
+        not the priority relationship.
+    </p>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-009-HSRP-Failover-Failure/evidence/configs/r1-hsrp-baseline.txt">
+        View R1 Baseline Configuration
+    </a>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-009-HSRP-Failover-Failure/evidence/configs/r2-hsrp-broken.txt">
+        View R2 Broken Configuration
+    </a>
+
+</section>
+
+
+<!-- FAILOVER TEST -->
+
+<section>
+
+    <h2>HSRP Failover Test</h2>
+
+    <p>
+        After establishing the configuration mismatch, R1 was taken
+        offline to simulate a primary gateway failure and test whether
+        R2 could assume the client-facing virtual gateway.
+    </p>
+
+    <div class="evidence-grid">
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Failure Simulation</span>
+
+            <h3>R1 HSRP State After Shutdown</h3>
+
+            <p>
+                R1 was shut down to simulate failure of the primary
+                first-hop gateway.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/11-r1-show-standby-brief-after-shutdown.png"
+                 alt="R1 HSRP state after shutdown">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Failover Failure</span>
+
+            <h3>R2 After R1 Failed</h3>
+
+            <p>
+                R2 did not provide the expected 10.10.10.1 virtual
+                gateway because its HSRP configuration referenced
+                10.10.10.11.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/12-r2-show-standby-after-r1-failed.png"
+                 alt="R2 HSRP state after R1 failure">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">HSRP Verification</span>
+
+            <h3>R2 HSRP Summary After Failure</h3>
+
+            <p>
+                The HSRP summary was inspected while R1 was unavailable
+                to confirm the failover state.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/13-r2-show-standby-brief-after-r1-failed.png"
+                 alt="R2 HSRP summary after R1 failure">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Client Impact</span>
+
+            <h3>VIP Ping Failure</h3>
+
+            <p>
+                PC1 was unable to reach the expected HSRP virtual IP
+                during the failed state.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/14-pc1-ping-vip-fail.png"
+                 alt="PC1 ping to HSRP virtual IP failure">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- PACKET ANALYSIS -->
+
+<section>
+
+    <h2>Packet Capture Analysis</h2>
+
+    <p>
+        Packet capture analysis was used to correlate the HSRP control
+        traffic and ARP behavior with the observed gateway failure.
+    </p>
+
+    <div class="evidence-grid">
+
+
+        <div class="evidence-card">
+
+            <span class="tag">tcpdump</span>
+
+            <h3>Captured HSRP Traffic</h3>
+
+            <p>
+                Captured traffic was reviewed during the failed HSRP
+                condition.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/15-tcpdump.png"
+                 alt="tcpdump HSRP traffic">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Wireshark</span>
+
+            <h3>HSRP Packet Overview</h3>
+
+            <p>
+                The HSRP control-plane exchange was examined to
+                investigate the redundancy behavior.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/16-wireshark-hsrp-overview.png"
+                 alt="Wireshark HSRP overview">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">HSRP</span>
+
+            <h3>HSRP Hello Details</h3>
+
+            <p>
+                HSRP hello packets were examined to inspect the
+                redundancy protocol information exchanged between
+                routers.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/17-wireshark-hsrp-hello-details.png"
+                 alt="Wireshark HSRP hello details">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">ARP</span>
+
+            <h3>ARP Request for HSRP VIP</h3>
+
+            <p>
+                ARP traffic was examined to determine how the client
+                resolved the HSRP virtual gateway.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/18-wireshark-arp-who-has-vip.png"
+                 alt="Wireshark ARP request for HSRP VIP">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">ARP Failure</span>
+
+            <h3>No ARP Reply for VIP</h3>
+
+            <p>
+                The absence of the expected ARP response was correlated
+                with the unavailable virtual gateway.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/19-wireshark-arp-no-reply-vip.png"
+                 alt="Wireshark no ARP reply for HSRP VIP">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- MONITORING -->
+
+<section>
+
+    <h2>Monitoring Correlation</h2>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">Splunk</span>
+
+            <h3>Incident Log Evidence</h3>
+
+            <p>
+                Splunk was reviewed for supporting evidence associated
+                with the HSRP failure.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/23-splunk.png"
+                 alt="Splunk HSRP incident evidence">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- REMEDIATION -->
+
+<section class="resolution">
+
+    <h2>Remediation</h2>
+
+    <p>
+        R2's HSRP virtual IP was corrected to match the HSRP virtual
+        gateway configured on R1.
+    </p>
+
+    <h3>Incorrect Configuration</h3>
+
+    <pre>standby 1 ip 10.10.10.11</pre>
+
+    <h3>Corrected Configuration</h3>
+
+    <pre>interface GigabitEthernet0/0
+ description USER-LAN-to-SW1
+ ip address 10.10.10.3 255.255.255.0
+ standby version 2
+ standby 1 ip 10.10.10.1
+ standby 1 priority 100
+ standby 1 preempt
+ no shutdown</pre>
+
+    <p>
+        The correction placed R2 into the same HSRP virtual gateway
+        configuration as R1 while retaining the intended lower
+        priority of 100.
+    </p>
+
+    <div class="evidence-grid">
+
+        <div class="evidence-card">
+
+            <span class="tag">Configuration Fix</span>
+
+            <h3>R2 Configuration Fix</h3>
+
+            <p>
+                The remediation command sequence was captured after
+                correcting the HSRP virtual IP.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/24-r2-config-fix.png"
+                 alt="R2 HSRP configuration fix">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Configuration Verification</span>
+
+            <h3>R2 Interface Configuration — Fixed</h3>
+
+            <p>
+                The corrected R2 interface configuration was verified
+                after the change.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/25-r2-show-run-interface-g0-0-fixed.png"
+                 alt="R2 corrected HSRP interface configuration">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- POST REMEDIATION -->
+
+<section class="verification">
+
+    <h2>Post-Remediation Verification</h2>
+
+    <p>
+        The corrected configuration was tested while R1 remained
+        unavailable to confirm that R2 could provide the expected
+        virtual gateway.
+    </p>
+
+    <div class="evidence-grid">
+
+
+        <div class="evidence-card">
+
+            <span class="tag">HSRP</span>
+
+            <h3>R2 HSRP State — Fixed</h3>
+
+            <p>
+                R2's HSRP state was verified after the virtual IP
+                correction while R1 remained down.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/26-r2-show-standby-fixed-r1-still-down.png"
+                 alt="R2 HSRP fixed while R1 remains down">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Client Verification</span>
+
+            <h3>VIP Ping Successful</h3>
+
+            <p>
+                PC1 successfully reached the HSRP virtual IP after
+                R2 was corrected.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/27-pc1-ping-vip-success.png"
+                 alt="PC1 successfully pinging HSRP VIP">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">ICMP</span>
+
+            <h3>Echo Request / Reply</h3>
+
+            <p>
+                Wireshark confirmed successful ICMP request and reply
+                traffic after remediation.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/28-wireshark-echo-request-reply.png"
+                 alt="Wireshark ICMP echo request and reply">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">ARP</span>
+
+            <h3>VIP ARP Reply</h3>
+
+            <p>
+                ARP verification confirmed that the HSRP virtual
+                gateway was responding after remediation.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/29-wireshark-arp-vip-reply.png"
+                 alt="Wireshark ARP reply for HSRP VIP">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">HSRP</span>
+
+            <h3>HSRP Keepalives After Recovery</h3>
+
+            <p>
+                Post-remediation HSRP control traffic was captured to
+                verify continued redundancy protocol operation.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/30-wireshark-keepalives-after.png"
+                 alt="Wireshark HSRP keepalives after recovery">
+
+        </div>
+
+
+        <div class="evidence-card">
+
+            <span class="tag">Splunk</span>
+
+            <h3>Post-Failover Log Verification</h3>
+
+            <p>
+                Splunk was reviewed after remediation to correlate
+                the recovered HSRP state with the incident timeline.
+            </p>
+
+            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/31-splunk-after-failover.png"
+                 alt="Splunk after HSRP failover">
+
+        </div>
+
+    </div>
+
+    <div style="margin-top:25px;">
+
+        <h3>Verification Result</h3>
+
+        <p>
+            The verification sequence demonstrated recovery of the
+            first-hop gateway: R2 used the corrected HSRP virtual IP,
+            successfully provided the expected virtual gateway while
+            R1 was unavailable, PC1 successfully reached the VIP,
+            Wireshark confirmed successful ICMP and ARP exchanges,
+            and HSRP keepalives were observed after recovery.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- INCIDENT CLOSURE -->
+
+<section>
+
+    <h2>Incident Closure</h2>
+
+    <p>
+        The HSRP failover failure was resolved and validated through
+        configuration inspection, controlled failure testing,
+        packet analysis, client connectivity testing, and log
+        correlation.
+    </p>
+
+    <ul>
+
+        <li>
+            R1 was configured with HSRP virtual IP 10.10.10.1.
+        </li>
+
+        <li>
+            R2 was initially configured with the incorrect virtual
+            IP 10.10.10.11.
+        </li>
+
+        <li>
+            R1 failure was simulated by shutting down the primary
+            router.
+        </li>
+
+        <li>
+            The expected 10.10.10.1 gateway became unavailable.
+        </li>
+
+        <li>
+            R2's HSRP virtual IP was corrected to 10.10.10.1.
+        </li>
+
+        <li>
+            R2 successfully provided the expected virtual gateway.
+        </li>
+
+        <li>
+            PC1 successfully reached the virtual IP after remediation.
+        </li>
+
+        <li>
+            Wireshark confirmed successful ARP and ICMP traffic.
+        </li>
+
+        <li>
+            Post-remediation HSRP keepalives confirmed continued
+            protocol operation.
+        </li>
+
+    </ul>
+
+
+    <div class="evidence-card">
+
+        <span class="tag">Incident Closure</span>
+
+        <h3>ServiceNow Resolution Evidence</h3>
+
+        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-009-HSRP-Failover-Failure/evidence/screenshots/34-servicenow-resolved.png"
+             alt="INC-009 ServiceNow resolved incident">
+
+    </div>
+
+</section>
+
+
+<!-- METHODOLOGY -->
+
+<section class="methodology">
+
+    <h2>Investigation Methodology</h2>
+
+    <p>
+        The incident followed a structured first-hop redundancy
+        troubleshooting workflow:
+    </p>
+
+    <ol>
+
+        <li>
+            Establish the client's default gateway.
+        </li>
+
+        <li>
+            Verify connectivity to both physical routers.
+        </li>
+
+        <li>
+            Inspect R1's HSRP configuration and state.
+        </li>
+
+        <li>
+            Inspect R2's HSRP configuration and state.
+        </li>
+
+        <li>
+            Compare the HSRP virtual IP configuration between peers.
+        </li>
+
+        <li>
+            Identify the virtual IP mismatch.
+        </li>
+
+        <li>
+            Simulate failure of the primary HSRP router.
+        </li>
+
+        <li>
+            Verify client impact to the virtual gateway.
+        </li>
+
+        <li>
+            Analyze HSRP and ARP packet captures.
+        </li>
+
+        <li>
+            Correct the R2 HSRP virtual IP.
+        </li>
+
+        <li>
+            Verify HSRP state while R1 remained unavailable.
+        </li>
+
+        <li>
+            Verify client connectivity to the virtual IP.
+        </li>
+
+        <li>
+            Confirm ARP and ICMP behavior with Wireshark.
+        </li>
+
+        <li>
+            Confirm continued HSRP control traffic.
+        </li>
+
+        <li>
+            Correlate the recovery with Splunk evidence.
+        </li>
+
+        <li>
+            Document and close the incident.
+        </li>
+
+    </ol>
+
+</section>
+
+
+<!-- TECHNICAL EVIDENCE -->
+
+<section>
+
+    <h2>Technical Evidence</h2>
+
+    <p>
+        The complete raw evidence is maintained in the GitHub repository.
+    </p>
+
+    <a class="button"
+       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-009-HSRP-Failover-Failure">
+        View Full Incident Repository →
+    </a>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-009-HSRP-Failover-Failure/evidence/pcaps">
+        View PCAPs
+    </a>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-009-HSRP-Failover-Failure/evidence/configs">
+        View Configurations
+    </a>
+
+    <br>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-009-HSRP-Failover-Failure/evidence/configs/r1-hsrp-baseline.txt">
+        R1 Baseline
+    </a>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-009-HSRP-Failover-Failure/evidence/configs/r2-hsrp-broken.txt">
+        R2 Broken Configuration
+    </a>
+
+    <a class="button secondary"
+       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-009-HSRP-Failover-Failure/evidence/configs/r2-hsrp-fixed.txt">
+        R2 Fixed Configuration
+    </a>
+
+</section>
+
+
+</main>
+
+
+<footer>
+
+    Network Incident Response Lab — Richard Pateau
+
+</footer>
+
+
+</body>
+</html>
