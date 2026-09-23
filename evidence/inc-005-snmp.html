@@ -582,15 +582,20 @@
             <h3>SNMP Configuration Failure</h3>
 
             <p>
-                The investigation established that R1 remained reachable over
-                IP while SolarWinds could not successfully poll the router
-                through SNMP.
+                The investigation established that R1 remained reachable over IP,
+                but SolarWinds could not successfully authenticate its SNMP polling
+                requests because the configured SNMP community string did not match
+                the expected monitoring configuration.
             </p>
 
             <p>
-                Cisco IOS configuration, SNMP status, community information,
-                debug output, and packet captures were correlated to isolate
-                the SNMP configuration responsible for the monitoring failure.
+                R1 was configured with the community string
+                <strong>NOC-R0</strong>, using a zero (<strong>0</strong>), while the
+                corrected monitoring configuration used
+                <strong>NOC-RO</strong>, using the letter O. The Cisco IOS
+                configuration, SNMP status, debug output, packet captures, and
+                SolarWinds monitoring evidence were correlated to isolate this
+                community-string mismatch as the cause of the polling failure.
             </p>
 
             <p>
@@ -615,8 +620,14 @@
             <h3>SNMP Configuration Corrected</h3>
 
             <p>
-                The SNMP configuration on R1 was corrected to restore
-                communication with the SolarWinds monitoring system.
+                The SNMP community string on R1 was corrected from
+                <strong>NOC-R0</strong> to <strong>NOC-RO</strong> to match the
+                monitoring configuration used by SolarWinds.
+            </p>
+
+            <p>
+                The SNMP location and contact settings were not changed. The
+                remediation was limited to correcting the community-string mismatch.
             </p>
 
             <div class="evidence-card">
