@@ -1,611 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Richard Pateau | Junior Network Engineer</title>
+<style>
+    :root{
+        --accent:#7c3aed;
+        --accent-dark:#5b21b6;
+        --accent-tint:#f3ecfe;
+        --ink:#1f2937;
+        --sub:#5b6472;
+        --bg:#f5f7fa;
+        --line:#e5e7eb;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;}
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    header{background:#fff;padding:64px 20px 48px;border-bottom:1px solid var(--line);}
+    header .container{max-width:1100px;margin:auto;}
+    .kicker{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px;}
+    header h1{font-size:40px;font-weight:700;margin-bottom:14px;line-height:1.15;max-width:680px;}
+    header .role{color:var(--sub);font-size:17px;max-width:520px;margin-bottom:26px;}
+    .hero-list{display:flex;gap:26px;flex-wrap:wrap;font-size:14px;}
+    .hero-list div{padding-left:14px;border-left:2px solid var(--accent);}
+    .hero-list b{display:block;font-size:14.5px;}
+    .hero-list span{color:var(--sub);}
 
-    <title>Richard Pateau | Junior Network Engineer</title>
+    nav{background:#fff;padding:16px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;}
+    nav .container{max-width:1100px;margin:auto;}
+    nav a{margin-right:25px;color:#374151;text-decoration:none;font-weight:bold;font-size:14px;}
+    nav a:hover{color:var(--accent);}
 
-    <style>
+    main{max-width:1100px;margin:auto;padding:55px 20px;}
+    section{margin-bottom:60px;}
+    h2{font-size:28px;margin-bottom:20px;font-weight:700;}
+    h3{margin-bottom:10px;}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    .intro{background:#fff;padding:30px;border-radius:10px;border:1px solid var(--line);border-top:3px solid var(--accent);}
+    .intro p{color:var(--sub);}
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f7fa;
-            color: #1f2937;
-            line-height: 1.6;
-        }
+    .projects,.skills,.operations{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
+    .project,.skill,.operation{background:#fff;padding:25px;border-radius:10px;border:1px solid var(--line);transition:transform .2s ease,box-shadow .2s ease;}
+    .project:hover,.skill:hover,.operation:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.08);}
+    .project p,.skill p,.operation p{color:var(--sub);margin-bottom:15px;}
 
-        header {
-            background: #111827;
-            color: white;
-            padding: 70px 20px;
-        }
+    .tag{display:inline-block;background:var(--accent-tint);color:var(--accent-dark);padding:5px 10px;border-radius:99px;font-size:12.5px;font-weight:700;margin-bottom:15px;}
 
-        header .container {
-            max-width: 1100px;
-            margin: auto;
-        }
+    .button{display:inline-block;padding:9px 14px;background:var(--accent);color:#fff;text-decoration:none;border-radius:6px;margin-top:5px;font-size:14px;}
+    .button:hover{background:var(--accent-dark);}
+    .secondary{background:#374151;}
+    .secondary:hover{background:#1f2937;}
 
-        header h1 {
-            font-size: 42px;
-            margin-bottom: 10px;
-        }
+    .contact{background:#111827;color:#fff;padding:35px;border-radius:10px;border-top:3px solid var(--accent);}
+    .contact p{color:#d1d5db;margin-bottom:15px;}
 
-        header p {
-            color: #d1d5db;
-            font-size: 19px;
-        }
+    footer{background:#111827;color:#fff;text-align:center;padding:30px;}
 
-        nav {
-            background: white;
-            padding: 18px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        nav .container {
-            max-width: 1100px;
-            margin: auto;
-        }
-
-        nav a {
-            margin-right: 25px;
-            color: #374151;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        nav a:hover {
-            color: #2563eb;
-        }
-
-        main {
-            max-width: 1100px;
-            margin: auto;
-            padding: 55px 20px;
-        }
-
-        section {
-            margin-bottom: 60px;
-        }
-
-        h2 {
-            font-size: 30px;
-            margin-bottom: 20px;
-        }
-
-        h3 {
-            margin-bottom: 10px;
-        }
-
-        .intro {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-        }
-
-        .projects,
-        .skills,
-        .operations {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .project,
-        .skill,
-        .operation {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .project:hover,
-        .skill:hover,
-        .operation:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-        }
-
-        .project p,
-        .skill p,
-        .operation p {
-            color: #4b5563;
-            margin-bottom: 15px;
-        }
-
-        .tag {
-            display: inline-block;
-            background: #eef2ff;
-            padding: 5px 9px;
-            border-radius: 5px;
-            font-size: 13px;
-            margin-bottom: 15px;
-        }
-
-        .button {
-            display: inline-block;
-            padding: 9px 14px;
-            background: #2563eb;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            margin-top: 5px;
-        }
-
-        .button:hover {
-            background: #1d4ed8;
-        }
-
-        .secondary {
-            background: #374151;
-        }
-
-        .secondary:hover {
-            background: #1f2937;
-        }
-
-        .contact {
-            background: #111827;
-            color: white;
-            padding: 35px;
-            border-radius: 10px;
-        }
-
-        .contact p {
-            color: #d1d5db;
-            margin-bottom: 15px;
-        }
-
-        footer {
-            background: #111827;
-            color: white;
-            text-align: center;
-            padding: 30px;
-        }
-
-        @media (max-width: 700px) {
-
-            header h1 {
-                font-size: 32px;
-            }
-
-            nav a {
-                display: inline-block;
-                margin-bottom: 8px;
-            }
-
-        }
-
-    </style>
-
+    @media (max-width:700px){
+        header h1{font-size:30px;}
+        nav a{display:inline-block;margin-bottom:8px;}
+    }
+</style>
 </head>
-
-
 <body>
 
-
 <header>
-
     <div class="container">
-
-        <h1>Richard Pateau</h1>
-
-        <p>
-            Junior Network Engineer | Cisco | Network Security | Azure
-        </p>
-
+        <div class="kicker">Network Engineering Portfolio</div>
+        <h1>I design, secure, and automate networks — then document every step.</h1>
+        <p class="role">Junior Network Engineer | Cisco | Network Security | Azure</p>
+        <div class="hero-list">
+            <div><b>Routing & Switching</b><span>Cisco CLI configs</span></div>
+            <div><b>Security</b><span>Firewall & segmentation</span></div>
+            <div><b>Automation</b><span>Python + Netmiko</span></div>
+            <div><b>Cloud</b><span>Azure networking</span></div>
+        </div>
     </div>
-
 </header>
 
-
 <nav>
-
     <div class="container">
-
         <a href="index.html">Home</a>
-
         <a href="#projects">Projects</a>
-
         <a href="#proof">Proof of Skills</a>
-
         <a href="#operations">Network Operations</a>
-
         <a href="#contact">Contact</a>
-
     </div>
-
 </nav>
-
 
 <main>
 
-
-<!-- INTRO -->
-
 <section>
-
     <div class="intro">
-
-        <h2>Network Engineering Portfolio</h2>
-
-        <p>
-            Hands-on networking projects demonstrating routing, switching,
-            network troubleshooting, packet analysis, monitoring,
-            network security, and operational troubleshooting.
-        </p>
-
+        <h2>Documented Technical Evidence</h2>
+        <p>Hands-on networking projects demonstrating routing, switching, network troubleshooting, packet analysis, monitoring, network security, and operational troubleshooting.</p>
         <br>
-
-        <p>
-            This portfolio focuses on documented technical evidence,
-            including Cisco CLI output, Wireshark packet captures,
-            configuration changes, incident documentation, monitoring
-            evidence, and verification results.
-        </p>
-
+        <p>This portfolio focuses on documented technical evidence, including Cisco CLI output, Wireshark packet captures, configuration changes, incident documentation, monitoring evidence, and verification results.</p>
     </div>
-
 </section>
-
-
-<!-- PROJECTS -->
 
 <section id="projects">
-
     <h2>Featured Projects</h2>
-
     <div class="projects">
 
-
-        <!-- INCIDENT RESPONSE -->
-
         <div class="project">
-
             <span class="tag">Network Operations</span>
-
             <h3>Network Incident Response Lab</h3>
-
-            <p>
-                Nine end-to-end network incidents investigated using
-                an operations workflow covering symptoms, evidence,
-                root cause, remediation, and verification.
-            </p>
-
-            <a
-                class="button"
-                href="projects/network-incident-response.html"
-            >
-                View Project →
-            </a>
-
+            <p>Nine end-to-end network incidents investigated using an operations workflow covering symptoms, evidence, root cause, remediation, and verification.</p>
+            <a class="button" href="projects/network-incident-response.html">View Project →</a>
         </div>
 
-
-        <!-- MERIDIAN -->
-
         <div class="project">
-
             <span class="tag">Enterprise Network</span>
-
             <h3>Meridian Financial Services</h3>
-
-            <p>
-                Enterprise multi-site network design covering routing,
-                switching, redundancy, security, monitoring, VPN,
-                Azure hybrid connectivity, and network documentation.
-            </p>
-
-            <a
-                class="button"
-                href="#"
-            >
-                View Project →
-            </a>
-
+            <p>Enterprise multi-site network design covering routing, switching, redundancy, security, monitoring, VPN, Azure hybrid connectivity, and network documentation.</p>
+            <a class="button" href="#">View Project →</a>
         </div>
-
-
-        <!-- AUTOMATION -->
 
         <div class="project">
-
             <span class="tag">Automation</span>
-
             <h3>Network Automation & Compliance Engine</h3>
-
-            <p>
-                Network automation project focused on Python,
-                Netmiko, RESTCONF, NETCONF, Jinja2, NetBox,
-                configuration validation, and compliance reporting.
-            </p>
-
-            <a
-                class="button"
-                href="#"
-            >
-                View Project →
-            </a>
-
+            <p>Network automation project focused on Python, Netmiko, RESTCONF, NETCONF, Jinja2, NetBox, configuration validation, and compliance reporting.</p>
+            <a class="button" href="#">View Project →</a>
         </div>
-
 
     </div>
-
 </section>
-
-
-<!-- PROOF OF SKILLS -->
 
 <section id="proof">
-
     <h2>Proof of Skills</h2>
-
     <div class="skills">
 
-
-        <!-- WIRESHARK -->
-
         <div class="skill">
-
             <span class="tag">Packet Analysis</span>
-
             <h3>Wireshark & PCAP Analysis</h3>
-
-            <p>
-                Packet-level evidence from DHCP, OSPF, ACL, SNMP,
-                DHCP Relay, NAT, BGP, and HSRP troubleshooting.
-            </p>
-
-            <a
-                class="button"
-                href="evidence/wireshark.html"
-            >
-                View Evidence →
-            </a>
-
+            <p>Packet-level evidence from DHCP, OSPF, ACL, SNMP, DHCP Relay, NAT, BGP, and HSRP troubleshooting.</p>
+            <a class="button" href="evidence/wireshark.html">View Evidence →</a>
         </div>
 
-
-        <!-- CISCO CLI -->
-
         <div class="skill">
-
             <span class="tag">Cisco IOS</span>
-
             <h3>Cisco CLI</h3>
-
-            <p>
-                Documented Cisco IOS troubleshooting commands,
-                routing verification, switching verification,
-                configuration analysis, and post-remediation checks.
-            </p>
-
-            <a
-                class="button"
-                href="evidence/cisco-cli.html"
-            >
-                View Evidence →
-            </a>
-
+            <p>Documented Cisco IOS troubleshooting commands, routing verification, switching verification, configuration analysis, and post-remediation checks.</p>
+            <a class="button" href="evidence/cisco-cli.html">View Evidence →</a>
         </div>
 
-
-        <!-- ROUTING -->
-
         <div class="skill">
-
             <span class="tag">Routing & Switching</span>
-
             <h3>Routing & Switching</h3>
-
-            <p>
-                Hands-on troubleshooting involving OSPF, BGP,
-                HSRP, VLANs, STP, EtherChannel, DHCP, NAT,
-                and Layer 2/Layer 3 connectivity.
-            </p>
-
-            <a
-                class="button"
-                href="projects/network-incident-response.html"
-            >
-                View Evidence →
-            </a>
-
+            <p>Hands-on troubleshooting involving OSPF, BGP, HSRP, VLANs, STP, EtherChannel, DHCP, NAT, and Layer 2/Layer 3 connectivity.</p>
+            <a class="button" href="projects/network-incident-response.html">View Evidence →</a>
         </div>
 
-
-        <!-- TROUBLESHOOTING -->
-
         <div class="skill">
-
             <span class="tag">Troubleshooting</span>
-
             <h3>Network Troubleshooting</h3>
-
-            <p>
-                Structured troubleshooting using symptoms,
-                packet captures, CLI evidence, logs, configuration
-                comparison, remediation, and verification.
-            </p>
-
-            <a
-                class="button"
-                href="projects/network-incident-response.html"
-            >
-                View Evidence →
-            </a>
-
+            <p>Structured troubleshooting using symptoms, packet captures, CLI evidence, logs, configuration comparison, remediation, and verification.</p>
+            <a class="button" href="projects/network-incident-response.html">View Evidence →</a>
         </div>
 
-
-        <!-- MONITORING -->
-
         <div class="skill">
-
             <span class="tag">Monitoring</span>
-
             <h3>Network Monitoring</h3>
-
-            <p>
-                Monitoring and troubleshooting evidence using
-                SolarWinds, Splunk, SNMP, logs, and operational
-                verification.
-            </p>
-
-            <a
-                class="button"
-                href="projects/network-incident-response.html"
-            >
-                View Evidence →
-            </a>
-
+            <p>Monitoring and troubleshooting evidence using SolarWinds, Splunk, SNMP, logs, and operational verification.</p>
+            <a class="button" href="projects/network-incident-response.html">View Evidence →</a>
         </div>
-
-
-        <!-- NETWORK OPERATIONS -->
 
         <div class="skill">
-
             <span class="tag">Operations</span>
-
             <h3>Network Operations</h3>
-
-            <p>
-                Incident-based troubleshooting documented using
-                ticketing, investigation, root-cause analysis,
-                remediation, and verification workflows.
-            </p>
-
-            <a
-                class="button"
-                href="#operations"
-            >
-                View Evidence →
-            </a>
-
+            <p>Incident-based troubleshooting documented using ticketing, investigation, root-cause analysis, remediation, and verification workflows.</p>
+            <a class="button" href="#operations">View Evidence →</a>
         </div>
-
 
     </div>
-
 </section>
-
-
-<!-- NETWORK OPERATIONS -->
 
 <section id="operations">
-
     <h2>Network Operations</h2>
-
     <div class="operations">
 
-
         <div class="operation">
-
             <span class="tag">Incident Management</span>
-
             <h3>Incident Ticketing</h3>
-
-            <p>
-                ServiceNow-style incident documentation showing
-                symptoms, investigation, root cause, remediation,
-                and resolution.
-            </p>
-
-            <a
-                class="button"
-                href="tickets/index.html"
-            >
-                View Ticket →
-            </a>
-
+            <p>ServiceNow-style incident documentation showing symptoms, investigation, root cause, remediation, and resolution.</p>
+            <a class="button" href="tickets/index.html">View Ticket →</a>
         </div>
-
 
         <div class="operation">
-
             <span class="tag">RCA</span>
-
             <h3>Incident Response Lab</h3>
-
-            <p>
-                Nine documented network incidents with supporting
-                CLI output, PCAPs, configurations, monitoring data,
-                and verification evidence.
-            </p>
-
-            <a
-                class="button"
-                href="projects/network-incident-response.html"
-            >
-                View Incidents →
-            </a>
-
+            <p>Nine documented network incidents with supporting CLI output, PCAPs, configurations, monitoring data, and verification evidence.</p>
+            <a class="button" href="projects/network-incident-response.html">View Incidents →</a>
         </div>
-
 
     </div>
-
 </section>
-
-
-<!-- CONTACT -->
 
 <section id="contact">
-
     <div class="contact">
-
         <h2>Contact</h2>
-
-        <p>
-            Interested in discussing networking, infrastructure,
-            troubleshooting, or entry-level network engineering opportunities?
-        </p>
-
-        <a
-            class="button"
-            href="mailto:richard.pateau@gmail.com"
-        >
-            Contact Me →
-        </a>
-
-        <a
-            class="button secondary"
-            href="https://github.com/richardpateau"
-            target="_blank"
-        >
-            GitHub →
-        </a>
-
+        <p>Interested in discussing networking, infrastructure, troubleshooting, or entry-level network engineering opportunities?</p>
+        <a class="button" href="mailto:richard.pateau@gmail.com">Contact Me →</a>
+        <a class="button secondary" href="https://github.com/richardpateau" target="_blank">GitHub →</a>
     </div>
-
 </section>
-
 
 </main>
 
-
 <footer>
-
-    <p>
-        Richard Pateau | Network Engineering Portfolio
-    </p>
-
+    <p>Richard Pateau | Network Engineering Portfolio</p>
 </footer>
 
-
 </body>
-
 </html>
