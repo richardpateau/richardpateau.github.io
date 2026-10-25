@@ -167,8 +167,8 @@
 
         <div class="domain-grid">
 
-            <!-- DOMAIN 1 -->
-            <div class="domain-card">
+            <!-- DOMAIN 1: ROUTING (Matches #routing from homepage) -->
+            <div id="routing" class="domain-card">
                 <span class="tag">WAN &amp; Core Routing</span>
                 <h3>Routing &amp; Failover</h3>
                 <ul>
@@ -177,11 +177,11 @@
                     <li>Sub-second HSRP first-hop gateway redundancy with preempt tuning</li>
                     <li>BFD integration for rapid link-down neighbor state detection</li>
                 </ul>
-                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Routing" target="_blank">View Configs &amp; Failover Logs →</a>
+                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Routing" target="_blank">Inspect Raw Configs on GitHub →</a>
             </div>
 
-            <!-- DOMAIN 2 -->
-            <div class="domain-card">
+            <!-- DOMAIN 2: SECURITY (Matches #security from homepage) -->
+            <div id="security" class="domain-card">
                 <span class="tag">Zero Trust &amp; Perimeter</span>
                 <h3>Cisco ISE &amp; ASA Firewall</h3>
                 <ul>
@@ -190,11 +190,11 @@
                     <li>MAC Authentication Bypass (MAB) profiling for VoIP endpoints &amp; printers</li>
                     <li>TACACS+ device administration with privilege level 15 command accounting</li>
                 </ul>
-                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Cisco-ISE" target="_blank">View ISE Policies &amp; PCAPs →</a>
+                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Cisco-ISE" target="_blank">Inspect ISE Policies on GitHub →</a>
             </div>
 
-            <!-- DOMAIN 3 -->
-            <div class="domain-card">
+            <!-- DOMAIN 3: CLOUD (Matches #cloud from homepage) -->
+            <div id="cloud" class="domain-card">
                 <span class="tag">Hybrid Cloud</span>
                 <h3>Azure Cloud Infrastructure</h3>
                 <ul>
@@ -203,11 +203,11 @@
                     <li>Dynamic BGP peering (ASN 65515) exchanging routes between On-Prem &amp; Azure</li>
                     <li>Centralized Azure NAT Gateway outbound egress and Network Security Groups</li>
                 </ul>
-                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Azure" target="_blank">View Azure BGP &amp; VPN Docs →</a>
+                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Azure" target="_blank">Inspect Azure Docs on GitHub →</a>
             </div>
 
-            <!-- DOMAIN 4 -->
-            <div class="domain-card">
+            <!-- DOMAIN 4: AUTOMATION (Matches #automation from homepage) -->
+            <div id="automation" class="domain-card">
                 <span class="tag">NetDevOps &amp; CI/CD</span>
                 <h3>Automation &amp; Batfish Modeling</h3>
                 <ul>
@@ -216,11 +216,11 @@
                     <li>Batfish mathematical modeling in GitHub Actions to catch breaking ACL/route changes</li>
                     <li>Automated ITSM Jira Service Management integration via REST APIs</li>
                 </ul>
-                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/08-Python-Batfish-Modeler" target="_blank">View Automation &amp; CI/CD →</a>
+                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/08-Python-Batfish-Modeler" target="_blank">Inspect Automation on GitHub →</a>
             </div>
 
-            <!-- DOMAIN 5 -->
-            <div class="domain-card">
+            <!-- DOMAIN 5: MONITORING (Matches #monitoring from homepage) -->
+            <div id="monitoring" class="domain-card">
                 <span class="tag">Telemetry &amp; SIEM</span>
                 <h3>Observability &amp; Monitoring</h3>
                 <ul>
@@ -229,11 +229,11 @@
                     <li>Grafana dashboards monitoring real-time OSPF neighbors, HSRP states, and IPsec tunnels</li>
                     <li>PRTG threshold alerting and automated incident ticket dispatching</li>
                 </ul>
-                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Splunk" target="_blank">View Monitoring Dashboards →</a>
+                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Splunk" target="_blank">Inspect Dashboards on GitHub →</a>
             </div>
 
-            <!-- DOMAIN 6 -->
-            <div class="domain-card">
+            <!-- DOMAIN 6: IPV6 -->
+            <div id="ipv6" class="domain-card">
                 <span class="tag">Dual-Stack Migration</span>
                 <h3>IPv6 Implementation</h3>
                 <ul>
@@ -242,12 +242,32 @@
                     <li>Layer 3 Rogue Router Advertisement (RA) mitigation via IPv6 ACLs</li>
                     <li>Duplicate Address Detection (DAD) verification documented with PCAPs</li>
                 </ul>
-                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/IPv6%20(Dual-Stack)" target="_blank">View IPv6 &amp; PCAP Evidence →</a>
+                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/IPv6%20(Dual-Stack)" target="_blank">Inspect IPv6 PCAPs on GitHub →</a>
             </div>
 
         </div>
     </section>
 
+    <!-- ITIL & OPERATIONAL RUNBOOKS (Matches #governance from homepage) -->
+    <section id="governance">
+        <h2>ITIL Governance &amp; Change Management</h2>
+        <div class="card">
+            <h3>Production Operational Discipline</h3>
+            <p>
+                Every major infrastructure change within Meridian Financial Services followed formal ITIL change management guidelines, including risk assessments, back-out rollback plans, and verified peer review checklists:
+            </p>
+            <ul style="margin-left: 20px; color: var(--sub); margin-bottom: 20px;">
+                <li><b>CR-001:</b> HSRP to VRRP Gateway Redundancy Migration</li>
+                <li><b>CR-002:</b> Core &amp; Distribution Layer Automated Cisco IOS Upgrade via Ansible</li>
+                <li><b>CR-003:</b> Plaintext SNMPv2 to Encrypted SNMPv3 Migration</li>
+                <li><b>CR-004:</b> Port-Level 802.1X Access Enforcement with Cisco ISE &amp; AD</li>
+                <li><b>CR-005:</b> PRTG Monitoring Threshold &amp; Notification Escalation</li>
+            </ul>
+            <div class="action-row">
+                <a class="btn-solid" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Documentation%20(Run%20Books%20%26%20Change%20Management)" target="_blank">Inspect Change Requests &amp; Runbooks on GitHub →</a>
+            </div>
+        </div>
+    </section>
     <!-- ITIL & OPERATIONAL RUNBOOKS -->
     <section id="evidence">
         <h2>ITIL Governance &amp; Change Management</h2>
