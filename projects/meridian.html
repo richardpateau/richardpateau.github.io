@@ -43,9 +43,9 @@
     h2{font-size:26px;margin-bottom:18px;font-weight:700;color:var(--ink);border-bottom:2px solid var(--line);padding-bottom:8px;}
     h3{font-size:19px;margin-bottom:10px;color:var(--ink);}
     p{color:var(--sub);margin-bottom:16px;}
-    
+
     .card{background:#fff;padding:28px;border-radius:10px;border:1px solid var(--line);border-top:3px solid var(--accent);margin-bottom:24px;}
-    
+
     /* ---------- topology image container ---------- */
     .topology-container{background:#fff;padding:20px;border-radius:10px;border:1px solid var(--line);margin-bottom:35px;text-align:center;}
     .topology-container img{width:100%;height:auto;border-radius:6px;border:1px solid #eee;display:block;}
@@ -143,22 +143,22 @@
 
     <!-- TOPOLOGY SECTION -->
     <section id="topology">
-        <h2>Enterprise Network Architecture</h2>
-        <div class="topology-container">
-            <img src="../images/meridian-topology.png" alt="Meridian Financial Services Network Topology Diagram">
-            <p class="caption">Figure 1: Full-scale physical and logical topology implemented across New York HQ, Ashburn DR, Regional Branches, and Dual ISPs.</p>
-        </div>
+    <h2>Enterprise Network Architecture</h2>
 
-        <div class="card">
-            <h3>Architectural Overview</h3>
-            <p>
-                Meridian Financial Services is designed around a fault-tolerant core connecting a New York Headquarters, three regional branch offices (Chicago, Dallas, Miami), an active Disaster Recovery site in Ashburn (Area 50), and an Azure cloud landing zone.
-            </p>
-            <p>
-                Edge routing features dual-ISP eBGP peering (AS 65001 &amp; AS 65002) with internal iBGP synchronization and AS-Path prepending for deterministic inbound traffic engineering. High availability is enforced across every layer: Active/Standby stateful ASA firewalls, dual distribution routers with HSRP, and LACP EtherChannels spanning redundant access switches.
-            </p>
-        </div>
-    </section>
+    <!-- 1. Logical Overview -->
+    <div class="topology-container">
+        <h3>1. High-Level Logical Routing & Failover Architecture</h3>
+        <img src="../images/meridian-visio.png" alt="Logical Visio Topology">
+        <p class="caption">Figure 1: Multi-site logical layout showing dual-ISP eBGP, multi-area OSPF, ASA HA, and HSRP boundaries.</p>
+    </div>
+
+    <!-- 2. Physical Emulation -->
+    <div class="topology-container">
+        <h3>2. Emulated Infrastructure (PNETLab Topology & Port Mapping)</h3>
+        <img src="../images/meridian-pnetlab.png" alt="PNETLab Implementation Topology">
+        <p class="caption">Figure 2: Production emulation running in PNETLab with live interface mapping, vWLC, DMZ, and multi-AS transit routing.</p>
+    </div>
+</section>
 
     <!-- CORE ARCHITECTURAL DOMAINS -->
     <section id="domains">
