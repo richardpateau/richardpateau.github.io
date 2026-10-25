@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Junior Network Engineer portfolio: documented incident response labs, enterprise network design, Windows and identity services, and automation, with CLI, packet capture, and monitoring evidence.">
 <title>Richard Pateau | Junior Network Engineer</title>
 <style>
     :root{
@@ -15,8 +16,10 @@
         --line:#e5e7eb;
     }
     *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;scroll-padding-top:70px;}
     body{font-family:Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;}
 
+    /* ---------- header ---------- */
     header{background:#fff;padding:64px 20px 48px;border-bottom:1px solid var(--line);}
     header .container{max-width:1100px;margin:auto;}
     .kicker{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px;}
@@ -27,43 +30,78 @@
     .hero-list b{display:block;font-size:14.5px;}
     .hero-list span{color:var(--sub);}
 
+    /* ---------- nav ---------- */
     nav{background:#fff;padding:16px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;}
     nav .container{max-width:1100px;margin:auto;}
     nav a{margin-right:25px;color:#374151;text-decoration:none;font-weight:bold;font-size:14px;}
     nav a:hover{color:var(--accent);}
 
+    /* ---------- layout ---------- */
     main{max-width:1100px;margin:auto;padding:55px 20px;}
     section{margin-bottom:60px;}
     h2{font-size:28px;margin-bottom:20px;font-weight:700;}
     h3{margin-bottom:10px;}
+    .section-sub{color:var(--sub);margin:-8px 0 22px;max-width:720px;}
 
     .intro{background:#fff;padding:30px;border-radius:10px;border:1px solid var(--line);border-top:3px solid var(--accent);}
     .intro p{color:var(--sub);}
 
-    .projects,.skills,.operations{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
-    .project,.skill,.operation{background:#fff;padding:25px;border-radius:10px;border:1px solid var(--line);border-top:3px solid var(--accent);transition:transform .2s ease,box-shadow .2s ease;}
+    /* ---------- cards ---------- */
+    .projects,.skills,.operations{display:grid;gap:20px;}
+    .projects{grid-template-columns:repeat(auto-fit,minmax(320px,1fr));}
+    .skills{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));}
+    .operations{grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
+
+    .project,.skill,.operation{background:#fff;padding:25px;border-radius:10px;border:1px solid var(--line);border-top:3px solid var(--accent);transition:transform .2s ease,box-shadow .2s ease;display:flex;flex-direction:column;}
     .project:hover,.skill:hover,.operation:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.08);}
     .project p,.skill p,.operation p{color:var(--sub);margin-bottom:15px;}
+    .project .button,.skill .button,.operation .button{margin-top:auto;align-self:flex-start;}
 
     .tag{display:block;color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;}
+    .thumb{width:100%;height:200px;overflow:hidden;border-radius:6px;margin-bottom:16px;background:#fff;border:1px solid #eee;}
+    .thumb img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;}
+    .thumb.crop img{width:180%;height:auto;max-width:none;object-fit:cover;margin-left:-15%;margin-top:-5%;}
+    .thumb.contain img{object-fit:contain;}
+
+    .meta{font-size:12.5px;color:var(--sub);margin-bottom:14px;}
+    .meta b{color:var(--ink);}
 
     .button{display:inline-block;color:var(--accent);text-decoration:none;font-size:14px;font-weight:700;border-bottom:1.5px solid var(--accent);padding-bottom:1px;margin-top:5px;}
     .button:hover{color:var(--accent-dark);border-bottom-color:var(--accent-dark);}
     .secondary{background:none;color:#6b7280;border-bottom:1.5px solid #6b7280;}
     .secondary:hover{color:#374151;border-bottom-color:#374151;}
 
+    /* ---------- in-progress ---------- */
+    .subhead{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);font-weight:700;margin:34px 0 14px;}
+    .project.upcoming{border-style:dashed;border-top-style:solid;background:#fbfcfd;}
+    .project.upcoming:hover{transform:none;box-shadow:none;}
+    .badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:99px;margin-bottom:12px;}
+    .badge.wip{background:#fef3c7;color:#92400e;}
+    .badge.live{background:var(--accent-tint);color:var(--accent-dark);}
+    .more-note{color:var(--sub);font-size:14px;margin-top:16px;}
+
+    /* ---------- writing ---------- */
+    .writing{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;}
+    .post{background:#fff;padding:20px;border-radius:10px;border:1px solid var(--line);border-top:3px solid var(--accent);display:flex;flex-direction:column;}
+    .post .tag{margin-bottom:10px;font-size:10.5px;}
+    .post h4{font-size:0.95rem;line-height:1.35;margin:0 0 12px;color:var(--ink);}
+    .post .button{margin-top:auto;align-self:flex-start;}
+    .view-all{margin-top:18px;display:inline-block;color:#4b5563;font-size:0.85rem;font-weight:700;text-decoration:none;border-bottom:1.5px solid #9ca3af;padding-bottom:1px;}
+    .view-all:hover{color:#1f2937;border-bottom-color:#1f2937;}
+
+    /* ---------- contact / footer ---------- */
     .contact{background:#111827;color:#fff;padding:35px;border-radius:10px;border-top:3px solid var(--accent);}
     .contact p{color:#d1d5db;margin-bottom:15px;}
     .contact .button{display:inline-block;padding:9px 16px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-weight:700;}
     .contact .button:hover{background:var(--accent-dark);color:#fff;}
     .contact .secondary{background:transparent;color:#fff;border:1.5px solid #4b5563;}
     .contact .secondary:hover{background:#1f2937;color:#fff;border-color:#6b7280;}
-
     footer{background:#111827;color:#fff;text-align:center;padding:30px;}
 
     @media (max-width:700px){
         header h1{font-size:30px;}
         nav a{display:inline-block;margin-bottom:8px;}
+        .projects{grid-template-columns:1fr;}
     }
 </style>
 </head>
@@ -75,10 +113,10 @@
         <h1>I design, secure, and automate networks — then document every step.</h1>
         <p class="role">Junior Network Engineer | Cisco | Network Security | Azure</p>
         <div class="hero-list">
-            <div><b>Routing & Switching</b><span>Cisco CLI configs</span></div>
-            <div><b>Security</b><span>Firewall & segmentation</span></div>
-            <div><b>Automation</b><span>Python + Netmiko</span></div>
-            <div><b>Cloud</b><span>Azure networking</span></div>
+            <div><b>Routing &amp; Switching</b><span>OSPF, BGP, HSRP, STP</span></div>
+            <div><b>Security</b><span>ASA, ISE, 802.1X, VPN</span></div>
+            <div><b>Automation</b><span>Python, Ansible, CI/CD</span></div>
+            <div><b>Cloud</b><span>Azure hybrid networking</span></div>
         </div>
     </div>
 </header>
@@ -89,6 +127,7 @@
         <a href="#projects">Projects</a>
         <a href="#proof">Proof of Skills</a>
         <a href="#operations">Network Operations</a>
+        <a href="#writing">Blog</a>
         <a href="#contact">Contact</a>
     </div>
 </nav>
@@ -104,32 +143,59 @@
     </div>
 </section>
 
+<!-- =====================================================================
+     PROJECTS
+     HOW TO ADD A PROJECT:
+     1. Finish it first: README, evidence, and a working link.
+     2. Copy a card from "Live projects" below, or move a card up from "In progress".
+     3. Change the badge from "In progress" to "Live" and add the real link.
+     Rule: no card in "Live projects" may link to "#".
+     ===================================================================== -->
 <section id="projects">
     <h2>Featured Projects</h2>
+    <p class="section-sub">Each project is documented with configs, packet captures, verification output, and diagrams.</p>
+
+    <!-- ---------- LIVE PROJECTS ---------- -->
     <div class="projects">
 
         <div class="project">
+            <div class="thumb crop"><img src="images/topology-incident-response.png" alt="Network topology diagram for the incident response lab"></div>
+            <span class="badge live">Live</span>
             <span class="tag">Network Operations</span>
             <h3>Network Incident Response Lab</h3>
             <p>Nine end-to-end network incidents investigated using an operations workflow covering symptoms, evidence, root cause, remediation, and verification.</p>
+            <p class="meta"><b>Covers:</b> DHCP, OSPF, ACL, SNMP, DHCP Relay, NAT, BGP, HSRP</p>
             <a class="button" href="projects/network-incident-response.html">View Project →</a>
         </div>
 
         <div class="project">
+            <!-- Thumbnail: images/meridian-topology.png (hides itself if the file is missing). -->
+            <div class="thumb contain"><img src="images/meridian-topology.png" alt="Meridian Financial Services network diagram: New York HQ with Chicago, Dallas, Miami, and Ashburn disaster recovery sites" onerror="this.parentElement.style.display='none'"></div>
+            <span class="badge live">Live</span>
             <span class="tag">Enterprise Network</span>
             <h3>Meridian Financial Services</h3>
-            <p>Enterprise multi-site network design covering routing, switching, redundancy, security, monitoring, VPN, Azure hybrid connectivity, and network documentation.</p>
-            <a class="button" href="#">View Project →</a>
-        </div>
-
-        <div class="project">
-            <span class="tag">Automation</span>
-            <h3>Network Automation & Compliance Engine</h3>
-            <p>Network automation project focused on Python, Netmiko, RESTCONF, NETCONF, Jinja2, NetBox, configuration validation, and compliance reporting.</p>
-            <a class="button" href="#">View Project →</a>
+            <p>Five-site enterprise network (New York HQ, Chicago, Dallas, Miami, and an Ashburn disaster recovery site) with dual-ISP eBGP, multi-area OSPF, HSRP, ASA firewalls, ISE 802.1X, IPsec and AnyConnect VPN, Azure hybrid connectivity, Windows services, wireless, SIEM and monitoring, and Ansible automation.</p>
+            <p class="meta"><b>17 documented modules</b> with configs, diagrams, screenshots, and failover testing</p>
+            <a class="button" href="https://github.com/richardpateau/enterprise-network-design" target="_blank">View on GitHub →</a>
         </div>
 
     </div>
+
+    <!-- ---------- IN PROGRESS ---------- -->
+    <div class="subhead">In progress</div>
+    <div class="projects">
+
+        <div class="project upcoming">
+            <div class="thumb contain"><img src="images/pipeline-diagram.svg" alt="Compliance pipeline design: collect state, check drift, remediate, verify"></div>
+            <span class="badge wip">In progress</span>
+            <span class="tag">Automation</span>
+            <h3>Network Automation &amp; Compliance Engine</h3>
+            <p>A roughly 10,000-line Python pipeline with unit and integration tests. It pulls desired state from NetBox, collects device state through APIs and Netmiko, detects configuration drift, remediates, re-validates, and produces compliance reports.</p>
+            <p class="meta"><b>Stack:</b> Python, Netmiko, RESTCONF, NETCONF, Jinja2, NetBox</p>
+        </div>
+
+    </div>
+    <p class="more-note">More projects are in progress. Each one is added here once its write-up and evidence are complete.</p>
 </section>
 
 <section id="proof">
@@ -138,7 +204,7 @@
 
         <div class="skill">
             <span class="tag">Packet Analysis</span>
-            <h3>Wireshark & PCAP Analysis</h3>
+            <h3>Wireshark &amp; PCAP Analysis</h3>
             <p>Packet-level evidence from DHCP, OSPF, ACL, SNMP, DHCP Relay, NAT, BGP, and HSRP troubleshooting.</p>
             <a class="button" href="evidence/wireshark.html">View Evidence →</a>
         </div>
@@ -151,8 +217,8 @@
         </div>
 
         <div class="skill">
-            <span class="tag">Routing & Switching</span>
-            <h3>Routing & Switching</h3>
+            <span class="tag">Routing &amp; Switching</span>
+            <h3>Routing &amp; Switching</h3>
             <p>Hands-on troubleshooting involving OSPF, BGP, HSRP, VLANs, STP, EtherChannel, DHCP, NAT, and Layer 2/Layer 3 connectivity.</p>
             <a class="button" href="projects/network-incident-response.html">View Evidence →</a>
         </div>
@@ -178,6 +244,20 @@
             <a class="button" href="#operations">View Evidence →</a>
         </div>
 
+        <div class="skill">
+            <span class="tag">Systems &amp; Identity</span>
+            <h3>Windows &amp; Identity Services</h3>
+            <p>DHCP, DNS, Group Policy (password and lockout policy), NTFS file share permissions with denied-access testing, NTP, RDP, and Windows event logging into Splunk.</p>
+            <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Windows" target="_blank">View Evidence →</a>
+        </div>
+
+        <div class="skill">
+            <span class="tag">Cloud</span>
+            <h3>Microsoft 365</h3>
+            <p>MFA enrollment, license and role assignment, SharePoint and OneDrive configuration, version control, and audit and sign-in log review.</p>
+            <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Windows/07-Microsoft-365" target="_blank">View Evidence →</a>
+        </div>
+
     </div>
 </section>
 
@@ -200,6 +280,51 @@
         </div>
 
     </div>
+</section>
+
+<section id="writing">
+    <h2>Featured Writing</h2>
+    <p class="section-sub">Deep dives into routing, wireless, and network fundamentals from my <a href="https://networkingnotebook.com/" target="_blank" style="color:var(--accent);">Networking Notebook</a>.</p>
+    <div class="writing">
+
+        <div class="post">
+            <span class="tag">Routing</span>
+            <h4>BGP Fundamentals: Path Attributes, iBGP, eBGP &amp; Best Path Selection</h4>
+            <a class="button" href="https://networkingnotebook.com/?p=1197" target="_blank">Read Post →</a>
+        </div>
+
+        <div class="post">
+            <span class="tag">Routing</span>
+            <h4>OSPF Neighbor States</h4>
+            <a class="button" href="https://networkingnotebook.com/?p=604" target="_blank">Read Post →</a>
+        </div>
+
+        <div class="post">
+            <span class="tag">Fundamentals</span>
+            <h4>Life of a Packet</h4>
+            <a class="button" href="https://networkingnotebook.com/?p=445" target="_blank">Read Post →</a>
+        </div>
+
+        <div class="post">
+            <span class="tag">Switching</span>
+            <h4>RSTP</h4>
+            <a class="button" href="https://networkingnotebook.com/?p=539" target="_blank">Read Post →</a>
+        </div>
+
+        <div class="post">
+            <span class="tag">Cloud</span>
+            <h4>Cloud Service Models: SaaS, PaaS, IaaS, Middleware, and Runtime Environments</h4>
+            <a class="button" href="https://networkingnotebook.com/?p=1096" target="_blank">Read Post →</a>
+        </div>
+
+        <div class="post">
+            <span class="tag">Wireless</span>
+            <h4>802.11 Frame Breakdown</h4>
+            <a class="button" href="https://networkingnotebook.com/?p=1126" target="_blank">Read Post →</a>
+        </div>
+
+    </div>
+    <a class="view-all" href="https://networkingnotebook.com/" target="_blank">View all posts →</a>
 </section>
 
 <section id="contact">
