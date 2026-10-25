@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Junior Network Engineer portfolio: documented incident response labs, enterprise network design, Windows and identity services, and automation, with CLI, packet capture, and monitoring evidence.">
-<title>Richard Pateau | Junior Network Engineer</title>
+<meta name="description" content="Network Engineer portfolio: production-grade enterprise network design, hybrid cloud (Azure), Cisco ISE Zero Trust, NetDevOps automation, and documented incident response with Wireshark and CLI evidence.">
+<title>Richard Pateau | Network Engineer</title>
 <style>
     :root{
         --accent:#0d9488;
@@ -24,7 +24,7 @@
     header .container{max-width:1100px;margin:auto;}
     .kicker{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px;}
     header h1{font-size:40px;font-weight:700;margin-bottom:14px;line-height:1.15;max-width:680px;}
-    header .role{color:var(--sub);font-size:17px;max-width:520px;margin-bottom:26px;}
+    header .role{color:var(--sub);font-size:17px;max-width:620px;margin-bottom:26px;}
     .hero-list{display:flex;gap:26px;flex-wrap:wrap;font-size:14px;}
     .hero-list div{padding-left:14px;border-left:2px solid var(--accent);}
     .hero-list b{display:block;font-size:14.5px;}
@@ -49,7 +49,7 @@
     /* ---------- cards ---------- */
     .projects,.skills,.operations{display:grid;gap:20px;}
     .projects{grid-template-columns:repeat(auto-fit,minmax(320px,1fr));}
-    .skills{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));}
+    .skills{grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
     .operations{grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
 
     .project,.skill,.operation{background:#fff;padding:25px;border-radius:10px;border:1px solid var(--line);border-top:3px solid var(--accent);transition:transform .2s ease,box-shadow .2s ease;display:flex;flex-direction:column;}
@@ -111,12 +111,12 @@
     <div class="container">
         <div class="kicker">Network Engineering Portfolio</div>
         <h1>I design, secure, and automate networks — then document every step.</h1>
-        <p class="role">Junior Network Engineer | Cisco | Network Security | Azure</p>
+        <p class="role">Network Engineer | Enterprise Routing, Security &amp; Hybrid Cloud Infrastructure</p>
         <div class="hero-list">
-            <div><b>Routing &amp; Switching</b><span>OSPF, BGP, HSRP, STP</span></div>
-            <div><b>Security</b><span>ASA, ISE, 802.1X, VPN</span></div>
-            <div><b>Automation</b><span>Python, Ansible, CI/CD</span></div>
-            <div><b>Cloud</b><span>Azure hybrid networking</span></div>
+            <div><b>Routing &amp; Switching</b><span>OSPF, BGP, HSRP, STP, IPv6</span></div>
+            <div><b>Security &amp; Identity</b><span>ASA HA, ISE, 802.1X, IPsec, Entra ID</span></div>
+            <div><b>NetDevOps</b><span>Python, Ansible, Batfish, CI/CD</span></div>
+            <div><b>Cloud &amp; Telemetry</b><span>Azure VNet, BGP, Splunk, Grafana</span></div>
         </div>
     </div>
 </header>
@@ -137,23 +137,18 @@
 <section>
     <div class="intro">
         <h2>Documented Technical Evidence</h2>
-        <p>Hands-on networking projects demonstrating routing, switching, network troubleshooting, packet analysis, monitoring, network security, and operational troubleshooting.</p>
+        <p>Production-grade networking implementations demonstrating enterprise routing, perimeter security, hybrid cloud connectivity, automated CI/CD validation, and structured operational troubleshooting.</p>
         <br>
-        <p>This portfolio focuses on documented technical evidence, including Cisco CLI output, Wireshark packet captures, configuration changes, incident documentation, monitoring evidence, and verification results.</p>
+        <p>Every implementation is backed by verifiable artifacts: live Cisco IOS configurations, Wireshark packet captures (.pcap), failover demonstration recordings, Grafana telemetry graphs, and ITIL change management records.</p>
     </div>
 </section>
 
 <!-- =====================================================================
-     PROJECTS
-     HOW TO ADD A PROJECT:
-     1. Finish it first: README, evidence, and a working link.
-     2. Copy a card from "Live projects" below, or move a card up from "In progress".
-     3. Change the badge from "In progress" to "Live" and add the real link.
-     Rule: no card in "Live projects" may link to "#".
+     FEATURED PROJECTS
      ===================================================================== -->
 <section id="projects">
     <h2>Featured Projects</h2>
-    <p class="section-sub">Each project is documented with configs, packet captures, verification output, and diagrams.</p>
+    <p class="section-sub">End-to-end architectures documented with topologies, configuration files, packet captures, and failover validations.</p>
 
     <!-- ---------- LIVE PROJECTS ---------- -->
     <div class="projects">
@@ -163,18 +158,17 @@
             <span class="badge live">Live</span>
             <span class="tag">Network Operations</span>
             <h3>Network Incident Response Lab</h3>
-            <p>Nine end-to-end network incidents investigated using an operations workflow covering symptoms, evidence, root cause, remediation, and verification.</p>
-            <p class="meta"><b>Covers:</b> DHCP, OSPF, ACL, SNMP, DHCP Relay, NAT, BGP, HSRP</p>
-            <a class="button" href="projects/network-incident-response.html">View Project →</a>
+            <p>Nine end-to-end network incidents investigated using an ITIL diagnostic workflow covering user symptoms, packet captures, root-cause analysis (RCA), configuration remediation, and post-change verification.</p>
+            <p class="meta"><b>Covers:</b> DHCP Starvation, OSPF Adjacency &amp; MTU, ACL Drops, SNMPv3, DHCP Relay, NAT/PAT, BGP RIB Matching, HSRP Failover</p>
+            <a class="button" href="projects/network-incident-response.html">View Incident Lab →</a>
         </div>
 
         <div class="project">
-            <!-- Thumbnail: images/meridian-topology.png (hides itself if the file is missing). -->
-            <div class="thumb contain"><img src="images/meridian-topology.png" alt="Meridian Financial Services network diagram: New York HQ with Chicago, Dallas, Miami, and Ashburn disaster recovery sites" onerror="this.parentElement.style.display='none'"></div>
+            <div class="thumb contain"><img src="images/meridian-topology.png" alt="Meridian Financial Services network diagram" onerror="this.parentElement.style.display='none'"></div>
             <span class="badge live">Live</span>
-            <span class="tag">Enterprise Network</span>
+            <span class="tag">Enterprise Infrastructure</span>
             <h3>Meridian Financial Services</h3>
-            <p>Five-site enterprise network (New York HQ, Chicago, Dallas, Miami, and an Ashburn disaster recovery site) with dual-ISP eBGP, multi-area OSPF, HSRP, ASA firewalls, ISE 802.1X, IPsec and AnyConnect VPN, Azure hybrid connectivity, Windows services, wireless, SIEM and monitoring, and Ansible automation.</p>
+            <p>A production-grade, 5-site enterprise network (New York HQ, Chicago, Dallas, Miami, and an Ashburn DR site). Integrates dual-ISP eBGP, multi-area OSPF, ASA HA firewalls, Cisco ISE 802.1X NAC, Azure hybrid BGP over IPsec, and centralized Splunk/Grafana monitoring.</p>
             <p class="meta"><b>17 documented modules</b> with configs, diagrams, screenshots, and failover testing</p>
             <a class="button" href="https://github.com/richardpateau/enterprise-network-design" target="_blank">View on GitHub →</a>
         </div>
@@ -188,100 +182,136 @@
         <div class="project upcoming">
             <div class="thumb contain"><img src="images/pipeline-diagram.svg" alt="Compliance pipeline design: collect state, check drift, remediate, verify"></div>
             <span class="badge wip">In progress</span>
-            <span class="tag">Automation</span>
-            <h3>Network Automation &amp; Compliance Engine</h3>
-            <p>A roughly 10,000-line Python pipeline with unit and integration tests. It pulls desired state from NetBox, collects device state through APIs and Netmiko, detects configuration drift, remediates, re-validates, and produces compliance reports.</p>
-            <p class="meta"><b>Stack:</b> Python, Netmiko, RESTCONF, NETCONF, Jinja2, NetBox</p>
+            <span class="tag">NetDevOps &amp; Compliance</span>
+            <h3>Automated Network Compliance Engine</h3>
+            <p>A modular Python pipeline running in GitHub Actions. It queries desired state from Nautobot/NetBox (SSoT), collects running device state via RESTCONF/Netmiko, detects configuration drift, validates changes mathematically with Batfish, and pushes auditable change summaries to Jira.</p>
+            <p class="meta"><b>Stack:</b> Python, Batfish, Ansible, Nautobot, RESTCONF, Jinja2, GitHub Actions</p>
         </div>
 
     </div>
-    <p class="more-note">More projects are in progress. Each one is added here once its write-up and evidence are complete.</p>
+    <p class="more-note">All implementations include reproducible code and evidence archives.</p>
 </section>
 
+<!-- =====================================================================
+     PROOF OF SKILLS (COMPREHENSIVE 9-DOMAIN ARCHITECTURE)
+     ===================================================================== -->
 <section id="proof">
     <h2>Proof of Skills</h2>
+    <p class="section-sub">Validated technical competencies backed by configuration files, PCAPs, failover tests, and change records.</p>
+    
     <div class="skills">
 
+        <!-- 1. ROUTING & SWITCHING -->
         <div class="skill">
-            <span class="tag">Packet Analysis</span>
-            <h3>Wireshark &amp; PCAP Analysis</h3>
-            <p>Packet-level evidence from DHCP, OSPF, ACL, SNMP, DHCP Relay, NAT, BGP, and HSRP troubleshooting.</p>
+            <span class="tag">Routing &amp; Switching</span>
+            <h3>Enterprise Core &amp; Distribution</h3>
+            <p>Multi-area OSPF design, dual-homed eBGP route manipulation via AS-Path prepending and route-maps, Rapid-PVST+ root bridge tuning, LACP EtherChannels, and sub-second HSRP failover testing across 5 enterprise sites.</p>
+            <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Routing" target="_blank">View Evidence →</a>
+        </div>
+
+        <!-- 2. SECURITY & ZERO TRUST -->
+        <div class="skill">
+            <span class="tag">Security &amp; Zero Trust</span>
+            <h3>Cisco ISE &amp; Perimeter Defense</h3>
+            <p>Cisco ISE 802.1X dynamic VLAN assignment (EAP-TLS/PEAP), MAB profiling for VoIP endpoints, TACACS+ command accounting, Cisco ASA Active/Standby HA failover, and AnyConnect VPN federated with Microsoft Entra ID SSO.</p>
+            <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Cisco-ISE" target="_blank">View Evidence →</a>
+        </div>
+
+        <!-- 3. HYBRID CLOUD -->
+        <div class="skill">
+            <span class="tag">Hybrid Cloud</span>
+            <h3>Azure VNet &amp; BGP Routing</h3>
+            <p>Route-based Site-to-Site IPsec/IKEv2 VPN connecting on-premises ASA firewalls to Azure VNet Gateways, dynamic BGP route propagation, NAT Gateway outbound egress, and NSG micro-segmentation.</p>
+            <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Azure" target="_blank">View Evidence →</a>
+        </div>
+
+        <!-- 4. NETDEVOPS & AUTOMATION -->
+        <div class="skill">
+            <span class="tag">NetDevOps &amp; Automation</span>
+            <h3>CI/CD &amp; SSoT Infrastructure</h3>
+            <p>Infrastructure as Code using Nautobot as the Single Source of Truth (IPAM/DCIM), Jinja2 configuration generation, Ansible playbooks, and Batfish pre-deployment reachability/ACL validation in GitHub Actions.</p>
+            <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/08-Python-Batfish-Modeler" target="_blank">View Evidence →</a>
+        </div>
+
+        <!-- 5. OBSERVABILITY & SIEM -->
+        <div class="skill">
+            <span class="tag">Observability &amp; SIEM</span>
+            <h3>Splunk, Grafana &amp; Telemetry</h3>
+            <p>SNMPv3 time-series telemetry pipelines using Telegraf and Grafana for protocol state monitoring (HSRP/OSPF), PRTG automated threshold alerts, and centralized Splunk SIEM dashboards tracking ASA and ISE audit logs.</p>
+            <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Splunk" target="_blank">View Evidence →</a>
+        </div>
+
+        <!-- 6. PACKET FORENSICS -->
+        <div class="skill">
+            <span class="tag">Packet Forensics</span>
+            <h3>Wireshark &amp; PCAP Deep Dive</h3>
+            <p>Deep-packet forensic captures analyzing IKEv2 Phase 1/2 negotiations, DAD verification, Stateful/Stateless DHCPv6 exchanges, OSPF DBD/LSR state handshakes, and Rogue RA mitigation.</p>
             <a class="button" href="evidence/wireshark.html">View Evidence →</a>
         </div>
 
+        <!-- 7. PROTOCOL VERIFICATION & CLI -->
         <div class="skill">
-            <span class="tag">Cisco IOS</span>
-            <h3>Cisco CLI</h3>
-            <p>Documented Cisco IOS troubleshooting commands, routing verification, switching verification, configuration analysis, and post-remediation checks.</p>
+            <span class="tag">Protocol Verification</span>
+            <h3>Cisco IOS &amp; CLI Diagnostic Checks</h3>
+            <p>Systematic command verification covering routing tables (RIB/FIB), BGP neighbor state machines, MTU mismatch diagnostics, NAT xlate tables, and post-remediation connectivity testing.</p>
             <a class="button" href="evidence/cisco-cli.html">View Evidence →</a>
         </div>
 
-        <div class="skill">
-            <span class="tag">Routing &amp; Switching</span>
-            <h3>Routing &amp; Switching</h3>
-            <p>Hands-on troubleshooting involving OSPF, BGP, HSRP, VLANs, STP, EtherChannel, DHCP, NAT, and Layer 2/Layer 3 connectivity.</p>
-            <a class="button" href="projects/network-incident-response.html">View Evidence →</a>
-        </div>
-
-        <div class="skill">
-            <span class="tag">Troubleshooting</span>
-            <h3>Network Troubleshooting</h3>
-            <p>Structured troubleshooting using symptoms, packet captures, CLI evidence, logs, configuration comparison, remediation, and verification.</p>
-            <a class="button" href="projects/network-incident-response.html">View Evidence →</a>
-        </div>
-
-        <div class="skill">
-            <span class="tag">Monitoring</span>
-            <h3>Network Monitoring</h3>
-            <p>Monitoring and troubleshooting evidence using SolarWinds, Splunk, SNMP, logs, and operational verification.</p>
-            <a class="button" href="projects/network-incident-response.html">View Evidence →</a>
-        </div>
-
-        <div class="skill">
-            <span class="tag">Operations</span>
-            <h3>Network Operations</h3>
-            <p>Incident-based troubleshooting documented using ticketing, investigation, root-cause analysis, remediation, and verification workflows.</p>
-            <a class="button" href="#operations">View Evidence →</a>
-        </div>
-
+        <!-- 8. SYSTEMS & IDENTITY -->
         <div class="skill">
             <span class="tag">Systems &amp; Identity</span>
-            <h3>Windows &amp; Identity Services</h3>
-            <p>DHCP, DNS, Group Policy (password and lockout policy), NTFS file share permissions with denied-access testing, NTP, RDP, and Windows event logging into Splunk.</p>
+            <h3>Windows Server &amp; Core Services</h3>
+            <p>Active Directory Domain Services (AD DS) design, DHCP Relay with IP Helper, split-brain DNS, GPO baseline security hardening (firewall, password policies, auditing), and NTFS permissions.</p>
             <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Windows" target="_blank">View Evidence →</a>
         </div>
 
+        <!-- 9. CLOUD IDENTITY & SAAS -->
         <div class="skill">
-            <span class="tag">Cloud</span>
-            <h3>Microsoft 365</h3>
-            <p>MFA enrollment, license and role assignment, SharePoint and OneDrive configuration, version control, and audit and sign-in log review.</p>
+            <span class="tag">Cloud Identity</span>
+            <h3>Microsoft 365 &amp; Entra ID</h3>
+            <p>Enterprise MFA enrollment, RBAC role delegation, conditional access baseline enforcement, SharePoint and OneDrive governance, and security audit/sign-in log analytics.</p>
             <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Windows/07-Microsoft-365" target="_blank">View Evidence →</a>
         </div>
 
     </div>
 </section>
 
+<!-- =====================================================================
+     NETWORK OPERATIONS
+     ===================================================================== -->
 <section id="operations">
     <h2>Network Operations</h2>
+    <p class="section-sub">Standard operating procedures, ITIL change management, and structured root-cause analysis.</p>
+
     <div class="operations">
 
         <div class="operation">
-            <span class="tag">Incident Management</span>
-            <h3>Incident Ticketing</h3>
-            <p>ServiceNow-style incident documentation showing symptoms, investigation, root cause, remediation, and resolution.</p>
-            <a class="button" href="tickets/index.html">View Ticket →</a>
+            <span class="tag">Change Governance</span>
+            <h3>ITIL Change Requests &amp; Runbooks</h3>
+            <p>Production-standard operational documentation featuring formal Change Requests (CR-001 through CR-005) with back-out/rollback plans and step-by-step Runbooks (RB-001 through RB-005).</p>
+            <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Documentation%20(Run%20Books%20%26%20Change%20Management)" target="_blank">View Runbooks →</a>
         </div>
 
         <div class="operation">
-            <span class="tag">RCA</span>
+            <span class="tag">Incident Management</span>
+            <h3>ServiceNow-Style Ticketing</h3>
+            <p>ServiceNow-style incident tickets tracking outage symptoms, assigned priority, triage timeline, configuration diffs, and verified technical resolution.</p>
+            <a class="button" href="tickets/index.html">View Tickets →</a>
+        </div>
+
+        <div class="operation">
+            <span class="tag">Root Cause Analysis</span>
             <h3>Incident Response Lab</h3>
-            <p>Nine documented network incidents with supporting CLI output, PCAPs, configurations, monitoring data, and verification evidence.</p>
+            <p>Nine documented network outage investigations with supporting CLI output, PCAPs, root-cause analyses, and post-remediation verification across L2 to L7 protocols.</p>
             <a class="button" href="projects/network-incident-response.html">View Incidents →</a>
         </div>
 
     </div>
 </section>
 
+<!-- =====================================================================
+     FEATURED WRITING (FROM NETWORKING NOTEBOOK)
+     ===================================================================== -->
 <section id="writing">
     <h2>Featured Writing</h2>
     <p class="section-sub">Deep dives into routing, wireless, and network fundamentals from my <a href="https://networkingnotebook.com/" target="_blank" style="color:var(--accent);">Networking Notebook</a>.</p>
@@ -327,10 +357,13 @@
     <a class="view-all" href="https://networkingnotebook.com/" target="_blank">View all posts →</a>
 </section>
 
+<!-- =====================================================================
+     CONTACT
+     ===================================================================== -->
 <section id="contact">
     <div class="contact">
         <h2>Contact</h2>
-        <p>Interested in discussing networking, infrastructure, troubleshooting, or entry-level network engineering opportunities?</p>
+        <p>Interested in discussing network engineering, infrastructure design, NetDevOps automation, or technical opportunities?</p>
         <a class="button" href="mailto:richard.pateau@gmail.com">Contact Me →</a>
         <a class="button secondary" href="https://github.com/richardpateau" target="_blank">GitHub →</a>
     </div>
