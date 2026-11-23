@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Nine network incidents investigated and documented as root cause analyses in PNETLab, with CLI output, packet captures, monitoring evidence, and before/after configs.">
+<title>Root Cause Analysis Lab | Richard Pateau</title>
+<style>
+    :root {
+        --accent: #0d9488;
+        --accent-dark: #0f766e;
+        --accent-tint: #f0fdfa;
+        --ink: #1f2937;
+        --sub: #5b6472;
+        --bg: #f5f7fa;
+        --line: #e5e7eb;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 70px; }
+    body { font-family: Arial, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; }
+
+    /* ---------- header ---------- */
+    header { background: #fff; padding: 60px 20px 40px; border-bottom: 1px solid var(--line); }
+    header .container { max-width: 1100px; margin: auto; }
+    .kicker { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 12px; }
+    header h1 { font-size: 36px; font-weight: 700; margin-bottom: 14px; line-height: 1.2; max-width: 900px; }
+    header .subtitle { color: var(--sub); font-size: 17px; max-width: 860px; margin-bottom: 24px; }
+    .tag-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+    .badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 10px; border-radius: 99px; }
+    .badge.live { background: var(--accent-tint); color: var(--accent-dark); border: 1px solid rgba(13,148,136,.2); }
+    .badge.tech { background: #e5e7eb; color: #374151; }
+    .badge.start { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+
+    /* ---------- nav ---------- */
+    nav { background: #fff; padding: 16px 20px; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
+    nav .container { max-width: 1100px; margin: auto; display: flex; justify-content: space-between; align-items: center; }
+    nav a { color: #374151; text-decoration: none; font-weight: bold; font-size: 14px; margin-right: 20px; }
+    nav a:hover { color: var(--accent); }
+    nav .back-link { color: var(--accent); font-size: 13.5px; }
+
+    /* ---------- main layout ---------- */
+    main { max-width: 1100px; margin: auto; padding: 45px 20px; }
+    section { margin-bottom: 50px; }
+    h2 { font-size: 26px; margin-bottom: 18px; font-weight: 700; color: var(--ink); border-bottom: 2px solid var(--line); padding-bottom: 8px; }
+    h3 { font-size: 19px; margin-bottom: 10px; color: var(--ink); }
+    p { color: var(--sub); margin-bottom: 16px; }
+
+    .card { background: #fff; padding: 28px; border-radius: 10px; border: 1px solid var(--line); border-top: 3px solid var(--accent); margin-bottom: 24px; }
+
+    /* ---------- stats bar ---------- */
+    .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 35px; }
+    .stat-box { background: #fff; padding: 20px; border-radius: 8px; border: 1px solid var(--line); text-align: center; }
+    .stat-box b { display: block; font-size: 28px; color: var(--accent); font-weight: 700; }
+    .stat-box span { color: var(--sub); font-size: 13px; text-transform: uppercase; letter-spacing: .05em; }
+
+    /* ---------- workflow step bar ---------- */
+    .workflow-container { background: #fff; padding: 24px; border-radius: 10px; border: 1px solid var(--line); margin-bottom: 30px; }
+    .workflow-steps { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 14px; }
+    .workflow-step { background: var(--bg); border: 1px solid var(--line); padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; color: var(--ink); display: inline-flex; align-items: center; }
+    .workflow-arrow { color: var(--accent); font-weight: 700; margin: 0 4px; }
+
+    /* ---------- topology container ---------- */
+    .topology-container { background: #fff; padding: 20px; border-radius: 10px; border: 1px solid var(--line); margin-bottom: 35px; text-align: center; }
+    .topology-container img { width: 100%; max-width: 100%; height: auto; border-radius: 6px; border: 1px solid #eee; display: block; margin: auto; }
+    .caption { font-size: 13px; color: var(--sub); margin-top: 12px; font-style: italic; }
+
+    /* ---------- grid ---------- */
+    .domain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+    .domain-card { background: #fff; padding: 24px; border-radius: 10px; border: 1px solid var(--line); border-top: 3px solid var(--accent); display: flex; flex-direction: column; }
+    .card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .domain-card .tag { display: inline-block; color: var(--accent); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .domain-card ul { margin-left: 18px; color: var(--sub); font-size: 14px; margin-bottom: 18px; }
+    .domain-card li { margin-bottom: 6px; }
+
+    /* ---------- buttons & links ---------- */
+    .button-group { display: flex; gap: 16px; flex-wrap: wrap; margin-top: auto; padding-top: 14px; border-top: 1px solid #f3f4f6; }
+    .button { display: inline-block; color: var(--accent); text-decoration: none; font-size: 13px; font-weight: 700; border-bottom: 1.5px solid var(--accent); padding-bottom: 1px; }
+    .button:hover { color: var(--accent-dark); border-bottom-color: var(--accent-dark); }
+    .action-row { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 15px; }
+    .btn-solid { display: inline-block; background: var(--accent); color: #fff; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 14px; }
+    .btn-solid:hover { background: var(--accent-dark); }
+    .btn-outline { display: inline-block; background: transparent; color: var(--ink); border: 1.5px solid var(--line); padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 14px; }
+    .btn-outline:hover { background: #fff; border-color: var(--sub); }
+
+    footer { background: #111827; color: #fff; text-align: center; padding: 30px; margin-top: 60px; }
+
+    @media (max-width:768px) {
+        header h1 { font-size: 28px; }
+        .stats-bar { grid-template-columns: 1fr 1fr; }
+        nav .container { flex-direction: column; gap: 10px; }
+    }
+</style>
+</head>
+<body>
+
+<nav>
+    <div class="container">
+        <a class="back-link" href="../index.html">← Back to Portfolio</a>
+        <div>
+            <a href="#overview">Overview</a>
+            <a href="#topology">Topology</a>
+            <a href="#incidents">9 Incidents</a>
+            <a href="#evidence">Proof of Skills</a>
+            <a href="https://github.com/richardpateau/root-cause-analysis-lab" target="_blank">View GitHub Repo →</a>
+        </div>
+    </div>
+</nav>
+
+<header>
+    <div class="container">
+        <div class="kicker">Featured Project · Root Cause Analysis</div>
+        <h1>Root Cause Analysis Lab</h1>
+        <p class="subtitle">
+            Evidence-driven enterprise troubleshooting built in PNETLab: 9 injected incident scenarios spanning Layer 2/3 services, OSPF, BGP, NAT, HSRP, and SNMP monitoring with end-to-end packet captures, CLI logs, SolarWinds/Splunk telemetry, and ITIL-standard RCA documentation.
+        </p>
+        <div class="tag-row">
+            <span class="badge live">Status: 9 Incidents Verified</span>
+            <span class="badge tech">PNETLab</span>
+            <span class="badge tech">Cisco IOS &amp; CSR1000v</span>
+            <span class="badge tech">Wireshark PCAP Analysis</span>
+            <span class="badge tech">SolarWinds NPM</span>
+            <span class="badge tech">Splunk SIEM</span>
+            <span class="badge tech">ITIL Root Cause Analysis</span>
+        </div>
+        <div class="action-row">
+            <a class="btn-solid" href="https://github.com/richardpateau/root-cause-analysis-lab" target="_blank">View on GitHub (Full Lab &amp; Evidence)</a>
+            <a class="btn-outline" href="#incidents">Explore 9 Incidents</a>
+        </div>
+    </div>
+</header>
+
+<main>
+
+    <div class="stats-bar">
+        <div class="stat-box">
+            <b>9 Incidents</b>
+            <span>Ticket to verified fix</span>
+        </div>
+        <div class="stat-box">
+            <b>21 Captures</b>
+            <span>Broken vs. working states</span>
+        </div>
+        <div class="stat-box">
+            <b>249 Screenshots</b>
+            <span>CLI, Wireshark, Splunk, SolarWinds</span>
+        </div>
+        <div class="stat-box">
+            <b>28 Configs</b>
+            <span>Before &amp; after each fix</span>
+        </div>
+    </div>
+
+    <section id="overview">
+        <h2>Project Overview</h2>
+        <div class="workflow-container">
+            <p>
+                A hands-on network operations lab built to simulate real-world production incidents. Faults were systematically injected, then isolated, investigated, and remediated following standard operations discipline with empirical evidence captured at every stage.
+            </p>
+            <div class="workflow-steps">
+                <span class="workflow-step">1. Ticket Intake</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">2. Symptom Isolation</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">3. CLI &amp; PCAP Investigation</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">4. Evidence Capture</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">5. Root Cause Isolation</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">6. Remediation &amp; Rollback</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">7. Verification</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">8. RCA Documentation</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="topology">
+        <h2>Lab Topology</h2>
+        <div class="topology-container">
+            <img src="../images/topology-incident-response.png" alt="Lab topology showing access LAN, edge router, internal application server, and ISP connectivity">
+            <div class="caption">Shared lab topology: access LAN (10.10.10.0/24), edge routing (R1/R2), internal application network (172.16.109.0/24), and ISP connectivity. Each incident folder contains the focused sub-topology.</div>
+        </div>
+    </section>
+
+    <section id="incidents">
+        <h2>Investigated Incidents</h2>
+        <p>Ordered by increasing complexity. The cases marked "Start Here" demonstrate deep multi-stage protocol analysis and root cause determination.</p>
+        
+        <div class="domain-grid">
+
+            <!-- INC-001 -->
+            <div class="domain-card">
+                <div class="card-header-row">
+                    <span class="tag">INC-001 · DHCP</span>
+                </div>
+                <h3>DHCP Service Failure</h3>
+                <p>Access LAN clients failed to obtain DHCP addresses, resulting in 169.254.x.x APIPA addresses and loss of gateway reachability.</p>
+                <ul>
+                    <li><b>Symptom:</b> Client PC unable to lease IP address; DHCP Discover broadcasts unanswered.</li>
+                    <li><b>Root Cause:</b> DHCP pool and <code>default-router</code> configured for 10.10.20.0/24 while LAN interface was 10.10.10.0/24.</li>
+                    <li><b>Verification:</b> Aligned DHCP pool to 10.10.10.0/24; verified full 4-way DORA exchange in Wireshark.</li>
+                </ul>
+                <div class="button-group">
+                    <a class="button" href="../evidence/inc-001-dhcp.html">View Case Evidence →</a>
+                    <a class="button" href="https://github.com/richardpateau/root-cause-analysis-lab/tree/main/incidents/INC-001-DHCP-Failure" target="_blank">Inspect on GitHub →</a>
+                </div>
+            </div>
+
+            <!-- INC-002 -->
+            <div class="domain-card">
+                <div class="card-header-row">
+                    <span class="tag">INC-002 · OSPF</span>
+                </div>
+                <h3>OSPF Adjacency Failure</h3>
+                <p>Remote LAN became completely unreachable despite successful ICMP ping reachability across the transit link between R1 and R2.</p>
+                <ul>
+                    <li><b>Symptom:</b> Point-to-point IP connectivity operational, but OSPF neighbor table remained completely empty.</li>
+                    <li><b>Root Cause:</b> Transit interfaces were assigned to mismatched OSPF areas (Area 0 vs. Area 1).</li>
+                    <li><b>Verification:</b> Aligned transit link to Area 0; neighbor reached FULL state; LSDB synchronized.</li>
+                </ul>
+                <div class="button-group">
+                    <a class="button" href="../evidence/inc-002-ospf.html">View Case Evidence →</a>
+                    <a class="button" href="https://github.com/richardpateau/root-cause-analysis-lab/tree/main/incidents/INC-002-OSPF-Adjacency-Failure" target="_blank">Inspect on GitHub →</a>
+                </div>
+            </div>
+
+            <!-- INC-003 -->
+            <div class="domain-card">
+                <div class="card-header-row">
+                    <span class="tag">INC-003 · Extended ACL</span>
+                    <span class="badge start">Start Here</span>
+                </div>
+                <h3>ACL Blocks More Than Intended</h3>
+                <p>A change intended to restrict Telnet unintentionally broke ping and HTTPS web access across the entire user enclave.</p>
+                <ul>
+                    <li><b>Symptom:</b> Inbound web and ICMP traffic failed immediately following security ACL deployment.</li>
+                    <li><b>Root Cause:</b> Over-broad <code>deny ip any any</code> rule masked a secondary leftover TCP/443 deny ACE behind it.</li>
+                    <li><b>Verification:</b> Re-ordered rule chain with protocol-specific permits; verified TCP handshake and ICMP returns.</li>
+                </ul>
+                <div class="button-group">
+                    <a class="button" href="../evidence/inc-003-acl.html">View Case Evidence →</a>
+                    <a class="button" href="https://github.com/richardpateau/root-cause-analysis-lab/tree/main/incidents/INC-003-ACL-Traffic-Blocked" target="_blank">Inspect on GitHub →</a>
+                </div>
+            </div>
+
+            <!-- INC-004 -->
+            <div class="domain-card">
+                <div class="card-header-row">
+                    <span class="tag">INC-004 · OSPF Protocol</span>
+                    <span class="badge start">Start Here</span>
+                </div>
+                <h3>OSPF Stuck in EXSTART (MTU Mismatch)</h3>
+                <p>Interface link was up and Hello packets exchanged normally, yet OSPF neighbor state machine stalled indefinitely in EXSTART.</p>
+                <ul>
+                    <li><b>Symptom:</b> Neighbors stuck in EXSTART state; Database Description (DBD) exchange never completed.</li>
+                    <li><b>Root Cause:</b> MTU mismatch across the routed link (1500 vs. 1400 bytes), causing DBD packet drops.</li>
+                    <li><b>Verification:</b> Corrected MTU to 1500 bytes (avoiding dangerous <code>ip ospf mtu-ignore</code>); achieved FULL adjacency.</li>
+                </ul>
+                <div class="button-group">
+                    <a class="button" href="../evidence/inc-004-ospf-mtu.html">View Case Evidence →</a>
+                    <a class="button" href="https://github.com/richardpateau/root-cause-analysis-lab/tree/main/incidents/INC-004-OSPF-MTU-Mismatch" target="_blank">Inspect on GitHub →</a>
+                </div>
+            </div>
+
+            <!-- INC-005 -->
+            <div class="domain-card">
+                <div class="card-header-row">
+                    <span class="tag">INC-005 · SNMP Monitoring</span>
+                </div>
+                <h3>SNMP Monitoring Polling Failure</h3>
+                <p>SolarWinds NPM marked core router R1 as down/unmanaged, even though SSH management and data-plane traffic functioned normally.</p>
+                <ul>
+                    <li><b>Symptom:</b> Monitoring portal generated false outage alerts; UDP/161 polling packets went unanswered.</li>
+                    <li><b>Root Cause:</b> Community string typo (<code>NOC-R0</code> with numeral zero vs. <code>NOC-RO</code> with letter O).</li>
+                    <li><b>Verification:</b> Corrected SNMP community string; SolarWinds immediately restored polling and telemetry graphs.</li>
+                </ul>
+                <div class="button-group">
+                    <a class="button" href="../evidence/inc-005-snmp.html">View Case Evidence →</a>
+                    <a class="button" href="https://github.com/richardpateau/root-cause-analysis-lab/tree/main/incidents/INC-005-SNMP-Monitoring-Failure" target="_blank">Inspect on GitHub →</a>
+                </div>
+            </div>
+
+            <!-- INC-006 -->
+            <div class="domain-card">
+                <div class="card-header-row">
+                    <span class="tag">INC-006 · DHCP Relay</span>
+                </div>
+                <h3>DHCP Relay Agent Failure</h3>
+                <p>Centralized remote DHCP server was completely healthy, yet branch LAN clients received no IP addresses upon booting.</p>
+                <ul>
+                    <li><b>Symptom:</b> DHCP Discovers flooded locally on LAN but no relayed unicast packets reached server.</li>
+                    <li><b>Root Cause:</b> <code>ip helper-address</code> pointed to 10.20.20.11 instead of active server IP 10.20.20.1.</li>
+                    <li><b>Verification:</b> Corrected helper-address IP; verified DHCP relay forwarding and option fields in Wireshark.</li>
+                </ul>
+                <div class="button-group">
+                    <a class="button" href="../evidence/inc-006-dhcp-relay.html">View Case Evidence →</a>
+                    <a class="button" href="https://github.com/richardpateau/root-cause-analysis-lab/tree/main/incidents/INC-006-DHCP-Relay-Failure" target="_blank">Inspect on GitHub →</a>
+                </div>
+            </div>
+
+            <!-- INC-007 -->
+            <div class="domain-card">
+                <div class="card-header-row">
+                    <span class="tag">INC-007 · NAT / PAT</span>
+                    <span class="badge start">Start Here</span>
+                </div>
+                <h3>NAT / PAT Translation Failure</h3>
+                <p>Internal network communication worked normally, but all outbound internet sessions to public web destinations failed.</p>
+                <ul>
+                    <li><b>Symptom:</b> Clients unable to access public IPs; <code>show ip nat translations</code> returned completely empty.</li>
+                    <li><b>Root Cause:</b> NAT access-list matched 10.10.20.0/30 instead of user LAN subnet 10.10.10.0/24.</li>
+                    <li><b>Verification:</b> Updated NAT ACL to 10.10.10.0/24; validated active dynamic PAT translations in real time.</li>
+                </ul>
+                <div class="button-group">
+                    <a class="button" href="../evidence/inc-007-nat-pat.html">View Case Evidence →</a>
+                    <a class="button" href="https://github.com/richardpateau/root-cause-analysis-lab/tree/main/incidents/INC-007-NAT-Translation-Failure" target="_blank">Inspect on GitHub →</a>
+                </div>
+            </div>
+
+            <!-- INC-008 -->
+            <div class="domain-card">
+                <div class="card-header-row">
+                    <span class="tag">INC-008 · eBGP</span>
+                    <span class="badge start">Start Here</span>
+                </div>
+                <h3>BGP Route Advertisement Failure</h3>
+                <p>eBGP peering with upstream ISP was in Established state, but the ISP routing table lacked the enterprise LAN prefix.</p>
+                <ul>
+                    <li><b>Symptom:</b> BGP session up, but external return traffic dropped due to missing route on upstream ISP.</li>
+                    <li><b>Root Cause:</b> <code>network 10.10.100.0</code> statement did not match the actual 10.10.10.0/24 prefix in the Cisco RIB.</li>
+                    <li><b>Verification:</b> Corrected BGP network statement; verified via <code>show ip bgp neighbors advertised-routes</code>.</li>
+                </ul>
+                <div class="button-group">
+                    <a class="button" href="../evidence/inc-008-bgp.html">View Case Evidence →</a>
+                    <a class="button" href="https://github.com/richardpateau/root-cause-analysis-lab/tree/main/incidents/INC-008-BGP-Route-Advertisement-Failure" target="_blank">Inspect on GitHub →</a>
+                </div>
+            </div>
+
+            <!-- INC-009 -->
+            <div class="domain-card">
+                <div class="card-header-row">
+                    <span class="tag">INC-009 · First-Hop Redundancy</span>
+                    <span class="badge start">Start Here</span>
+                </div>
+                <h3>HSRP Failover Failure</h3>
+                <p>When primary edge router R1 was taken down for maintenance, standby router R2 failed to provide gateway connectivity for clients.</p>
+                <ul>
+                    <li><b>Symptom:</b> R2 transitioned to Active state, but LAN clients experienced total loss of default gateway reachability.</li>
+                    <li><b>Root Cause:</b> Standby router R2 was configured with standby VIP 10.10.10.11 instead of 10.10.10.1.</li>
+                    <li><b>Verification:</b> Aligned virtual IP to 10.10.10.1; tested live failover with R1 shut down; verified ARP resolution.</li>
+                </ul>
+                <div class="button-group">
+                    <a class="button" href="../evidence/inc-009-hsrp.html">View Case Evidence →</a>
+                    <a class="button" href="https://github.com/richardpateau/root-cause-analysis-lab/tree/main/incidents/INC-009-HSRP-Failover-Failure" target="_blank">Inspect on GitHub →</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="evidence">
+        <h2>Proof of Technical Skills</h2>
+        <div class="domain-grid">
+
+            <div class="domain-card">
+                <span class="tag">Packet Analysis</span>
+                <h3>Wireshark &amp; PCAP Analysis</h3>
+                <p>Deep-packet inspection used across every incident to isolate protocol negotiation states, analyze DORA handshakes, OSPF DBD flags, and verify traffic flows.</p>
+                <div class="button-group">
+                    <a class="button" href="../evidence/wireshark.html">View PCAP Evidence →</a>
+                </div>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Cisco IOS</span>
+                <h3>Cisco CLI Diagnostics</h3>
+                <p>Structured show and debug command logs capturing broken and working states across routing tables, ACL hit counts, NAT translations, and neighbor tables.</p>
+                <div class="button-group">
+                    <a class="button" href="../evidence/cisco-cli.html">View CLI Evidence →</a>
+                </div>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">ITIL Discipline</span>
+                <h3>Root Cause Analysis Methodology</h3>
+                <p>Standardized RCA documentation connecting incident intake, symptoms, empirical investigation, root cause isolation, remediation, and verification.</p>
+                <div class="button-group">
+                    <a class="button" href="../evidence/inc-004-ospf-mtu.html">Inspect Sample RCA (INC-004) →</a>
+                </div>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Network Telemetry</span>
+                <h3>Monitoring &amp; Observability</h3>
+                <p>SolarWinds NPM and Splunk telemetry correlation, including deliberate documentation of monitoring blind spots where tools failed to generate useful alerts.</p>
+                <div class="button-group">
+                    <a class="button" href="../evidence/inc-005-snmp.html">Inspect Monitoring Evidence →</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="documentation">
+        <h2>Project Documentation &amp; Repository</h2>
+        <div class="card">
+            <h3>Standardized Incident Case Repository</h3>
+            <p>
+                Every incident in the repository follows a rigorous, production-grade directory structure containing complete technical artifacts:
+            </p>
+            <ul style="margin-left: 20px; color: var(--sub); margin-bottom: 20px;">
+                <li><b>README.md:</b> Full RCA report including Ticket intake, Expected State, Symptoms, Investigation, Root Cause, Resolution, and Lessons Learned.</li>
+                <li><b>topology/:</b> High-resolution diagram specific to the incident scenario.</li>
+                <li><b>evidence/configs/:</b> Exact before and after Cisco IOS device configuration files.</li>
+                <li><b>evidence/pcaps/:</b> Wireshark packet captures verifying broken vs. restored states.</li>
+                <li><b>evidence/screenshots/:</b> Timestamped CLI outputs, SolarWinds alerts, and Splunk logs.</li>
+            </ul>
+            <div class="action-row">
+                <a class="btn-solid" href="https://github.com/richardpateau/root-cause-analysis-lab" target="_blank">View GitHub Repository</a>
+                <a class="btn-outline" href="https://github.com/richardpateau/root-cause-analysis-lab/tree/main/incidents" target="_blank">Browse All Incident Trees</a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>Richard Pateau | Network Engineering Portfolio</p>
+</footer>
+
+</body>
+</html>

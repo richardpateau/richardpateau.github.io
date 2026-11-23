@@ -214,7 +214,7 @@
         <h1>INC-007 — NAT / PAT Translation Failure</h1>
 
         <p>
-            Network Incident Response Lab — NAT troubleshooting,
+            Root Cause Analysis Lab — NAT troubleshooting,
             packet analysis, Cisco IOS verification, and post-remediation validation.
         </p>
 
@@ -227,7 +227,7 @@
 
         <a href="../index.html">Home</a>
 
-        <a href="../projects/network-incident-response.html">
+        <a href="../projects/root-cause-analysis.html">
             Incident Response Lab
         </a>
 
@@ -323,7 +323,7 @@
                 establishing local Layer 3 connectivity.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/02-pc1-ping-gateway-success.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/02-pc1-ping-gateway-success.png"
                  alt="PC1 successfully pinging gateway">
 
         </div>
@@ -340,7 +340,7 @@
                 helping isolate the failure from the local LAN.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/03-pc1-ping-app-server-success.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/03-pc1-ping-app-server-success.png"
                  alt="PC1 successfully pinging application server">
 
         </div>
@@ -357,7 +357,7 @@
                 successful local and internal communication.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/04-pc1-ping-public-fail.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/04-pc1-ping-public-fail.png"
                  alt="PC1 public ping failure">
 
         </div>
@@ -374,7 +374,7 @@
                 stopped during the investigation.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/05-pc1-traceroute-public-fail.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/05-pc1-traceroute-public-fail.png"
                  alt="PC1 traceroute public failure">
 
         </div>
@@ -407,7 +407,7 @@
                 Verified interface status and addressing on the router.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/06-r1-show-ip-interface-brief.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/06-r1-show-ip-interface-brief.png"
                  alt="R1 show ip interface brief">
 
         </div>
@@ -423,7 +423,7 @@
                 Inspected the client-facing interface configuration.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/07-r1-show-run-interface-g0-0.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/07-r1-show-run-interface-g0-0.png"
                  alt="R1 GigabitEthernet 0/0 configuration">
 
         </div>
@@ -440,7 +440,7 @@
                 used for public connectivity.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/08-r1-show-run-interface-g0-2.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/08-r1-show-run-interface-g0-2.png"
                  alt="R1 GigabitEthernet 0/2 configuration">
 
         </div>
@@ -473,7 +473,7 @@
             a translation failure.
         </p>
 
-        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/09-r1-show-ip-route.png"
+        <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/09-r1-show-ip-route.png"
              alt="R1 routing table">
 
     </div>
@@ -506,7 +506,7 @@
                 statements.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/10-r1-show-run-nat.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/10-r1-show-run-nat.png"
                  alt="R1 NAT configuration">
 
         </div>
@@ -523,7 +523,7 @@
                 traffic was eligible for translation.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/11-r1-show-run-access-list.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/11-r1-show-run-access-list.png"
                  alt="R1 NAT access list configuration">
 
         </div>
@@ -540,7 +540,7 @@
                 during the failed translation attempt.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/12-r1-show-access-list-nat-inside-broken.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/12-r1-show-access-list-nat-inside-broken.png"
                  alt="R1 NAT access list before remediation">
 
         </div>
@@ -574,7 +574,7 @@
                 public connectivity test.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/13-r1-show-ip-nat-translations-empty.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/13-r1-show-ip-nat-translations-empty.png"
                  alt="Empty NAT translation table">
 
         </div>
@@ -591,7 +591,7 @@
                 was being processed by the translation subsystem.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/14-r1-show-ip-nat-statistics-broken.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/14-r1-show-ip-nat-statistics-broken.png"
                  alt="NAT statistics before remediation">
 
         </div>
@@ -626,7 +626,7 @@
                 attempt for protocol-level analysis.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/15-tcpdump.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/15-tcpdump.png"
                  alt="tcpdump NAT troubleshooting">
 
         </div>
@@ -643,7 +643,7 @@
                 remediation.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/15a-wireshark-overview-broken.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/15a-wireshark-overview-broken.png"
                  alt="Wireshark NAT flow before remediation">
 
         </div>
@@ -660,7 +660,7 @@
                 the client traffic with the translation failure.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/16-wireshark-icmp-request-details.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/16-wireshark-icmp-request-details.png"
                  alt="Wireshark ICMP request details">
 
         </div>
@@ -677,7 +677,7 @@
                 communication attempt.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/17-wireshark-icmp-reply-details.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/17-wireshark-icmp-reply-details.png"
                  alt="Wireshark ICMP reply details">
 
         </div>
@@ -694,7 +694,7 @@
                 additional evidence during path analysis.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/18-wireshark-dest-unreachable.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/18-wireshark-dest-unreachable.png"
                  alt="Wireshark destination unreachable">
 
         </div>
@@ -723,7 +723,7 @@
                 investigation to correlate the connectivity failure.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/19-solarwinds.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/19-solarwinds.png"
                  alt="SolarWinds NAT incident evidence">
 
         </div>
@@ -740,7 +740,7 @@
                 evidence during troubleshooting.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/20-splunk.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/20-splunk.png"
                  alt="Splunk NAT incident evidence">
 
         </div>
@@ -834,7 +834,7 @@ write memory</pre>
             the correct <strong>10.10.10.0/24</strong> client network.
         </p>
 
-        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/21-r1-nat-fix-applied.png"
+        <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/21-r1-nat-fix-applied.png"
              alt="R1 NAT ACL correction applied">
 
     </div>
@@ -871,7 +871,7 @@ write memory</pre>
             <pre>Standard IP access list NAT-INSIDE
     10 permit 10.10.10.0, wildcard bits 0.0.0.255 (3 matches)</pre>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/22-r1-show-access-list-nat-inside-fixed.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/22-r1-show-access-list-nat-inside-fixed.png"
                  alt="R1 NAT-INSIDE ACL showing three matches">
 
         </div>
@@ -889,7 +889,7 @@ write memory</pre>
                 traffic.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/23-r1-show-ip-nat-translations-after.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/23-r1-show-ip-nat-translations-after.png"
                  alt="NAT translations populated after remediation">
 
         </div>
@@ -906,7 +906,7 @@ write memory</pre>
                 translation activity and validate the corrected NAT policy.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/24-r1-show-ip-nat-statistics-after.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/24-r1-show-ip-nat-statistics-after.png"
                  alt="NAT statistics after remediation">
 
         </div>
@@ -924,7 +924,7 @@ write memory</pre>
                 end-to-end connectivity.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/25-pc1-ping-public-success.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/25-pc1-ping-public-success.png"
                  alt="PC1 successfully pinging public destination">
 
         </div>
@@ -942,7 +942,7 @@ write memory</pre>
                 public path.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/26-pc1-traceroute-public-success.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/26-pc1-traceroute-public-success.png"
                  alt="PC1 public traceroute successful">
 
         </div>
@@ -960,7 +960,7 @@ write memory</pre>
                 NAT path.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/27-wireshark-overview-working.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/27-wireshark-overview-working.png"
                  alt="Wireshark working NAT flow after remediation">
 
         </div>
@@ -1001,7 +1001,7 @@ write memory</pre>
             that translation was occurring after remediation.
         </p>
 
-        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/30-debug-ip-nat-after.png"
+        <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/30-debug-ip-nat-after.png"
              alt="Cisco debug ip nat after remediation">
 
     </div>
@@ -1033,7 +1033,7 @@ write memory</pre>
                 connectivity flow.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/27-wireshark-overview-working.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/27-wireshark-overview-working.png"
                  alt="Wireshark working NAT flow">
 
         </div>
@@ -1050,7 +1050,7 @@ write memory</pre>
                 correction.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/28-wireshark-after-nat-request.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/28-wireshark-after-nat-request.png"
                  alt="Wireshark NAT request after remediation">
 
         </div>
@@ -1067,7 +1067,7 @@ write memory</pre>
                 translation became operational.
             </p>
 
-            <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/29-wireshark-after-nat-reply.png"
+            <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/29-wireshark-after-nat-reply.png"
                  alt="Wireshark NAT reply after remediation">
 
         </div>
@@ -1130,7 +1130,7 @@ write memory</pre>
 
         <h3>ServiceNow Resolution Evidence</h3>
 
-        <img src="https://raw.githubusercontent.com/richardpateau/network-incident-response-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/31-servicenow-resolved.png"
+        <img src="https://raw.githubusercontent.com/richardpateau/root-cause-analysis-lab/main/incidents/INC-007-NAT-Translation-Failure/evidence/screenshots/31-servicenow-resolved.png"
              alt="ServiceNow NAT incident resolved">
 
     </div>
@@ -1222,29 +1222,29 @@ write memory</pre>
     </p>
 
     <a class="button"
-       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-007-NAT-Translation-Failure">
+       href="https://github.com/richardpateau/root-cause-analysis-lab/tree/main/incidents/INC-007-NAT-Translation-Failure">
         View Full Incident Repository →
     </a>
 
     <a class="button secondary"
-       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-007-NAT-Translation-Failure/evidence/pcaps">
+       href="https://github.com/richardpateau/root-cause-analysis-lab/tree/main/incidents/INC-007-NAT-Translation-Failure/evidence/pcaps">
         View PCAPs
     </a>
 
     <a class="button secondary"
-       href="https://github.com/richardpateau/network-incident-response-lab/tree/main/incidents/INC-007-NAT-Translation-Failure/evidence/configs">
+       href="https://github.com/richardpateau/root-cause-analysis-lab/tree/main/incidents/INC-007-NAT-Translation-Failure/evidence/configs">
         View Configurations
     </a>
 
     <br>
 
     <a class="button secondary"
-       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-007-NAT-Translation-Failure/evidence/configs/r1-nat-before.txt">
+       href="https://github.com/richardpateau/root-cause-analysis-lab/blob/main/incidents/INC-007-NAT-Translation-Failure/evidence/configs/r1-nat-before.txt">
         Before Configuration
     </a>
 
     <a class="button secondary"
-       href="https://github.com/richardpateau/network-incident-response-lab/blob/main/incidents/INC-007-NAT-Translation-Failure/evidence/configs/r1-nat-after.txt">
+       href="https://github.com/richardpateau/root-cause-analysis-lab/blob/main/incidents/INC-007-NAT-Translation-Failure/evidence/configs/r1-nat-after.txt">
         After Configuration
     </a>
 
@@ -1256,7 +1256,7 @@ write memory</pre>
 
 <footer>
 
-    Network Incident Response Lab — Richard Pateau
+    Root Cause Analysis Lab — Richard Pateau
 
 </footer>
 

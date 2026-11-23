@@ -109,9 +109,11 @@
             <span class="badge live">Status: Fully Implemented &amp; Tested</span>
             <span class="badge tech">Dual-ISP eBGP</span>
             <span class="badge tech">Multi-Area OSPF</span>
+            <span class="badge tech">L2 Switching &amp; LACP</span>
             <span class="badge tech">Cisco ASA HA</span>
             <span class="badge tech">Cisco ISE 802.1X</span>
             <span class="badge tech">Azure Hybrid VNet</span>
+            <span class="badge tech">Nautobot SOT</span>
             <span class="badge tech">Batfish &amp; Ansible</span>
         </div>
         <div class="action-row">
@@ -169,20 +171,33 @@
 
         <div class="domain-grid">
 
-            <!-- DOMAIN 1: ROUTING (Matches #routing from homepage) -->
+            <!-- DOMAIN 1: SWITCHING -->
+            <div id="switching" class="domain-card">
+                <span class="tag">Campus Switching</span>
+                <h3>Layer 2 Switching Architecture</h3>
+                <ul>
+                    <li>Enterprise 8-tier VLAN segmentation (VLANs 10, 20, 30, 40, 50, 60, 70, 999) with 802.1Q trunking</li>
+                    <li>Rapid-PVST+ root bridge election and edge-port convergence optimization</li>
+                    <li>Multi-link LACP EtherChannels providing N+1 bandwidth aggregation and member-link failover</li>
+                    <li>Access-port defense: Port Security (sticky MAC learning), BPDU Guard (err-disabled), and Root Guard</li>
+                </ul>
+                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Switching" target="_blank">Inspect Switching on GitHub →</a>
+            </div>
+
+            <!-- DOMAIN 2: ROUTING (Matches #routing from homepage) -->
             <div id="routing" class="domain-card">
                 <span class="tag">WAN &amp; Core Routing</span>
                 <h3>Routing &amp; Failover</h3>
                 <ul>
-                    <li>Dual eBGP peering to ISP-A &amp; ISP-B with deterministic BGP route maps</li>
-                    <li>Multi-area OSPF routing (Area 0 Core, Area 50 Ashburn DR, Regional Branches)</li>
-                    <li>Sub-second HSRP first-hop gateway redundancy with preempt tuning</li>
-                    <li>BFD integration for rapid link-down neighbor state detection</li>
+                    <li>Dual-homed eBGP peering to ISP-A &amp; ISP-B with deterministic BGP route maps and AS-Path prepending</li>
+                    <li>Multi-area OSPF routing (Area 0 Core Backbone, Area 50 Ashburn DR, Regional Branches)</li>
+                    <li>Sub-second HSRP first-hop gateway redundancy with preempt tuning and priority tracking</li>
+                    <li>BFD integration across transit links for rapid sub-second link-down neighbor state detection</li>
                 </ul>
                 <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Routing" target="_blank">Inspect Raw Configs on GitHub →</a>
             </div>
 
-            <!-- DOMAIN 2: SECURITY (Matches #security from homepage) -->
+            <!-- DOMAIN 3: SECURITY (Matches #security from homepage) -->
             <div id="security" class="domain-card">
                 <span class="tag">Zero Trust &amp; Perimeter</span>
                 <h3>Cisco ISE &amp; ASA Firewall</h3>
@@ -192,59 +207,140 @@
                     <li>MAC Authentication Bypass (MAB) profiling for VoIP endpoints &amp; printers</li>
                     <li>TACACS+ device administration with privilege level 15 command accounting</li>
                 </ul>
-                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Cisco-ISE" target="_blank">Inspect ISE Policies on GitHub →</a>
+                <div class="btn-group">
+                    <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Cisco-ISE" target="_blank">Inspect ISE Policies →</a>
+                    <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Cisco-ASA-Firewall" target="_blank">Inspect ASA Firewall →</a>
+                </div>
             </div>
 
-            <!-- DOMAIN 3: CLOUD (Matches #cloud from homepage) -->
+            <!-- DOMAIN 5: VPN -->
+            <div id="vpn" class="domain-card">
+                <span class="tag">Secure Connectivity</span>
+                <h3>Site-to-Site &amp; Remote Access VPN</h3>
+                <ul>
+                    <li>Route-based and policy-based IKEv2 IPsec VPN mesh connecting HQ to Ashburn Disaster Recovery</li>
+                    <li>High-performance ESP encryption with Diffie-Hellman Group 14 and SHA-256 data integrity</li>
+                    <li>Cisco AnyConnect remote access VPN federated with Active Directory and Entra ID SSO</li>
+                    <li>Client split-tunneling policies preserving low-latency local SaaS while securing enterprise transit</li>
+                </ul>
+                <div class="btn-group">
+                    <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Site-to-site-VPN" target="_blank">Inspect Site-to-Site VPN →</a>
+                    <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Remote-Access-VPN" target="_blank">Inspect AnyConnect VPN →</a>
+                </div>
+            </div>
+
+            <!-- DOMAIN 6: WIRELESS -->
+            <div id="wireless" class="domain-card">
+                <span class="tag">Wireless Infrastructure</span>
+                <h3>Enterprise Wireless (vWLC &amp; Meraki)</h3>
+                <ul>
+                    <li>Centralized Cisco virtual Wireless LAN Controller (vWLC) paired with Cisco Aironet 2802I access points</li>
+                    <li>802.1X Corporate SSID and guest splash-page Captive Portal SSID integrated with Cisco ISE</li>
+                    <li>Cloud-managed Cisco Meraki MR33 deployment for streamlined regional branch office wireless</li>
+                    <li>Dynamic VLAN steering and centralized RADIUS accounting across campus and branch APs</li>
+                </ul>
+                <div class="btn-group">
+                    <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Cisco-WLC" target="_blank">Inspect Cisco vWLC →</a>
+                    <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Meraki" target="_blank">Inspect Cisco Meraki →</a>
+                </div>
+            </div>
+
+            <!-- DOMAIN 7: CLOUD (Matches #cloud from homepage) -->
             <div id="cloud" class="domain-card">
                 <span class="tag">Hybrid Cloud</span>
                 <h3>Azure Cloud Infrastructure</h3>
                 <ul>
-                    <li>Hub-and-Spoke Azure VNet architecture with GatewaySubnet &amp; AppSubnets</li>
-                    <li>Route-based Site-to-Site IPsec/IKEv2 VPN to Azure Virtual Network Gateway</li>
-                    <li>Dynamic BGP peering (ASN 65515) exchanging routes between On-Prem &amp; Azure</li>
-                    <li>Centralized Azure NAT Gateway outbound egress and Network Security Groups</li>
+                    <li>Hub-and-Spoke Azure VNet architecture with GatewaySubnet, DMZ, and AppSubnets</li>
+                    <li>Route-based Site-to-Site IPsec/IKEv2 VPN connecting ASA firewalls to Azure Virtual Network Gateway</li>
+                    <li>Dynamic BGP peering (ASN 65515) exchanging route prefixes between on-premise and Azure</li>
+                    <li>Centralized Azure NAT Gateway outbound egress and Network Security Group (NSG) micro-segmentation</li>
                 </ul>
                 <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Azure" target="_blank">Inspect Azure Docs on GitHub →</a>
             </div>
 
-            <!-- DOMAIN 4: AUTOMATION (Matches #automation from homepage) -->
+            <!-- DOMAIN 8: NAUTOBOT -->
+            <div id="nautobot" class="domain-card">
+                <span class="tag">Network Source of Truth</span>
+                <h3>Nautobot DCIM &amp; IPAM (SOT)</h3>
+                <ul>
+                    <li>Centralized Source of Truth (SOT) documenting all 5 geographic sites, device roles, and prefixes</li>
+                    <li>IP Address Management (IPAM) tracking subnet allocations, VLAN IDs, and interface IP mapping</li>
+                    <li>Programmatic pynautobot Python REST API integration driving automated config generation</li>
+                    <li>Dynamic inventory export powering Ansible playbooks and Batfish pre-deployment modeling</li>
+                </ul>
+                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Nautobot" target="_blank">Inspect Nautobot on GitHub →</a>
+            </div>
+
+            <!-- DOMAIN 9: AUTOMATION (Matches #automation from homepage) -->
             <div id="automation" class="domain-card">
                 <span class="tag">NetDevOps &amp; CI/CD</span>
                 <h3>Automation &amp; Batfish Modeling</h3>
                 <ul>
-                    <li>Nautobot Single Source of Truth (SSoT) for IPAM, prefixes, and device roles</li>
-                    <li>Ansible playbooks for automated multi-device OS upgrades &amp; TFTP validation</li>
-                    <li>Batfish mathematical modeling in GitHub Actions to catch breaking ACL/route changes</li>
-                    <li>Automated ITSM Jira Service Management integration via REST APIs</li>
+                    <li>Modular Python and Ansible automation suite for multi-device OS upgrades and state validation</li>
+                    <li>Batfish mathematical modeling in GitHub Actions validating ACLs and routing reachability pre-deployment</li>
+                    <li>Automated ITSM Jira Service Management integration via REST APIs for closed-loop auditing</li>
+                    <li>Jinja2 templating engine rendering production-ready, standardized device configurations</li>
                 </ul>
-                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Automation" target="_blank">Inspect Automation on GitHub →</a>
+                <div class="btn-group">
+                    <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Automation" target="_blank">Inspect Automation Suite →</a>
+                    <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Automation/08-Python-Batfish-Modeler" target="_blank">Inspect Batfish Modeler →</a>
+                </div>
             </div>
 
-            <!-- DOMAIN 5: MONITORING (Matches #monitoring from homepage) -->
+            <!-- DOMAIN 10: MONITORING (Matches #monitoring from homepage) -->
             <div id="monitoring" class="domain-card">
                 <span class="tag">Telemetry &amp; SIEM</span>
                 <h3>Observability &amp; Monitoring</h3>
                 <ul>
-                    <li>Splunk SIEM centralized log indexing for ASA, ISE, router syslogs, and Windows events</li>
-                    <li>Telegraf agent automated deployment collecting SNMPv3 OID metrics</li>
-                    <li>Grafana dashboards monitoring real-time OSPF neighbors, HSRP states, and IPsec tunnels</li>
-                    <li>PRTG threshold alerting and automated incident ticket dispatching</li>
+                    <li>Splunk SIEM centralized log indexing for ASA firewalls, ISE audits, router syslogs, and Windows events</li>
+                    <li>Telegraf time-series telemetry pipelines automated via Ansible collecting SNMPv3 OID metrics</li>
+                    <li>Grafana dashboards monitoring real-time OSPF neighbors, HSRP states, and IPsec tunnel status</li>
+                    <li>PRTG network monitoring with custom threshold alerts, email notifications, and auto ticket dispatch</li>
                 </ul>
-                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Splunk" target="_blank">Inspect Dashboards on GitHub →</a>
+                <div class="btn-group">
+                    <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Splunk" target="_blank">Inspect Splunk →</a>
+                    <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Grafana" target="_blank">Inspect Grafana →</a>
+                    <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/PRTG-Monitoring" target="_blank">Inspect PRTG →</a>
+                </div>
             </div>
 
-            <!-- DOMAIN 6: IPV6 -->
+            <!-- DOMAIN 11: IPV6 -->
             <div id="ipv6" class="domain-card">
                 <span class="tag">Dual-Stack Migration</span>
                 <h3>IPv6 Implementation</h3>
                 <ul>
-                    <li>Dual-stack OSPFv3 and BGP IPv6 address families across core and edge</li>
-                    <li>SLAAC, Stateful DHCPv6, and Stateless DHCPv6 client addressing pools</li>
-                    <li>Layer 3 Rogue Router Advertisement (RA) mitigation via IPv6 ACLs</li>
-                    <li>Duplicate Address Detection (DAD) verification documented with PCAPs</li>
+                    <li>Dual-stack OSPFv3 and BGP IPv6 address families deployed across core and edge infrastructure</li>
+                    <li>SLAAC, Stateful DHCPv6, and Stateless DHCPv6 client addressing pools with relay agents</li>
+                    <li>Layer 3 Rogue Router Advertisement (RA) mitigation enforced via dedicated IPv6 ACLs</li>
+                    <li>Duplicate Address Detection (DAD) and neighbor discovery verification documented with PCAPs</li>
                 </ul>
                 <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/IPv6%20(Dual-Stack)" target="_blank">Inspect IPv6 PCAPs on GitHub →</a>
+            </div>
+
+            <!-- DOMAIN 12: WINDOWS -->
+            <div id="windows" class="domain-card">
+                <span class="tag">Enterprise Directory</span>
+                <h3>Windows Server &amp; Identity Infrastructure</h3>
+                <ul>
+                    <li>Active Directory Domain Services (AD DS) managing domain identity and authentication across sites</li>
+                    <li>High-availability Windows DHCP scopes with Cisco router ip helper-address relay integration</li>
+                    <li>Split-brain DNS and automated Group Policy Objects (GPOs) enforcing workstation security baselines</li>
+                    <li>Network Time Protocol (NTP) domain hierarchy sync and Microsoft 365 / Entra ID cloud directory integration</li>
+                </ul>
+                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Windows" target="_blank">Inspect Windows on GitHub →</a>
+            </div>
+
+            <!-- DOMAIN 13: BACKUPS -->
+            <div id="backups" class="domain-card">
+                <span class="tag">Disaster Recovery &amp; Backups</span>
+                <h3>Automated Configuration Backups</h3>
+                <ul>
+                    <li>Python backup engine (backup_configs.py) scheduled to pull running configs from all enterprise nodes</li>
+                    <li>Structured directory archiving of sanitized device configurations across all 5 physical and cloud sites</li>
+                    <li>Pre-change snapshot baseline creation enabling rapid rollback during failed maintenance windows</li>
+                    <li>Git-integrated version tracking of network state changes and historical configuration drift</li>
+                </ul>
+                <a class="button" href="https://github.com/richardpateau/enterprise-network-design/tree/main/Automated-Backups" target="_blank">Inspect Automated Backups on GitHub →</a>
             </div>
 
         </div>
