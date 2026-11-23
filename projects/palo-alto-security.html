@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Palo Alto Networks Next-Generation Security & Zero Trust Architecture: 15-project progression spanning App-ID, SSL Decryption, GlobalProtect SASE, Zone Protection, and NetDevOps Terraform auditing.">
+<title>Palo Alto Networks Security | Next-Gen Firewall &amp; Zero Trust Architecture</title>
+<style>
+    :root{
+        --accent:#0d9488;
+        --accent-dark:#0f766e;
+        --accent-tint:#f0fdfa;
+        --ink:#1f2937;
+        --sub:#5b6472;
+        --bg:#f5f7fa;
+        --line:#e5e7eb;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;scroll-padding-top:70px;}
+    body{font-family:Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;}
+
+    /* ---------- header ---------- */
+    header{background:#fff;padding:60px 20px 40px;border-bottom:1px solid var(--line);}
+    header .container{max-width:1100px;margin:auto;}
+    .kicker{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:12px;}
+    header h1{font-size:36px;font-weight:700;margin-bottom:14px;line-height:1.2;max-width:920px;}
+    header .subtitle{color:var(--sub);font-size:17px;max-width:860px;margin-bottom:24px;}
+    .tag-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+    .badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:99px;}
+    .badge.live{background:var(--accent-tint);color:var(--accent-dark);border:1px solid rgba(13,148,136,.2);}
+    .badge.tech{background:#e5e7eb;color:#374151;}
+
+    /* ---------- nav ---------- */
+    nav{background:#fff;padding:16px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;}
+    nav .container{max-width:1100px;margin:auto;display:flex;justify-content:space-between;align-items:center;}
+    nav a{color:#374151;text-decoration:none;font-weight:bold;font-size:14px;margin-right:20px;}
+    nav a:hover{color:var(--accent);}
+    nav .back-link{color:var(--accent);font-size:13.5px;}
+
+    /* ---------- main layout ---------- */
+    main{max-width:1100px;margin:auto;padding:45px 20px;}
+    section{margin-bottom:50px;}
+    h2{font-size:26px;margin-bottom:18px;font-weight:700;color:var(--ink);border-bottom:2px solid var(--line);padding-bottom:8px;}
+    h3{font-size:19px;margin-bottom:10px;color:var(--ink);}
+    p{color:var(--sub);margin-bottom:16px;}
+
+    .card{background:#fff;padding:28px;border-radius:10px;border:1px solid var(--line);border-top:3px solid var(--accent);margin-bottom:24px;}
+
+    /* ---------- stats bar ---------- */
+    .stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:35px;}
+    .stat-box{background:#fff;padding:20px;border-radius:8px;border:1px solid var(--line);text-align:center;}
+    .stat-box b{display:block;font-size:28px;color:var(--accent);font-weight:700;}
+    .stat-box span{color:var(--sub);font-size:13px;text-transform:uppercase;letter-spacing:.05em;}
+
+    /* ---------- topology container ---------- */
+    .topology-container{background:#fff;padding:20px;border-radius:10px;border:1px solid var(--line);margin-bottom:35px;text-align:center;}
+    .topology-container img{width:100%;height:auto;border-radius:6px;border:1px solid #eee;display:block;}
+    .caption{font-size:13px;color:var(--sub);margin-top:12px;font-style:italic;}
+
+    /* ---------- tables ---------- */
+    .table-wrap{overflow-x:auto;margin:20px 0;}
+    table{width:100%;border-collapse:collapse;font-size:13.5px;text-align:left;background:#fff;}
+    th{background:#f9fafb;color:var(--ink);font-weight:700;padding:12px 14px;border-bottom:2px solid var(--line);}
+    td{padding:12px 14px;border-bottom:1px solid var(--line);color:var(--sub);}
+    tr:hover td{background:#fafbfc;}
+    td b{color:var(--ink);}
+    td code{background:#f3f4f6;padding:2px 6px;border-radius:4px;font-size:12.5px;color:#111827;}
+
+    /* ---------- grid ---------- */
+    .domain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;}
+    .domain-card{background:#fff;padding:24px;border-radius:10px;border:1px solid var(--line);border-top:3px solid var(--accent);display:flex;flex-direction:column;}
+    .domain-card .tag{display:block;color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+    .domain-card ul{margin-left:18px;color:var(--sub);font-size:14px;margin-bottom:18px;}
+    .domain-card li{margin-bottom:6px;}
+
+    /* ---------- buttons & links ---------- */
+    .button{display:inline-block;color:var(--accent);text-decoration:none;font-size:13.5px;font-weight:700;border-bottom:1.5px solid var(--accent);padding-bottom:1px;}
+    .button:hover{color:var(--accent-dark);border-bottom-color:var(--accent-dark);}
+    .action-row{display:flex;gap:15px;flex-wrap:wrap;margin-top:15px;}
+    .btn-solid{display:inline-block;background:var(--accent);color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:14px;}
+    .btn-solid:hover{background:var(--accent-dark);}
+    .btn-outline{display:inline-block;background:transparent;color:var(--ink);border:1.5px solid var(--line);padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:14px;}
+    .btn-outline:hover{background:#fff;border-color:var(--sub);}
+
+    footer{background:#111827;color:#fff;text-align:center;padding:30px;margin-top:60px;}
+
+    @media (max-width:768px){
+        header h1{font-size:28px;}
+        .stats-bar{grid-template-columns:1fr 1fr;}
+        nav .container{flex-direction:column;gap:10px;}
+    }
+</style>
+</head>
+<body>
+
+<nav>
+    <div class="container">
+        <a class="back-link" href="../index.html">← Back to Portfolio</a>
+        <div>
+            <a href="#topology">Topology</a>
+            <a href="#modules">15 Modules</a>
+            <a href="#highlights">Key Highlights</a>
+            <a href="#troubleshooting">Troubleshooting</a>
+            <a href="https://github.com/richardpateau/Palo-Alto-Security" target="_blank">View GitHub Repo →</a>
+        </div>
+    </div>
+</nav>
+
+<header>
+    <div class="container">
+        <div class="kicker">Next-Generation Security &amp; Zero Trust</div>
+        <h1>Palo Alto Networks NGFW, SASE &amp; NetDevOps Architecture</h1>
+        <p class="subtitle">
+            A 15-project progression deployed on Palo Alto Networks PA-VM (PAN-OS 11.2.5) interconnected with Cisco IOS CSR1000v, Catalyst switches, Windows Server 2022 Active Directory, and endpoints. Features App-ID Zero Trust, bidirectional SSL decryption, 187k-domain EDL sinkholing, Captive Portal RBAC, Zone Protection against 4M-packet SYN floods, GlobalProtect SASE, and Terraform/Python automated compliance auditing.
+        </p>
+        <div class="tag-row">
+            <span class="badge live">Status: 15 Projects Empirically Verified</span>
+            <span class="badge tech">Palo Alto PAN-OS 11.2.5</span>
+            <span class="badge tech">App-ID Zero Trust</span>
+            <span class="badge tech">SSL Forward Proxy Decryption</span>
+            <span class="badge tech">187k-Domain EDL Sinkhole</span>
+            <span class="badge tech">GlobalProtect SASE</span>
+            <span class="badge tech">Active Directory LDAP &amp; User-ID</span>
+            <span class="badge tech">Multi-Vendor eBGP &amp; BFD</span>
+            <span class="badge tech">Terraform &amp; Python NetDevOps</span>
+        </div>
+        <div class="action-row">
+            <a class="btn-solid" href="https://github.com/richardpateau/Palo-Alto-Security" target="_blank">View on GitHub (Full Code &amp; PCAPs)</a>
+            <a class="btn-outline" href="#topology">Explore Architecture &amp; Topologies</a>
+        </div>
+    </div>
+</header>
+
+<main>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar">
+        <div class="stat-box">
+            <b>15</b>
+            <span>Verified Modules</span>
+        </div>
+        <div class="stat-box">
+            <b>4.03M</b>
+            <span>SYN Flood Pkts Absorbed</span>
+        </div>
+        <div class="stat-box">
+            <b>187,027</b>
+            <span>C2 Domains Sinkholed</span>
+        </div>
+        <div class="stat-box">
+            <b>97.0%</b>
+            <span>Faster BFD Convergence</span>
+        </div>
+    </div>
+
+    <!-- TOPOLOGY SECTION -->
+    <section id="topology">
+        <h2>Hybrid Enterprise Security Fabric Topology</h2>
+        <p class="section-sub">Integrated multi-zone deployment connecting untrusted WAN, perimeter DMZ, segmented corporate &amp; guest VRFs, multi-vendor Cisco CSR routing, and Active Directory identity services.</p>
+
+        <div class="topology-container">
+            <img src="../images/palo-alto-topology.png" alt="Palo Alto Networks Enterprise Security Architecture Diagram">
+            <p class="caption">Figure 1: Full hybrid fabric showing zone boundaries, SSL decryption points, Cisco CSR IPsec VTI, GlobalProtect remote access, and AD identity fabric.</p>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Node</th>
+                        <th>Interface / Subinterface</th>
+                        <th>IP Addressing</th>
+                        <th>Zone / Virtual Router</th>
+                        <th>Network &amp; Security Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Palo Alto PA-VM</b></td>
+                        <td><code>mgmt</code></td>
+                        <td><code>192.168.255.10/24</code></td>
+                        <td>Out-of-Band Mgmt</td>
+                        <td>Web UI, SSH CLI, XML/REST API, Terraform &amp; Python control</td>
+                    </tr>
+                    <tr>
+                        <td><b>Palo Alto PA-VM</b></td>
+                        <td><code>ethernet1/1</code></td>
+                        <td><code>192.168.1.200/24</code><br><code>192.168.1.201/32</code> (VIP)</td>
+                        <td>Untrust / VR-Perimeter</td>
+                        <td>Primary WAN uplink, GlobalProtect edge, Inbound DMZ VIP, QoS egress</td>
+                    </tr>
+                    <tr>
+                        <td><b>Palo Alto PA-VM</b></td>
+                        <td><code>ethernet1/2.10</code></td>
+                        <td><code>10.10.10.1/24</code></td>
+                        <td>Trust / VR-Corporate</td>
+                        <td>Corporate LAN gateway, Captive Portal (<code>authportal</code>), <code>next-vr</code> egress</td>
+                    </tr>
+                    <tr>
+                        <td><b>Palo Alto PA-VM</b></td>
+                        <td><code>ethernet1/2.50</code></td>
+                        <td><code>10.50.50.1/24</code></td>
+                        <td>Guest / VR-Guest</td>
+                        <td>Isolated untrusted tenant gateway with zero route to Corporate</td>
+                    </tr>
+                    <tr>
+                        <td><b>Palo Alto PA-VM</b></td>
+                        <td><code>tunnel.1</code></td>
+                        <td><code>10.255.255.1/30</code></td>
+                        <td>VPN / VR-Perimeter</td>
+                        <td>Route-based IKEv2 IPsec VTI, eBGP (AS 65001), BFD (250ms), PBF</td>
+                    </tr>
+                    <tr>
+                        <td><b>Palo Alto PA-VM</b></td>
+                        <td><code>tunnel.2</code></td>
+                        <td>Dynamic (<code>10.200.1.10-50</code>)</td>
+                        <td>Global-Protect-VPN</td>
+                        <td>Remote workforce IPsec/ESP termination &amp; split-tunneling</td>
+                    </tr>
+                    <tr>
+                        <td><b>Cisco CSR Router</b></td>
+                        <td><code>Tunnel1</code>, <code>Gig0/1</code>, <code>Lo0</code></td>
+                        <td><code>10.255.255.2/30</code>, <code>20.20.20.1/24</code></td>
+                        <td>Global Routing (AS 65000)</td>
+                        <td>Remote Datacenter WAN/VTI endpoint, eBGP peer, BFD neighbor</td>
+                    </tr>
+                    <tr>
+                        <td><b>Windows Server 2022</b></td>
+                        <td>Domain Controller</td>
+                        <td><code>172.16.109.133</code></td>
+                        <td>Identity Core</td>
+                        <td>Active Directory (<code>meridian.local</code>), LDAP auth, AD group mapping</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 15 MODULES -->
+    <section id="modules">
+        <h2>15-Project Master Implementation Matrix</h2>
+        <p class="section-sub">Comprehensive enterprise progression across 5 core security and engineering domains.</p>
+
+        <div class="domain-grid">
+
+            <div class="domain-card">
+                <span class="tag">Module 01</span>
+                <h3>App-ID Zero Trust &amp; L4 Evasion</h3>
+                <p>Decoupled port from application; blocked <code>youtube-base</code> mid-flow after SNI inspection (4 pkts / 947 bytes) while allowing <code>google-base</code> via <code>Standard-Internet-Apps</code> on port 443.</p>
+                <ul>
+                    <li>Eliminated port-centric firewall blindspots</li>
+                    <li>Verified via <code>youtube-base-denied-detail-log-view.png</code></li>
+                    <li>Application-default port enforcement</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 02</span>
+                <h3>SSL/TLS Forward Proxy Decryption</h3>
+                <p>Deployed Forward Trust/Untrust PKI; decrypted outbound TLS (<code>*NS</code> flag), blocked expired/untrusted BadSSL certificates, and bypassed 51 sensitive financial domains (<code>Bank-NoDecrypt</code>).</p>
+                <ul>
+                    <li>Deep payload inspection into encrypted sessions</li>
+                    <li>Dynamic certificate re-signing with corporate CA</li>
+                    <li>Verified via <code>show-session-ssl-decrypt-yes.png</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 03</span>
+                <h3>Content-ID, File Blocking &amp; EDL Sinkhole</h3>
+                <p>Blocked magic-byte PE executables (<code>putty.exe</code>), intercepted EICAR over HTTPS (Threat 100000), and ingested 187,027 C2 domains via External Dynamic Lists (EDL) to sinkhole lookups.</p>
+                <ul>
+                    <li>DNS queries sinkholed to <code>198.135.184.22</code></li>
+                    <li>Multi-format file blocking profile enforcement</li>
+                    <li>Verified via <code>nslookup-c2-sinkholed.png</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 04</span>
+                <h3>User-ID: AD LDAP &amp; Captive Portal</h3>
+                <p>Integrated Windows Server 2022 Active Directory (<code>meridian.local</code>); forced unauthenticated clients to HTTPS Captive Portal; enforced Admin allow vs. Contractor TCP RST on same IP.</p>
+                <ul>
+                    <li>Role-Based Access Control via AD group membership</li>
+                    <li>Dynamic IP-to-User mapping table</li>
+                    <li>Verified via <code>cli-policy-match-contractor-drop.png</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 05</span>
+                <h3>Zone Protection &amp; Volumetric DoS</h3>
+                <p>Absorbed 4,032,467-packet SYN flood via hardware SYN Cookies (39,005 drops/sec) while keeping CPU &lt;20%; dropped 131,242 UDP sweep packets via RED and sanitized malformed headers.</p>
+                <ul>
+                    <li>Cryptographic SYN Cookies under extreme flood</li>
+                    <li>Sanitized LSRR, Timestamp, and SYN+Data headers</li>
+                    <li>Verified via <code>cli-dos-counter-global-39k-drop.png</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 06</span>
+                <h3>Multi-Vendor IPsec VTI &amp; eBGP</h3>
+                <p>Built IKEv2 AES-256/DH14 VTI (<code>tunnel.1</code> ↔ <code>Tunnel1</code>) over NAT-T UDP 4500 with eBGP (AS 65001 ↔ AS 65000); verified synchronized SPIs (<code>BD359D70</code>/<code>B4E8D71F</code>) and 3-hop trace.</p>
+                <ul>
+                    <li>Palo Alto to Cisco IOS route-based IPsec</li>
+                    <li>Dynamic prefix exchange via BGP redistribution</li>
+                    <li>Verified via <code>palo-cli-show-vpn-ipsec-sa.png</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 07</span>
+                <h3>GlobalProtect SASE Remote Access</h3>
+                <p>Deployed Portal/Gateway on <code>ethernet1/1</code>, leased <code>10.200.1.10</code> over IPsec (ESP), and enforced client split-tunneling (2ms VPN vs local DIA) with GP-driven User-ID RBAC.</p>
+                <ul>
+                    <li>Isolated remote workforce into dedicated zone</li>
+                    <li>Split-tunnel route injection on Windows client</li>
+                    <li>Verified via <code>pa-cli-gp-gateway-current-user.png</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 08</span>
+                <h3>Inbound SSL Decryption &amp; WAF Defense</h3>
+                <p>Bound secondary VIP <code>192.168.1.201:443</code> with DNAT+SNAT; engineered 5 custom OWASP signatures (41070–41074) blocking Log4Shell, SQLi, XSS, Path Traversal, and RCE via Frame 325 RST.</p>
+                <ul>
+                    <li>Decrypted inbound HTTPS with backend private key</li>
+                    <li>Custom regex pattern matching on HTTP request URI/headers</li>
+                    <li>Verified via <code>threat-pcap-log4shell-jndi.png</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 09</span>
+                <h3>PBF, Path Monitoring &amp; SLA Failover</h3>
+                <p>Steered <code>20.20.20.0/24</code> across <code>tunnel.1</code> with 3s×3 ICMP probes; on Tunnel1 shutdown, <code>nh-down</code> bypassed PBF and shifted live traceroutes from 3-hop VTI to 5-hop physical underlay.</p>
+                <ul>
+                    <li>Sub-second Policy-Based Forwarding failover</li>
+                    <li>Floating static route underlay backup (AD 20)</li>
+                    <li>Verified via <code>pbf-traceroute-failover-underlay.png</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 10</span>
+                <h3>App-Based QoS &amp; Egress Shaping</h3>
+                <p>Attached <code>Corp-Egress-Shaping-Profile</code> (10M pipe) to <code>ethernet1/1</code>; clamped Class 8 bulk iPerf3 to a flat 2.014 Mbps (4,429,576 dropped pkts) while Class 1 burst to 10,002 kbps.</p>
+                <ul>
+                    <li>Guaranteed bandwidth for critical applications</li>
+                    <li>Hardware rate limiter dropped 4.4M bulk packets</li>
+                    <li>Verified via <code>wireshark-io-graph-2mbps-plateau.png</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 11</span>
+                <h3>Multi-VR Segmentation &amp; next-vr</h3>
+                <p>Partitioned <code>VR-Perimeter</code>, <code>VR-Corporate</code> (VLAN 10), and <code>VR-Guest</code> (VLAN 50); leaked internet defaults via <code>next-vr</code> while enforcing 100% lateral isolation at FIB layer.</p>
+                <ul>
+                    <li>Virtual routing instance isolation on single chassis</li>
+                    <li>Zero route leaking between Corporate and Guest</li>
+                    <li>Verified via <code>wireshark-vlan50-unanswered-icmp.png</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 12</span>
+                <h3>NetDevOps: Terraform &amp; Python Auditing</h3>
+                <p>Extracted 16 live rules via <code>paloaltonetworks/panos</code> Terraform provider into JSON, audited CIS compliance with <code>audit.py</code> (29 findings), and remediated rules automatically (down to 27).</p>
+                <ul>
+                    <li>Infrastructure as Code rulebase management</li>
+                    <li>Automated Pandoc executive HTML compliance report</li>
+                    <li>Verified via <code>audit.py</code> and <code>outputs.tf</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 13</span>
+                <h3>Custom App-ID &amp; Protocol Decoders</h3>
+                <p>Staged capture to extract 81B HTTP stream; compiled custom <code>portquiz-8888</code> App-ID (regex <code>portquiz\.net:8888</code>) and blocked port 8889 evasion under application-default.</p>
+                <ul>
+                    <li>Deep regex signature matching on L7 headers</li>
+                    <li>Eliminated non-standard port tunneling evasion</li>
+                    <li>Verified via <code>cli-show-session-custom-app.png</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 14</span>
+                <h3>Classified DoS (Per-Source Limiting)</h3>
+                <p>Deployed <code>Classified-Web-DoS</code> (50/100/200 cps, 300s block) on VIP; escalated attacker loss to 100% (136s timeout, 306 rule drops) with ACC logging 869 threats / 0 sessions.</p>
+                <ul>
+                    <li>Per-IP surgical rate limiting preventing resource exhaustion</li>
+                    <li>Zero impact to legitimate concurrent traffic</li>
+                    <li>Verified via <code>acc-source-ip-threat-metrics.png</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 15</span>
+                <h3>Sub-Second BGP Convergence via BFD</h3>
+                <p>Deployed BFD (250ms × 3 = 750ms) over IPsec VTI to Cisco CSR; reduced BGP failure teardown latency from 67 seconds (default timers) to 2 seconds (97.0% faster).</p>
+                <ul>
+                    <li>Sub-second failure detection over route-based VPN</li>
+                    <li>Eliminated standard 180s BGP hold-time blackholing</li>
+                    <li>Verified via <code>pa-system-logs-bfd-subsecond-teardown.png</code></li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- HIGHLIGHTS -->
+    <section id="highlights">
+        <h2>Quantitative Security Highlights</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Security Capability</th>
+                        <th>Empirical Measurement / Verification</th>
+                        <th>Architecture Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Volumetric DoS Mitigation</b></td>
+                        <td><b>4,032,467 SYN packets</b> absorbed at 39,005 drops/sec; CPU &lt;20%</td>
+                        <td>Protects dataplane and state tables from resource starvation</td>
+                    </tr>
+                    <tr>
+                        <td><b>EDL Threat Feed Sinkholing</b></td>
+                        <td><b>187,027 C2 domains</b> ingested dynamically to sinkhole IP</td>
+                        <td>Automated zero-touch defense against active command-and-control</td>
+                    </tr>
+                    <tr>
+                        <td><b>BFD Teardown Latency</b></td>
+                        <td><b>2 seconds</b> vs 67 seconds without BFD (<b>97.0% improvement</b>)</td>
+                        <td>Immediate routing convergence without dropped business sessions</td>
+                    </tr>
+                    <tr>
+                        <td><b>QoS Class 8 Clamping</b></td>
+                        <td>Clamped bulk iPerf3 to <b>2.014 Mbps</b> (4.4M drops) while Class 1 reached 10M</td>
+                        <td>Prevents unmanaged large file transfers from saturating WAN uplinks</td>
+                    </tr>
+                    <tr>
+                        <td><b>Per-Source DoS Quarantining</b></td>
+                        <td>Attacker throttled to 100% loss (136s timeout, 869 ACC threat hits)</td>
+                        <td>Surgical blocking of malicious sources without broad collateral damage</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- TROUBLESHOOTING -->
+    <section id="troubleshooting">
+        <h2>Engineering Troubleshooting &amp; Lessons Learned</h2>
+        <div class="card">
+            <h3>Field-Tested Problem Resolutions</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Challenge Encountered</th>
+                            <th>Root Cause</th>
+                            <th>Engineering Resolution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><b>HTTPS browsing failed despite <code>ssl</code>/<code>web-browsing</code> being allowed.</b></td>
+                            <td>PAN-OS parsed TLS Client Hello SNI and promoted sessions mid-flow to <code>google-base</code>, which wasn't in the rule.</td>
+                            <td>Grouped interdependent cloud apps in <code>Standard-Internet-Apps</code> while excluding streaming apps (<code>youtube-base</code>).</td>
+                        </tr>
+                        <tr>
+                            <td><b>GlobalProtect &amp; Inbound DMZ HTTPS conflicted on WAN TCP 443.</b></td>
+                            <td>Both GlobalProtect Gateway and DMZ Web Server required listening on port 443 on <code>ethernet1/1</code>.</td>
+                            <td>Bound secondary VIP <code>192.168.1.201/32</code> to <code>ethernet1/1</code>, isolating GlobalProtect on <code>.200</code> and DMZ NAT on <code>.201</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><b>Inbound DNAT &amp; GlobalProtect sessions timed out on return.</b></td>
+                            <td>Internal hosts lacked reverse routes for remote GP pools (<code>10.200.1.0/24</code>) or external IPs.</td>
+                            <td>Paired DNAT / GP ingress rules with Source NAT (PAT) translating to the firewall LAN gateway (<code>10.10.10.1</code>).</td>
+                        </tr>
+                        <tr>
+                            <td><b>PBF failover blackholed traffic after Tunnel1 shutdown.</b></td>
+                            <td>Once PBF disabled the rule on 3 missed probes, the VR lacked an alternate route to <code>20.20.20.0/24</code>.</td>
+                            <td>Added floating static route <code>CSR-BACKUP</code> (AD 20) via <code>ethernet1/1</code>, shifting traffic cleanly to the underlay.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="action-row">
+                <a class="btn-solid" href="https://github.com/richardpateau/Palo-Alto-Security" target="_blank">View GitHub Repository →</a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>Richard Pateau | Palo Alto Networks Security Architecture</p>
+</footer>
+
+</body>
+</html>

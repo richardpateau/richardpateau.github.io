@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="F5 BIG-IP LTM Enterprise Load Balancing & Traffic Management Lab: 12-module, packet-verified ADC engineering lab on TMOS in Azure with TLS offloading, iRules, persistence, and failover benchmarks.">
+<title>F5 BIG-IP LTM Lab | Enterprise Traffic Management &amp; ADC Architecture</title>
+<style>
+    :root{
+        --accent:#0d9488;
+        --accent-dark:#0f766e;
+        --accent-tint:#f0fdfa;
+        --ink:#1f2937;
+        --sub:#5b6472;
+        --bg:#f5f7fa;
+        --line:#e5e7eb;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;scroll-padding-top:70px;}
+    body{font-family:Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;}
+
+    /* ---------- header ---------- */
+    header{background:#fff;padding:60px 20px 40px;border-bottom:1px solid var(--line);}
+    header .container{max-width:1100px;margin:auto;}
+    .kicker{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:12px;}
+    header h1{font-size:36px;font-weight:700;margin-bottom:14px;line-height:1.2;max-width:880px;}
+    header .subtitle{color:var(--sub);font-size:17px;max-width:840px;margin-bottom:24px;}
+    .tag-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+    .badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:99px;}
+    .badge.live{background:var(--accent-tint);color:var(--accent-dark);border:1px solid rgba(13,148,136,.2);}
+    .badge.tech{background:#e5e7eb;color:#374151;}
+
+    /* ---------- nav ---------- */
+    nav{background:#fff;padding:16px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;}
+    nav .container{max-width:1100px;margin:auto;display:flex;justify-content:space-between;align-items:center;}
+    nav a{color:#374151;text-decoration:none;font-weight:bold;font-size:14px;margin-right:20px;}
+    nav a:hover{color:var(--accent);}
+    nav .back-link{color:var(--accent);font-size:13.5px;}
+
+    /* ---------- main layout ---------- */
+    main{max-width:1100px;margin:auto;padding:45px 20px;}
+    section{margin-bottom:50px;}
+    h2{font-size:26px;margin-bottom:18px;font-weight:700;color:var(--ink);border-bottom:2px solid var(--line);padding-bottom:8px;}
+    h3{font-size:19px;margin-bottom:10px;color:var(--ink);}
+    p{color:var(--sub);margin-bottom:16px;}
+
+    .card{background:#fff;padding:28px;border-radius:10px;border:1px solid var(--line);border-top:3px solid var(--accent);margin-bottom:24px;}
+
+    /* ---------- stats bar ---------- */
+    .stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:35px;}
+    .stat-box{background:#fff;padding:20px;border-radius:8px;border:1px solid var(--line);text-align:center;}
+    .stat-box b{display:block;font-size:28px;color:var(--accent);font-weight:700;}
+    .stat-box span{color:var(--sub);font-size:13px;text-transform:uppercase;letter-spacing:.05em;}
+
+    /* ---------- topology container ---------- */
+    .topology-container{background:#fff;padding:20px;border-radius:10px;border:1px solid var(--line);margin-bottom:35px;text-align:center;}
+    .topology-container img{width:100%;height:auto;border-radius:6px;border:1px solid #eee;display:block;}
+    .caption{font-size:13px;color:var(--sub);margin-top:12px;font-style:italic;}
+
+    /* ---------- tables ---------- */
+    .table-wrap{overflow-x:auto;margin:20px 0;}
+    table{width:100%;border-collapse:collapse;font-size:13.5px;text-align:left;background:#fff;}
+    th{background:#f9fafb;color:var(--ink);font-weight:700;padding:12px 14px;border-bottom:2px solid var(--line);}
+    td{padding:12px 14px;border-bottom:1px solid var(--line);color:var(--sub);}
+    tr:hover td{background:#fafbfc;}
+    td b{color:var(--ink);}
+    td code{background:#f3f4f6;padding:2px 6px;border-radius:4px;font-size:12.5px;color:#111827;}
+
+    /* ---------- grid ---------- */
+    .domain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;}
+    .domain-card{background:#fff;padding:24px;border-radius:10px;border:1px solid var(--line);border-top:3px solid var(--accent);display:flex;flex-direction:column;}
+    .domain-card .tag{display:block;color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+    .domain-card ul{margin-left:18px;color:var(--sub);font-size:14px;margin-bottom:18px;}
+    .domain-card li{margin-bottom:6px;}
+
+    /* ---------- buttons & links ---------- */
+    .button{display:inline-block;color:var(--accent);text-decoration:none;font-size:13.5px;font-weight:700;border-bottom:1.5px solid var(--accent);padding-bottom:1px;}
+    .button:hover{color:var(--accent-dark);border-bottom-color:var(--accent-dark);}
+    .action-row{display:flex;gap:15px;flex-wrap:wrap;margin-top:15px;}
+    .btn-solid{display:inline-block;background:var(--accent);color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:14px;}
+    .btn-solid:hover{background:var(--accent-dark);}
+    .btn-outline{display:inline-block;background:transparent;color:var(--ink);border:1.5px solid var(--line);padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:14px;}
+    .btn-outline:hover{background:#fff;border-color:var(--sub);}
+
+    footer{background:#111827;color:#fff;text-align:center;padding:30px;margin-top:60px;}
+
+    @media (max-width:768px){
+        header h1{font-size:28px;}
+        .stats-bar{grid-template-columns:1fr 1fr;}
+        nav .container{flex-direction:column;gap:10px;}
+    }
+</style>
+</head>
+<body>
+
+<nav>
+    <div class="container">
+        <a class="back-link" href="../index.html">← Back to Portfolio</a>
+        <div>
+            <a href="#topology">Topology</a>
+            <a href="#modules">12 Modules</a>
+            <a href="#metrics">Evidence &amp; Metrics</a>
+            <a href="#pcaps">PCAPs</a>
+            <a href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab" target="_blank">View GitHub Repo →</a>
+        </div>
+    </div>
+</nav>
+
+<header>
+    <div class="container">
+        <div class="kicker">Application Delivery &amp; Traffic Management</div>
+        <h1>F5 BIG-IP LTM Enterprise Load Balancing &amp; ADC Architecture</h1>
+        <p class="subtitle">
+            A 12-module, packet-verified Application Delivery Controller (ADC) engineering lab built on F5 BIG-IP Virtual Edition (TMOS 21.1.0.3) in Microsoft Azure. Features end-to-end TLS offloading and bridging, high-performance TMM iRules, dynamic Least Connections balancing, session persistence, Azure multi-IP SNAT pools, and sub-second failover verified with Wireshark PCAPs and wrk benchmarks.
+        </p>
+        <div class="tag-row">
+            <span class="badge live">Status: 12 Modules Packet-Verified</span>
+            <span class="badge tech">F5 BIG-IP VE 21.1.0.3</span>
+            <span class="badge tech">Microsoft Azure</span>
+            <span class="badge tech">TLS 1.3 Offload &amp; Bridging</span>
+            <span class="badge tech">iRules &amp; TMM Kernel</span>
+            <span class="badge tech">Least Connections</span>
+            <span class="badge tech">Cookie Insert Persistence</span>
+            <span class="badge tech">SNAT Pool Architecture</span>
+        </div>
+        <div class="action-row">
+            <a class="btn-solid" href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab" target="_blank">View on GitHub (Full Code &amp; PCAPs)</a>
+            <a class="btn-outline" href="#topology">Explore Architecture &amp; Flows</a>
+        </div>
+    </div>
+</header>
+
+<main>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar">
+        <div class="stat-box">
+            <b>12</b>
+            <span>Verified Modules</span>
+        </div>
+        <div class="stat-box">
+            <b>110 µs</b>
+            <span>TMM Edge 301 Turnaround</span>
+        </div>
+        <div class="stat-box">
+            <b>266,212</b>
+            <span>Reqs @ 4,435/s Zero Failures</span>
+        </div>
+        <div class="stat-box">
+            <b>501 vs 499</b>
+            <span>1,000-Conn Socket Equilibrium</span>
+        </div>
+    </div>
+
+    <!-- TOPOLOGY SECTION -->
+    <section id="topology">
+        <h2>Lab Topology &amp; Traffic Flow Architecture</h2>
+        <p class="section-sub">Production Azure VNet deployment with multi-IP NIC binding, virtual server VIPs, dedicated egress SNAT pools, and dual Ubuntu NGINX backend nodes.</p>
+
+        <div class="topology-container">
+            <img src="../images/f5-topology.png" alt="F5 BIG-IP LTM Architecture and Packet Flow Diagram">
+            <p class="caption">Figure 1: Full packet flow showing client-side TLS termination, TMM kernel evaluation, SNAT pool address translation, and NGINX pool member load balancing.</p>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Node / Object</th>
+                        <th>IP Address</th>
+                        <th>Interface / Azure NIC</th>
+                        <th>Role in Architecture</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>F5-CLIENT-01</b></td>
+                        <td><code>172.16.0.8</code></td>
+                        <td>Primary NIC</td>
+                        <td>Primary client for curl, wrk benchmarks, and attack/rate-limit simulations</td>
+                    </tr>
+                    <tr>
+                        <td><b>F5-CLIENT-02</b></td>
+                        <td><code>172.16.0.9</code></td>
+                        <td>Secondary Client</td>
+                        <td>Concurrent client for multi-client Source Address Persistence verification</td>
+                    </tr>
+                    <tr>
+                        <td><b>VS-NGINX-WEB / HTTPS</b></td>
+                        <td><code>172.16.0.7</code></td>
+                        <td>Secondary Static NIC IP</td>
+                        <td>Shared Virtual Server VIP (<code>TCP/80</code> and <code>TCP/443</code>)</td>
+                    </tr>
+                    <tr>
+                        <td><b>F5 BIG-IP Self-IP</b></td>
+                        <td><code>172.16.0.4</code></td>
+                        <td>Primary NIC + PIP</td>
+                        <td>Management (<code>8443</code>/SSH), active health probes, baseline Auto Map</td>
+                    </tr>
+                    <tr>
+                        <td><b>SNAT-POOL (SNAT-1/2)</b></td>
+                        <td><code>172.16.0.10</code>, <code>172.16.0.11</code></td>
+                        <td>Secondary Static NIC IPs</td>
+                        <td>Dedicated application egress SNAT pool isolating Self-IP <code>172.16.0.4</code></td>
+                    </tr>
+                    <tr>
+                        <td><b>NGINX-WEB01</b></td>
+                        <td><code>172.16.0.5</code></td>
+                        <td>Backend NIC</td>
+                        <td>Backend App Node 1 (<code>POOL-WEB01</code>, <code>POOL-NGINX-WEB</code>, <code>POOL-APP1-HTTPS</code>)</td>
+                    </tr>
+                    <tr>
+                        <td><b>NGINX-WEB02</b></td>
+                        <td><code>172.16.0.6</code></td>
+                        <td>Backend NIC</td>
+                        <td>Backend App Node 2 (<code>POOL-WEB02</code>, <code>POOL-NGINX-WEB</code>, <code>POOL-APP2-HTTPS</code>)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 12 MODULES BREAKDOWN -->
+    <section id="modules">
+        <h2>12-Module Master Implementation</h2>
+        <p class="section-sub">Comprehensive implementation matrix spanning SSL offloading, dynamic load balancing, high availability, L7 security controls, and TMOS telemetry.</p>
+
+        <div class="domain-grid">
+
+            <div class="domain-card">
+                <span class="tag">Module 01</span>
+                <h3>SSL Termination (HTTPS Offloading)</h3>
+                <p>Terminated TLS 1.3 on F5 virtual server with <code>CLIENTSSL-F5-LAB</code> profile; decrypted traffic into plaintext HTTP/1.1 across backend nodes, saving server CPU cycles.</p>
+                <ul>
+                    <li>TLS 1.3 negotiated on client-side leg (<code>172.16.0.8 ↔ .7</code>)</li>
+                    <li>Plaintext HTTP/1.1 forwarded to backend servers</li>
+                    <li>Verified via <code>http-termination.pcap</code> and decrypted TLS keys</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 02</span>
+                <h3>SSL Bridging (End-to-End TLS)</h3>
+                <p>Terminated client TLS at F5, inspected HTTP payload, and re-encrypted traffic to backend NGINX nodes via <code>SERVERSSL-NGINX-LAB</code> on port 443.</p>
+                <ul>
+                    <li>Client TLS 1.3 + backend TLS 1.2 independent handshakes</li>
+                    <li>L7 visibility maintained on F5 while securing internal transit</li>
+                    <li>Active HTTPS health monitor (<code>MON-NGINX-HTTPS</code>)</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 03</span>
+                <h3>HTTP-to-HTTPS Redirection</h3>
+                <p>Synthesized RFC-compliant <code>301 Moved Permanently</code> redirects entirely in the TMOS microkernel (TMM) with zero backend server hits.</p>
+                <ul>
+                    <li>Turnaround latency of just <b>110 µs</b> (<code>0.000110s</code>)</li>
+                    <li>Preserved full host and URI path: <code>https://[HTTP::host][HTTP::uri]</code></li>
+                    <li>Verified via <code>redirection.pcap</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 04</span>
+                <h3>Layer 7 Host-Based Routing</h3>
+                <p>Multi-tenant content switching routing <code>app1.f5-lab.local</code> to <code>POOL-APP1-HTTPS</code> and <code>app2.f5-lab.local</code> to <code>POOL-APP2-HTTPS</code> on a single VIP.</p>
+                <ul>
+                    <li>Decrypted TLS 1.3 <code>Host:</code> header dissection in TMM</li>
+                    <li>Ultra-low overhead: <b>47.6K avg CPU cycles</b></li>
+                    <li>Blast-radius isolation: outage in App1 has zero impact on App2</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 05</span>
+                <h3>HTTP Health Monitoring &amp; Failover</h3>
+                <p>Configured <code>MON-NGINX-HTTP</code> (5s interval / 16s timeout) sending <code>GET /</code> and expecting <code>"NGINX WEB"</code>. Tested under active benchmark load.</p>
+                <ul>
+                    <li>Stopped NGINX on WEB01; evicted from pool in ≤16s</li>
+                    <li><code>wrk</code> benchmark sustained <b>266,212 reqs @ 4,435.49 req/s</b></li>
+                    <li><b>0 connect errors</b>, 100% availability shifted to WEB02</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 06</span>
+                <h3>Least Connections Load Balancing</h3>
+                <p>Dynamic socket balancing under high concurrency. Pre-skewed WEB02 with 7.54M background requests to prove connection count out-prioritizes historical load.</p>
+                <ul>
+                    <li>Balanced 1,000 concurrent sockets to <b>501 vs 499</b> equilibrium</li>
+                    <li>Instant failover shifted 995 active connections during fault</li>
+                    <li>Eliminated head-of-line blocking inherent to Round Robin</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 07</span>
+                <h3>Source Address Persistence</h3>
+                <p>Layer 4 client IP affinity profile (<code>PERSIST-SOURCE-IP</code>) with 180-second sliding timeout table across independent test clients.</p>
+                <ul>
+                    <li>Client 1 (<code>172.16.0.8</code>) pinned to <code>WEB02</code></li>
+                    <li>Client 2 (<code>172.16.0.9</code>) pinned independently to <code>WEB01</code></li>
+                    <li>Verified via <code>tmsh show ltm persistence persist-records</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 08</span>
+                <h3>HTTP Cookie Insert Persistence</h3>
+                <p>Stateless client session stickiness injecting encrypted BIG-IP cookies (<code>BIGipServerPOOL-NGINX-WEB</code>) into HTTP responses.</p>
+                <ul>
+                    <li>100 consecutive requests delivered 100% stickiness to WEB02</li>
+                    <li>Decoded cookie value proving pool IP &amp; port encoding math</li>
+                    <li>Wireshark verified <b>1,849 pkts on WEB02 vs 50 on WEB01</b></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 09</span>
+                <h3>L7 Security Controls (LTM Policies)</h3>
+                <p>High-performance TMM edge policy (<code>POLICY-HTTPS-SECURITY</code>) blocking unauthorized paths (<code>/admin</code>, <code>/private</code>) and unsafe verbs (<code>TRACE</code>, <code>CONNECT</code>).</p>
+                <ul>
+                    <li>Immediate TCP <code>[RST]</code> termination at the edge</li>
+                    <li>Prevented <code>405 Method Not Allowed</code> backend banner leakage</li>
+                    <li>Verified via <code>policies.pcap</code> and tmsh execution stats</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 10</span>
+                <h3>Connection &amp; HTTP Rate Limiting</h3>
+                <p>Defense-in-depth rate limiting combining L4 TCP connection limits with L7 TMM session table rate limiting (20 req / 10s per source IP).</p>
+                <ul>
+                    <li>L4 clamped 100 concurrent conns to <b>50</b> (13,261 RST rejects)</li>
+                    <li>L7 synthesized <code>HTTP 429 Too Many Requests</code> in <b>670 µs</b></li>
+                    <li>Included RFC-compliant <code>Retry-After: 10</code> header</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 11</span>
+                <h3>SNAT Pools &amp; Azure Multi-IP NIC</h3>
+                <p>Eliminated port exhaustion and management IP exposure by transitioning from Auto Map to a dedicated 2-IP SNAT pool (<code>172.16.0.10</code> &amp; <code>.11</code>).</p>
+                <ul>
+                    <li>Doubled egress ephemeral port capacity to 130,000+ sockets</li>
+                    <li>Self-IP <code>.4</code> reduced to 1.5% traffic (health checks only)</li>
+                    <li>Verified before &amp; after via <code>snat.pcap</code> and <code>snat-post-change.pcap</code></li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <span class="tag">Module 12</span>
+                <h3>TMSH Operational Monitoring &amp; CMP</h3>
+                <p>Enterprise command-line telemetry and Clustered Multi-Processing (CMP) core distribution audit across <code>tmm0</code> and <code>tmm1</code>.</p>
+                <ul>
+                    <li>Audited 4.2M HTTP &amp; 494.4K HTTPS virtual server requests</li>
+                    <li>Near-perfect <b>49.97% / 50.03%</b> traffic symmetry across 638K reqs</li>
+                    <li>Pinpointed exact timestamp of member failure in kernel log</li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- QUANTITATIVE HIGHLIGHTS -->
+    <section id="metrics">
+        <h2>Quantitative &amp; Packet-Level Highlights</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Engineering Capability</th>
+                        <th>Measurement / Empirical Evidence</th>
+                        <th>Engineering Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Edge 301 Redirect Turnaround</b></td>
+                        <td><b>110 µs</b> (<code>0.000110s</code>) in TMM kernel (<code>s1/tmm0</code>)</td>
+                        <td>Zero backend server CPU overhead; synthesized directly at edge</td>
+                    </tr>
+                    <tr>
+                        <td><b>Edge 429 Rate-Limit Synthesis</b></td>
+                        <td><b>670 µs</b> (<code>0.000670s</code>), 55.8K avg CPU cycles</td>
+                        <td>Absorbs HTTP flood attacks before application tier is reached</td>
+                    </tr>
+                    <tr>
+                        <td><b>Host-Based Routing Overhead</b></td>
+                        <td><b>47.6K</b> avg CPU cycles (0 aborts / failures)</td>
+                        <td>Microsecond L7 routing enables multi-tenant consolidation</td>
+                    </tr>
+                    <tr>
+                        <td><b>Least Connections Socket Equilibrium</b></td>
+                        <td><b>501 vs 499</b> sockets under 1,000-conn <code>wrk</code> load</td>
+                        <td>Prevents node overload and head-of-line blocking</td>
+                    </tr>
+                    <tr>
+                        <td><b>High Availability Failover</b></td>
+                        <td><b>266,212 reqs @ 4,435.49 req/s</b> with 0 errors</td>
+                        <td>Seamless zero-loss traffic migration during backend failure</td>
+                    </tr>
+                    <tr>
+                        <td><b>Cookie Insert Stickiness</b></td>
+                        <td><b>100/100</b> curl hits &amp; 1,849 vs 50 packets on wire</td>
+                        <td>Stateless session preservation without server-side sync</td>
+                    </tr>
+                    <tr>
+                        <td><b>SNAT Pool Isolation</b></td>
+                        <td>100% app traffic on <code>.10</code>/<code>.11</code>; Self-IP reduced to 1.5%</td>
+                        <td>Eliminates port exhaustion and isolates management traffic</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- PCAP ARTIFACTS -->
+    <section id="pcaps">
+        <h2>Packet Capture (.pcap) Artifact Index</h2>
+        <p class="section-sub">All supporting Wireshark captures are preserved in the repository for peer verification:</p>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Capture File</th>
+                        <th>Lab Module</th>
+                        <th>Verified Inspection Proof</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>http-termination.pcap</code></td>
+                        <td>SSL Termination</td>
+                        <td>TLS 1.3 client leg vs cleartext HTTP/1.1 backend leg with SNAT translation</td>
+                    </tr>
+                    <tr>
+                        <td><code>persistence.pcap</code></td>
+                        <td>Cookie Persistence</td>
+                        <td>1,800 client packets pinned to NGINX-WEB02 (1,849 pkts vs 50 on WEB01)</td>
+                    </tr>
+                    <tr>
+                        <td><code>redirection.pcap</code></td>
+                        <td>HTTP-to-HTTPS Redirect</td>
+                        <td><code>HEAD /</code> → <code>HTTP/1.0 301</code> (Location: https://...) in 110 µs</td>
+                    </tr>
+                    <tr>
+                        <td><code>host-based.pcap</code></td>
+                        <td>Host-Based Routing</td>
+                        <td>Decrypted TLS 1.3 <code>Host: app1/app2.f5-lab.local</code> + F5 Ethernet Trailer</td>
+                    </tr>
+                    <tr>
+                        <td><code>policies.pcap</code></td>
+                        <td>L7 Security Controls</td>
+                        <td>Immediate TCP <code>[RST]</code> termination on blocked URI and method probes</td>
+                    </tr>
+                    <tr>
+                        <td><code>snat.pcap</code></td>
+                        <td>SNAT Baseline</td>
+                        <td>Auto Map translation using BIG-IP Self-IP <code>172.16.0.4</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>snat-post-change.pcap</code></td>
+                        <td>SNAT Pool</td>
+                        <td>Dedicated source translation via <code>172.16.0.10</code> &amp; <code>172.16.0.11</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="action-row">
+            <a class="btn-solid" href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab" target="_blank">Browse Repository on GitHub →</a>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>Richard Pateau | F5 BIG-IP LTM Enterprise Architecture</p>
+</footer>
+
+</body>
+</html>

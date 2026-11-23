@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Network Engineer portfolio: production-grade enterprise network design, hybrid cloud (Azure), Cisco ISE Zero Trust, NetDevOps automation, and documented incident response with Wireshark and CLI evidence.">
+<meta name="description" content="Richard Pateau | Network Engineer Portfolio: Enterprise Routing & Switching, Palo Alto NGFW & Zero Trust, Fortinet SD-WAN Fabrics, F5 BIG-IP LTM Application Delivery, Hybrid Cloud (Azure), Cisco ISE 802.1X, NetDevOps, and packet-verified incident response.">
 <title>Richard Pateau | Network Engineer</title>
 <style>
     :root{
@@ -23,11 +23,11 @@
     header{background:#fff;padding:64px 20px 48px;border-bottom:1px solid var(--line);}
     header .container{max-width:1100px;margin:auto;}
     .kicker{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px;}
-    header h1{font-size:40px;font-weight:700;margin-bottom:14px;line-height:1.15;max-width:680px;}
-    header .role{color:var(--sub);font-size:17px;max-width:620px;margin-bottom:26px;}
-    .hero-list{display:flex;gap:26px;flex-wrap:wrap;font-size:14px;}
+    header h1{font-size:38px;font-weight:700;margin-bottom:14px;line-height:1.2;max-width:760px;}
+    header .role{color:var(--sub);font-size:17px;max-width:700px;margin-bottom:26px;}
+    .hero-list{display:flex;gap:20px;flex-wrap:wrap;font-size:13.5px;}
     .hero-list div{padding-left:14px;border-left:2px solid var(--accent);}
-    .hero-list b{display:block;font-size:14.5px;}
+    .hero-list b{display:block;font-size:14px;}
     .hero-list span{color:var(--sub);}
 
     /* ---------- nav ---------- */
@@ -48,13 +48,14 @@
 
     /* ---------- cards ---------- */
     .projects,.skills,.operations{display:grid;gap:20px;}
-    .projects{grid-template-columns:repeat(auto-fit,minmax(320px,1fr));}
+    .projects{grid-template-columns:repeat(auto-fit,minmax(330px,1fr));}
     .skills{grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
     .operations{grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
 
     .project,.skill,.operation{background:#fff;padding:25px;border-radius:10px;border:1px solid var(--line);border-top:3px solid var(--accent);transition:transform .2s ease,box-shadow .2s ease;display:flex;flex-direction:column;}
     .project:hover,.skill:hover,.operation:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.08);}
     .project p,.skill p,.operation p{color:var(--sub);margin-bottom:15px;}
+    .project .button-row{margin-top:auto;display:flex;gap:15px;align-items:center;flex-wrap:wrap;}
     .project .button,.skill .button,.operation .button{margin-top:auto;align-self:flex-start;}
 
     .tag{display:block;color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;}
@@ -111,12 +112,14 @@
     <div class="container">
         <div class="kicker">Network Engineering Portfolio</div>
         <h1>I design, secure, and automate networks — then document every step.</h1>
-        <p class="role">Network Engineer | Enterprise Routing, Security &amp; Hybrid Cloud Infrastructure</p>
+        <p class="role">Network Engineer | Enterprise Routing, Next-Gen Firewalls, SD-WAN, F5 ADC &amp; NetDevOps</p>
         <div class="hero-list">
             <div><b>Routing &amp; Switching</b><span>OSPF, BGP, HSRP, STP, IPv6</span></div>
-            <div><b>Security &amp; Identity</b><span>ASA HA, ISE, 802.1X, IPsec, Entra ID</span></div>
-            <div><b>NetDevOps</b><span>Python, Ansible, Batfish, CI/CD</span></div>
-            <div><b>Cloud &amp; Telemetry</b><span>Azure VNet, BGP, Splunk, Grafana</span></div>
+            <div><b>Next-Gen Security &amp; SASE</b><span>Palo Alto NGFW, App-ID, GlobalProtect, ASA HA</span></div>
+            <div><b>SD-WAN &amp; Multi-Path</b><span>Fortinet FortiGate, ADVPN, Packet Duplication</span></div>
+            <div><b>Application Delivery (ADC)</b><span>F5 BIG-IP LTM, TLS 1.3 Offload, iRules</span></div>
+            <div><b>Identity &amp; Zero Trust</b><span>Cisco ISE 802.1X, Entra ID SSO, AD LDAP</span></div>
+            <div><b>NetDevOps &amp; Cloud</b><span>Python, Ansible, Terraform, Azure, Batfish</span></div>
         </div>
     </div>
 </header>
@@ -137,9 +140,9 @@
 <section>
     <div class="intro">
         <h2>Documented Technical Evidence</h2>
-        <p>Production-grade networking implementations demonstrating enterprise routing, perimeter security, hybrid cloud connectivity, automated CI/CD validation, and structured operational troubleshooting.</p>
+        <p>Production-grade networking implementations demonstrating enterprise multi-site routing, Palo Alto Next-Generation perimeter security, Fortinet SD-WAN fabrics, F5 BIG-IP LTM application delivery, hybrid cloud (Azure), automated NetDevOps CI/CD validation, and structured operational troubleshooting.</p>
         <br>
-        <p>Every implementation is backed by verifiable artifacts: live Cisco IOS configurations, Wireshark packet captures (.pcap), failover demonstration recordings, Grafana telemetry graphs, and ITIL change management records.</p>
+        <p>Every implementation is backed by verifiable artifacts: live device configurations, Wireshark packet captures (.pcap), failover demonstration recordings, Grafana telemetry graphs, and ITIL change management records.</p>
     </div>
 </section>
 
@@ -153,24 +156,73 @@
     <!-- ---------- LIVE PROJECTS ---------- -->
     <div class="projects">
 
-        <div class="project">
-            <div class="thumb crop"><img src="images/topology-incident-response.png" alt="Network topology diagram for the incident response lab"></div>
-            <span class="badge live">Live</span>
-            <span class="tag">Network Operations</span>
-            <h3>Network Incident Response Lab</h3>
-            <p>Nine end-to-end network incidents investigated using an ITIL diagnostic workflow covering user symptoms, packet captures, root-cause analysis (RCA), configuration remediation, and post-change verification.</p>
-            <p class="meta"><b>Covers:</b> DHCP Starvation, OSPF Adjacency &amp; MTU, ACL Drops, SNMPv3, DHCP Relay, NAT/PAT, BGP RIB Matching, HSRP Failover</p>
-            <a class="button" href="projects/network-incident-response.html">View Incident Lab →</a>
-        </div>
-
+        <!-- 1. MERIDIAN FINANCIAL SERVICES -->
         <div class="project">
             <div class="thumb contain"><img src="images/meridian-topology.png" alt="Meridian Financial Services network diagram" onerror="this.parentElement.style.display='none'"></div>
             <span class="badge live">Live</span>
             <span class="tag">Enterprise Infrastructure</span>
             <h3>Meridian Financial Services</h3>
             <p>A production-grade, 5-site enterprise network (New York HQ, Chicago, Dallas, Miami, and an Ashburn DR site). Integrates dual-ISP eBGP, multi-area OSPF, ASA HA firewalls, Cisco ISE 802.1X NAC, Azure hybrid BGP over IPsec, and centralized Splunk/Grafana monitoring.</p>
-            <p class="meta"><b>17 documented modules</b> with configs, diagrams, screenshots, and failover testing</p>
-            <a class="button" href="https://github.com/richardpateau/enterprise-network-design" target="_blank">View on GitHub →</a>
+            <p class="meta"><b>17 documented modules:</b> live configs, diagrams, ITIL change records, and failover testing</p>
+            <div class="button-row">
+                <a class="button" href="projects/meridian.html">View Architecture →</a>
+                <a class="button secondary" href="https://github.com/richardpateau/enterprise-network-design" target="_blank">GitHub Repo ↗</a>
+            </div>
+        </div>
+
+        <!-- 2. PALO ALTO NETWORKS SECURITY -->
+        <div class="project">
+            <div class="thumb contain"><img src="images/palo-alto-topology.png" alt="Palo Alto Networks Security Architecture diagram"></div>
+            <span class="badge live">Live</span>
+            <span class="tag">Next-Gen Security &amp; SASE</span>
+            <h3>Palo Alto NGFW &amp; Zero Trust Architecture</h3>
+            <p>A 15-project progression on PAN-OS 11.2.5 interconnected with Cisco CSR1000v and Windows AD. Covers App-ID Zero Trust, TLS 1.3 forward proxy decryption, 187k-domain EDL sinkholing, Captive Portal RBAC, Zone Protection absorbing 4M SYN packets, GlobalProtect SASE, and Terraform/Python auditing.</p>
+            <p class="meta"><b>15 verified modules:</b> App-ID, SSL Decryption, GlobalProtect, BFD eBGP, IaC Auditing</p>
+            <div class="button-row">
+                <a class="button" href="projects/palo-alto-security.html">View Security Lab →</a>
+                <a class="button secondary" href="https://github.com/richardpateau/Palo-Alto-Security" target="_blank">GitHub Repo ↗</a>
+            </div>
+        </div>
+
+        <!-- 3. FORTINET FORTIGATE SD-WAN -->
+        <div class="project">
+            <div class="thumb contain"><img src="images/fortinet-sdwan-topology.png" alt="Fortinet FortiGate SD-WAN Fabric diagram"></div>
+            <span class="badge live">Live</span>
+            <span class="tag">SD-WAN &amp; Multi-Path</span>
+            <h3>Fortinet FortiGate SD-WAN &amp; Fabrics</h3>
+            <p>A 15-project enterprise SD-WAN fabric on FortiOS. Features dynamic spoke-to-spoke ADVPN shortcuts, proactive packet duplication delivering 0% voice loss under link drops, dual-hub disaster recovery, MP-BGP multi-VRF segmentation, DIA SaaS steering, and sub-second BFD failover verified via Linux tc netem.</p>
+            <p class="meta"><b>15 verified modules:</b> ADVPN, Dual-Hub DR, 0% Loss Duplication, MP-BGP, tc netem tests</p>
+            <div class="button-row">
+                <a class="button" href="projects/fortinet-fortigate-sdwan.html">View SD-WAN Lab →</a>
+                <a class="button secondary" href="https://github.com/richardpateau/fortinet-sd-wan" target="_blank">GitHub Repo ↗</a>
+            </div>
+        </div>
+
+        <!-- 4. F5 BIG-IP LTM -->
+        <div class="project">
+            <div class="thumb contain"><img src="images/f5-topology.png" alt="F5 BIG-IP LTM Architecture and Packet Flow Diagram"></div>
+            <span class="badge live">Live</span>
+            <span class="tag">Application Delivery (ADC)</span>
+            <h3>F5 BIG-IP LTM Traffic Management Lab</h3>
+            <p>A 12-module, packet-verified ADC engineering lab built on F5 BIG-IP VE (TMOS 21.1) in Microsoft Azure. Features TLS 1.3 offloading and bridging, 110 µs TMM redirect iRules, dynamic Least Connections balancing, Cookie Insert persistence, multi-IP Azure SNAT pools, and sustained failover across 266k+ requests with 0 errors.</p>
+            <p class="meta"><b>12 verified modules:</b> TLS 1.3 Offload, iRules, Persistence, SNAT Pools, 7 PCAPs</p>
+            <div class="button-row">
+                <a class="button" href="projects/f5-big-ip-ltm.html">View F5 LTM Lab →</a>
+                <a class="button secondary" href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab" target="_blank">GitHub Repo ↗</a>
+            </div>
+        </div>
+
+        <!-- 5. NETWORK INCIDENT RESPONSE LAB -->
+        <div class="project">
+            <div class="thumb crop"><img src="images/topology-incident-response.png" alt="Network topology diagram for the incident response lab"></div>
+            <span class="badge live">Live</span>
+            <span class="tag">Network Operations</span>
+            <h3>Network Incident Response Lab</h3>
+            <p>Nine end-to-end network incidents investigated using an ITIL diagnostic workflow covering user symptoms, packet captures, root-cause analysis (RCA), configuration remediation, and post-change verification across OSPF, BGP, NAT, DHCP, and HSRP.</p>
+            <p class="meta"><b>9 documented incidents:</b> 21 packet captures, 249 screenshots, and 28 before/after configs</p>
+            <div class="button-row">
+                <a class="button" href="projects/network-incident-response.html">View Incident Lab →</a>
+            </div>
         </div>
 
     </div>
@@ -180,12 +232,12 @@
     <div class="projects">
 
         <div class="project upcoming">
-            <div class="thumb contain"><img src="images/pipeline-diagram.svg" alt="Compliance pipeline design: collect state, check drift, remediate, verify"></div>
+            <div class="thumb contain"><img src="images/automation_diagram.png" alt="Compliance pipeline design: collect state, check drift, remediate, verify"></div>
             <span class="badge wip">In progress</span>
             <span class="tag">NetDevOps &amp; Compliance</span>
             <h3>Automated Network Compliance Engine</h3>
-            <p>A modular Python pipeline running in GitHub Actions. It queries desired state from Nautobot/NetBox (SSoT), collects running device state via RESTCONF/Netmiko, detects configuration drift, validates changes mathematically with Batfish, and pushes auditable change summaries to Jira.</p>
-            <p class="meta"><b>Stack:</b> Python, Batfish, Ansible, Nautobot, RESTCONF, Jinja2, GitHub Actions</p>
+            <p>A modular Python network compliance engine that uses NetBox as a Single Source of Truth (SSoT) to compare desired state against live network devices via Netmiko, NETCONF, and RESTCONF. Features mathematical change validation with Batfish, dependency-aware execution, and automated drift remediation.</p>
+            <p class="meta"><b>Stack:</b> Python, NetBox, Netmiko, NETCONF, RESTCONF, Batfish, Pytest, GitHub Actions</p>
         </div>
 
     </div>
@@ -201,7 +253,7 @@
 
     <div class="skills">
 
-        <!-- 1. ROUTING & SWITCHING -> Links to Meridian Routing section -->
+        <!-- 1. ROUTING & SWITCHING -->
         <div class="skill">
             <span class="tag">Routing &amp; Switching</span>
             <h3>Enterprise Core &amp; Distribution</h3>
@@ -209,31 +261,63 @@
             <a class="button" href="projects/meridian.html#routing">View Evidence →</a>
         </div>
 
-        <!-- 2. SECURITY & ZERO TRUST -> Links to Meridian Security section -->
+        <!-- 2. NEXT-GEN SECURITY -->
         <div class="skill">
-            <span class="tag">Security &amp; Zero Trust</span>
-            <h3>Cisco ISE &amp; Perimeter Defense</h3>
-            <p>Cisco ISE 802.1X dynamic VLAN assignment (EAP-TLS/PEAP), MAB profiling for VoIP endpoints, TACACS+ command accounting, Cisco ASA Active/Standby HA failover, and AnyConnect VPN federated with Microsoft Entra ID SSO.</p>
+            <span class="tag">Next-Gen Security</span>
+            <h3>Palo Alto NGFW &amp; Zero Trust</h3>
+            <p>Layer 7 App-ID Zero Trust policy enforcement, TLS 1.3 Forward Proxy Decryption, 187k-domain EDL sinkholing, Zone Protection absorbing 4.03M SYN flood packets, and multi-vendor eBGP peering over IPsec VTI.</p>
+            <a class="button" href="projects/palo-alto-security.html">View Evidence →</a>
+        </div>
+
+        <!-- 3. SD-WAN & FABRICS -->
+        <div class="skill">
+            <span class="tag">SD-WAN &amp; Multi-Path</span>
+            <h3>Fortinet SD-WAN &amp; ADVPN</h3>
+            <p>Dynamic spoke-to-spoke ADVPN shortcuts, zero-loss proactive packet duplication (0.0% voice drop under impairment), multi-region dual-hub disaster recovery, and MP-BGP VPNv4 multi-VRF segmentation.</p>
+            <a class="button" href="projects/fortinet-fortigate-sdwan.html">View Evidence →</a>
+        </div>
+
+        <!-- 4. APPLICATION DELIVERY (ADC) -->
+        <div class="skill">
+            <span class="tag">Application Delivery</span>
+            <h3>F5 BIG-IP LTM &amp; Traffic Management</h3>
+            <p>TLS 1.3 SSL offload and bridging, high-performance 110 µs TMM redirect iRules, dynamic Least Connections load balancing (501 vs 499 sockets), Cookie Insert persistence, and Azure multi-IP SNAT pools.</p>
+            <a class="button" href="projects/f5-big-ip-ltm.html">View Evidence →</a>
+        </div>
+
+        <!-- 5. IDENTITY & ZERO TRUST -->
+        <div class="skill">
+            <span class="tag">Identity &amp; Zero Trust</span>
+            <h3>Cisco ISE, AD &amp; GlobalProtect</h3>
+            <p>Cisco ISE 802.1X dynamic VLAN assignment (EAP-TLS/PEAP), MAB profiling for VoIP, Windows AD LDAP integration for User-ID Captive Portal RBAC, and GlobalProtect SASE remote access.</p>
             <a class="button" href="projects/meridian.html#security">View Evidence →</a>
         </div>
 
-        <!-- 3. HYBRID CLOUD -> Links to Meridian Azure section -->
+        <!-- 6. HYBRID CLOUD -->
         <div class="skill">
             <span class="tag">Hybrid Cloud</span>
             <h3>Azure VNet &amp; BGP Routing</h3>
-            <p>Route-based Site-to-Site IPsec/IKEv2 VPN connecting on-premises ASA firewalls to Azure VNet Gateways, dynamic BGP route propagation, NAT Gateway outbound egress, and NSG micro-segmentation.</p>
+            <p>Route-based Site-to-Site IPsec/IKEv2 VPN connecting on-premises firewalls to Azure VNet Gateways, dynamic BGP route propagation (ASN 65515), NAT Gateway outbound egress, and NSG micro-segmentation.</p>
             <a class="button" href="projects/meridian.html#cloud">View Evidence →</a>
         </div>
 
-        <!-- 4. NETDEVOPS & AUTOMATION -> Links to Meridian Automation section -->
+        <!-- 7. NETDEVOPS & AUTOMATION -->
         <div class="skill">
             <span class="tag">NetDevOps &amp; Automation</span>
-            <h3>CI/CD &amp; SSoT Infrastructure</h3>
-            <p>Infrastructure as Code using Nautobot as the Single Source of Truth (IPAM/DCIM), Jinja2 configuration generation, Ansible playbooks, and Batfish pre-deployment reachability/ACL validation in GitHub Actions.</p>
-            <a class="button" href="projects/meridian.html#automation">View Evidence →</a>
+            <h3>CI/CD, Terraform &amp; Batfish</h3>
+            <p>Infrastructure as Code using NetBox/Nautobot SSoT, Terraform PAN-OS rulebase auditing, Python automated drift remediation, Ansible playbooks, and Batfish mathematical modeling in GitHub Actions.</p>
+            <a class="button" href="projects/palo-alto-security.html#modules">View Evidence →</a>
         </div>
 
-        <!-- 5. OBSERVABILITY & SIEM -> Links to Meridian Monitoring section -->
+        <!-- 8. PACKET FORENSICS -->
+        <div class="skill">
+            <span class="tag">Packet Forensics</span>
+            <h3>Wireshark &amp; PCAP Deep Dive</h3>
+            <p>Deep-packet forensic captures analyzing decrypted TLS streams, F5 Ethernet trailer metadata, ADVPN NHRP redirects, IKEv2 Phase 1/2 negotiations, and DoS TCP reset terminations.</p>
+            <a class="button" href="evidence/wireshark.html">View Evidence →</a>
+        </div>
+
+        <!-- 9. OBSERVABILITY & SIEM -->
         <div class="skill">
             <span class="tag">Observability &amp; SIEM</span>
             <h3>Splunk, Grafana &amp; Telemetry</h3>
@@ -241,36 +325,12 @@
             <a class="button" href="projects/meridian.html#monitoring">View Evidence →</a>
         </div>
 
-        <!-- 6. PACKET FORENSICS -> Links to your local Wireshark evidence page -->
-        <div class="skill">
-            <span class="tag">Packet Forensics</span>
-            <h3>Wireshark &amp; PCAP Deep Dive</h3>
-            <p>Deep-packet forensic captures analyzing IKEv2 Phase 1/2 negotiations, DAD verification, Stateful/Stateless DHCPv6 exchanges, OSPF DBD/LSR state handshakes, and Rogue RA mitigation.</p>
-            <a class="button" href="evidence/wireshark.html">View Evidence →</a>
-        </div>
-
-        <!-- 7. PROTOCOL VERIFICATION & CLI -> Links to your local Cisco CLI page -->
-        <div class="skill">
-            <span class="tag">Protocol Verification</span>
-            <h3>Cisco IOS &amp; CLI Diagnostic Checks</h3>
-            <p>Systematic command verification covering routing tables (RIB/FIB), BGP neighbor state machines, MTU mismatch diagnostics, NAT xlate tables, and post-remediation connectivity testing.</p>
-            <a class="button" href="evidence/cisco-cli.html">View Evidence →</a>
-        </div>
-
-        <!-- 8. SYSTEMS & OPERATIONS -> Links to your Network Incident Lab -->
+        <!-- 10. INCIDENT RESPONSE -->
         <div class="skill">
             <span class="tag">Incident Response</span>
             <h3>Incident Triage &amp; Root Cause Analysis</h3>
             <p>Nine end-to-end incident lifecycles investigated from user symptom to root cause and post-change validation across OSPF drops, DHCP starvation, NAT misconfigurations, and BGP route leaks.</p>
             <a class="button" href="projects/network-incident-response.html">View Evidence →</a>
-        </div>
-
-        <!-- 9. CHANGE GOVERNANCE -> Links to Meridian ITIL section -->
-        <div class="skill">
-            <span class="tag">Change Governance</span>
-            <h3>ITIL Change Requests &amp; Runbooks</h3>
-            <p>Production-standard operational documentation featuring formal Change Requests (CR-001 through CR-005) with back-out/rollback plans and step-by-step Runbooks (RB-001 through RB-005).</p>
-            <a class="button" href="projects/meridian.html#governance">View Evidence →</a>
         </div>
 
     </div>
