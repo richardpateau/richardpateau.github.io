@@ -244,168 +244,183 @@
         <div class="domain-grid">
 
             <div class="domain-card">
-                <span class="tag">Module 01</span>
+                <span class="tag">Zero Trust &amp; App-ID</span>
                 <h3>App-ID Zero Trust &amp; L4 Evasion</h3>
-                <p>Decoupled port from application; blocked <code>youtube-base</code> mid-flow after SNI inspection (4 pkts / 947 bytes) while allowing <code>google-base</code> via <code>Standard-Internet-Apps</code> on port 443.</p>
                 <ul>
-                    <li>Eliminated port-centric firewall blindspots</li>
-                    <li>Verified via <code>youtube-base-denied-detail-log-view.png</code></li>
-                    <li>Application-default port enforcement</li>
+                    <li>Decoupled port from application identity to eliminate legacy firewall blindspots</li>
+                    <li>Blocked youtube-base mid-flow after SNI inspection while allowing google-base on TCP 443</li>
+                    <li>Enforced strict application-default service ports preventing evasive non-standard tunneling</li>
+                    <li>Detailed traffic log inspection verified immediate TCP RST termination on denied apps</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/Palo-Alto-Security/tree/main/01-app-id-zero-trust" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 02</span>
+                <span class="tag">SSL Decryption</span>
                 <h3>SSL/TLS Forward Proxy Decryption</h3>
-                <p>Deployed Forward Trust/Untrust PKI; decrypted outbound TLS (<code>*NS</code> flag), blocked expired/untrusted BadSSL certificates, and bypassed 51 sensitive financial domains (<code>Bank-NoDecrypt</code>).</p>
                 <ul>
-                    <li>Deep payload inspection into encrypted sessions</li>
-                    <li>Dynamic certificate re-signing with corporate CA</li>
-                    <li>Verified via <code>show-session-ssl-decrypt-yes.png</code></li>
+                    <li>Deployed enterprise Forward Trust and Forward Untrust PKI certificate hierarchy</li>
+                    <li>Decrypted outbound TLS traffic with session monitoring confirming active *NS inspection</li>
+                    <li>Blocked untrusted, expired, and malicious certificates validated against BadSSL test suites</li>
+                    <li>Configured selective decryption bypass protecting 51 sensitive financial and healthcare domains</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/Palo-Alto-Security/tree/main/02-forward-proxy-ssl-decryption" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 03</span>
+                <span class="tag">Threat Prevention</span>
                 <h3>Content-ID, File Blocking &amp; EDL Sinkhole</h3>
-                <p>Blocked magic-byte PE executables (<code>putty.exe</code>), intercepted EICAR over HTTPS (Threat 100000), and ingested 187,027 C2 domains via External Dynamic Lists (EDL) to sinkhole lookups.</p>
                 <ul>
-                    <li>DNS queries sinkholed to <code>198.135.184.22</code></li>
-                    <li>Multi-format file blocking profile enforcement</li>
-                    <li>Verified via <code>nslookup-c2-sinkholed.png</code></li>
+                    <li>Enforced strict file-blocking profiles intercepting magic-byte PE Windows executables</li>
+                    <li>Intercepted and blocked EICAR antivirus test payloads hidden inside encrypted HTTPS streams</li>
+                    <li>Ingested 187,027 active command-and-control domains dynamically via External Dynamic Lists (EDL)</li>
+                    <li>Poisoned malicious DNS queries to Palo Alto sinkhole IP (198.135.184.22) with threat logging</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/Palo-Alto-Security/tree/main/03-content-id-edl-dns-sinkhole" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 04</span>
+                <span class="tag">Identity Fabric</span>
                 <h3>User-ID: AD LDAP &amp; Captive Portal</h3>
-                <p>Integrated Windows Server 2022 Active Directory (<code>meridian.local</code>); forced unauthenticated clients to HTTPS Captive Portal; enforced Admin allow vs. Contractor TCP RST on same IP.</p>
                 <ul>
-                    <li>Role-Based Access Control via AD group membership</li>
-                    <li>Dynamic IP-to-User mapping table</li>
-                    <li>Verified via <code>cli-policy-match-contractor-drop.png</code></li>
+                    <li>Integrated Windows Server 2022 Active Directory with dynamic LDAP group attribute mapping</li>
+                    <li>Forced unauthenticated clients to HTTPS Captive Portal for web-based credential challenge</li>
+                    <li>Role-Based Access Control enforced: Network-Admins permitted while Contractors dropped via TCP RST</li>
+                    <li>Verified dynamic IP-to-User mapping tables preserving identity across shared subnets</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/Palo-Alto-Security/tree/main/04-user-id-ad-captive-portal" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 05</span>
+                <span class="tag">Perimeter Hardening</span>
                 <h3>Zone Protection &amp; Volumetric DoS</h3>
-                <p>Absorbed 4,032,467-packet SYN flood via hardware SYN Cookies (39,005 drops/sec) while keeping CPU &lt;20%; dropped 131,242 UDP sweep packets via RED and sanitized malformed headers.</p>
                 <ul>
-                    <li>Cryptographic SYN Cookies under extreme flood</li>
-                    <li>Sanitized LSRR, Timestamp, and SYN+Data headers</li>
-                    <li>Verified via <code>cli-dos-counter-global-39k-drop.png</code></li>
+                    <li>Absorbed a 4,032,467-packet volumetric SYN flood attack utilizing hardware SYN Cookies</li>
+                    <li>Maintained dataplane CPU utilization under 20% while sustaining 39,005 drops/sec at line rate</li>
+                    <li>Dropped 131,242 reconnaissance UDP sweep packets via Random Early Detection (RED) thresholds</li>
+                    <li>Packet sanitization enforced: stripped LSRR, strict source route, and malformed TCP SYN+Data flags</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/Palo-Alto-Security/tree/main/05-zone-protection-dos-hardening" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 06</span>
+                <span class="tag">Multi-Vendor Routing</span>
                 <h3>Multi-Vendor IPsec VTI &amp; eBGP</h3>
-                <p>Built IKEv2 AES-256/DH14 VTI (<code>tunnel.1</code> ↔ <code>Tunnel1</code>) over NAT-T UDP 4500 with eBGP (AS 65001 ↔ AS 65000); verified synchronized SPIs (<code>BD359D70</code>/<code>B4E8D71F</code>) and 3-hop trace.</p>
                 <ul>
-                    <li>Palo Alto to Cisco IOS route-based IPsec</li>
-                    <li>Dynamic prefix exchange via BGP redistribution</li>
-                    <li>Verified via <code>palo-cli-show-vpn-ipsec-sa.png</code></li>
+                    <li>Route-based IKEv2 IPsec Virtual Tunnel Interface (tunnel.1 ↔ Tunnel1) to Cisco CSR1000v</li>
+                    <li>AES-256-CBC encryption, SHA-256 hashing, and Diffie-Hellman Group 14 over NAT-T UDP 4500</li>
+                    <li>eBGP dynamic peering (AS 65001 ↔ AS 65000) exchanging corporate prefix reachability</li>
+                    <li>Verified synchronized SPI states (BD359D70 / B4E8D71F) and 3-hop traceroute transit</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/Palo-Alto-Security/tree/main/06-ipsec-vti-ebgp-cisco" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 07</span>
+                <span class="tag">SASE Remote Access</span>
                 <h3>GlobalProtect SASE Remote Access</h3>
-                <p>Deployed Portal/Gateway on <code>ethernet1/1</code>, leased <code>10.200.1.10</code> over IPsec (ESP), and enforced client split-tunneling (2ms VPN vs local DIA) with GP-driven User-ID RBAC.</p>
                 <ul>
-                    <li>Isolated remote workforce into dedicated zone</li>
-                    <li>Split-tunnel route injection on Windows client</li>
-                    <li>Verified via <code>pa-cli-gp-gateway-current-user.png</code></li>
+                    <li>GlobalProtect Portal and Gateway deployed on WAN uplink terminating workforce tunnels</li>
+                    <li>Assigned dynamic virtual IP pool (10.200.1.0/24) encapsulated within high-performance ESP</li>
+                    <li>Enforced client split-tunneling: low-latency corporate access over VPN while SaaS egresses local DIA</li>
+                    <li>User-ID integration enforced granular policy privileges based on remote user directory roles</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/Palo-Alto-Security/tree/main/07-globalprotect-sase-remote-access" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 08</span>
+                <span class="tag">WAF &amp; Inbound Defense</span>
                 <h3>Inbound SSL Decryption &amp; WAF Defense</h3>
-                <p>Bound secondary VIP <code>192.168.1.201:443</code> with DNAT+SNAT; engineered 5 custom OWASP signatures (41070–41074) blocking Log4Shell, SQLi, XSS, Path Traversal, and RCE via Frame 325 RST.</p>
                 <ul>
-                    <li>Decrypted inbound HTTPS with backend private key</li>
-                    <li>Custom regex pattern matching on HTTP request URI/headers</li>
-                    <li>Verified via <code>threat-pcap-log4shell-jndi.png</code></li>
+                    <li>Inbound SSL inspection on secondary DMZ VIP (192.168.1.201:443) paired with Destination NAT</li>
+                    <li>Decrypted HTTPS streams using internal server certificate to inspect cleartext web payloads</li>
+                    <li>Custom vulnerability signatures engineered blocking Log4Shell JNDI, SQLi, and Remote Code Execution</li>
+                    <li>Verified immediate TCP RST termination on malicious payloads with Wireshark packet capture proof</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/Palo-Alto-Security/tree/main/08-inbound-ssl-decryption-waf" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 09</span>
+                <span class="tag">Path Redundancy</span>
                 <h3>PBF, Path Monitoring &amp; SLA Failover</h3>
-                <p>Steered <code>20.20.20.0/24</code> across <code>tunnel.1</code> with 3s×3 ICMP probes; on Tunnel1 shutdown, <code>nh-down</code> bypassed PBF and shifted live traceroutes from 3-hop VTI to 5-hop physical underlay.</p>
                 <ul>
-                    <li>Sub-second Policy-Based Forwarding failover</li>
-                    <li>Floating static route underlay backup (AD 20)</li>
-                    <li>Verified via <code>pbf-traceroute-failover-underlay.png</code></li>
+                    <li>Policy-Based Forwarding (PBF) steering traffic across primary IPsec tunnel via ICMP path probes</li>
+                    <li>Automated rule deactivation upon probe loss shifting traceroutes to physical underlay</li>
+                    <li>Floating static backup route (AD 20) preventing blackholing during tunnel gateway failure</li>
+                    <li>Real-time recovery demonstrated: live sessions restored to primary VTI once probes re-established</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/Palo-Alto-Security/tree/main/09-pbf-path-monitoring-failover" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 10</span>
+                <span class="tag">Bandwidth Management</span>
                 <h3>App-Based QoS &amp; Egress Shaping</h3>
-                <p>Attached <code>Corp-Egress-Shaping-Profile</code> (10M pipe) to <code>ethernet1/1</code>; clamped Class 8 bulk iPerf3 to a flat 2.014 Mbps (4,429,576 dropped pkts) while Class 1 burst to 10,002 kbps.</p>
                 <ul>
-                    <li>Guaranteed bandwidth for critical applications</li>
-                    <li>Hardware rate limiter dropped 4.4M bulk packets</li>
-                    <li>Verified via <code>wireshark-io-graph-2mbps-plateau.png</code></li>
+                    <li>Hierarchical QoS profile attached to perimeter egress interface managing 10 Mbps bandwidth pool</li>
+                    <li>Clamped aggressive Class 8 bulk iPerf3 data transfers to a flat 2.014 Mbps ceiling</li>
+                    <li>Hardware rate limiter dropped 4,429,576 bulk packets while Class 1 web traffic burst to 10 Mbps</li>
+                    <li>Wireshark IO graphs confirmed perfect plateau shaping without starvation of priority applications</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/Palo-Alto-Security/tree/main/10-qos-traffic-shaping" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 11</span>
+                <span class="tag">Network Virtualization</span>
                 <h3>Multi-VR Segmentation &amp; next-vr</h3>
-                <p>Partitioned <code>VR-Perimeter</code>, <code>VR-Corporate</code> (VLAN 10), and <code>VR-Guest</code> (VLAN 50); leaked internet defaults via <code>next-vr</code> while enforcing 100% lateral isolation at FIB layer.</p>
                 <ul>
-                    <li>Virtual routing instance isolation on single chassis</li>
-                    <li>Zero route leaking between Corporate and Guest</li>
-                    <li>Verified via <code>wireshark-vlan50-unanswered-icmp.png</code></li>
+                    <li>Partitioned chassis into isolated Virtual Routers: VR-Perimeter, VR-Corporate, and VR-Guest</li>
+                    <li>Enforced strict lateral isolation between corporate workstations and untrusted guest devices</li>
+                    <li>Leaked default internet routes securely from VR-Perimeter using next-vr route references</li>
+                    <li>FIB table verification proved corporate subnets remained completely invisible to guest instances</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/Palo-Alto-Security/tree/main/11-multi-vr-next-vr-segmentation" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 12</span>
+                <span class="tag">NetDevOps &amp; Compliance</span>
                 <h3>NetDevOps: Terraform &amp; Python Auditing</h3>
-                <p>Extracted 16 live rules via <code>paloaltonetworks/panos</code> Terraform provider into JSON, audited CIS compliance with <code>audit.py</code> (29 findings), and remediated rules automatically (down to 27).</p>
                 <ul>
-                    <li>Infrastructure as Code rulebase management</li>
-                    <li>Automated Pandoc executive HTML compliance report</li>
-                    <li>Verified via <code>audit.py</code> and <code>outputs.tf</code></li>
+                    <li>Automated security rulebase extraction into JSON using Terraform paloaltonetworks/panos provider</li>
+                    <li>Custom Python audit script evaluated live rules against Center for Internet Security (CIS) controls</li>
+                    <li>Closed-loop automated remediation: resolved excessive source and destination wildcard definitions</li>
+                    <li>Compiled executive HTML compliance reports and structured JSON audit trails via automated tooling</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/Palo-Alto-Security/tree/main/12-netdevops-terraform-python-audit" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 13</span>
+                <span class="tag">Protocol Engineering</span>
                 <h3>Custom App-ID &amp; Protocol Decoders</h3>
-                <p>Staged capture to extract 81B HTTP stream; compiled custom <code>portquiz-8888</code> App-ID (regex <code>portquiz\.net:8888</code>) and blocked port 8889 evasion under application-default.</p>
                 <ul>
-                    <li>Deep regex signature matching on L7 headers</li>
-                    <li>Eliminated non-standard port tunneling evasion</li>
-                    <li>Verified via <code>cli-show-session-custom-app.png</code></li>
+                    <li>Engineered custom protocol signature portquiz-8888 utilizing regex context patterns</li>
+                    <li>Extracted 81-byte reference PCAP and configured parent HTTP web-browsing decoder context</li>
+                    <li>Blocked evasion attempts across non-standard port 8889 under application-default enforcement</li>
+                    <li>Verified active session state tables matching custom signature exclusively on compliant traffic</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/Palo-Alto-Security/tree/main/13-custom-app-id-decoders" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 14</span>
+                <span class="tag">Targeted Protection</span>
                 <h3>Classified DoS (Per-Source Limiting)</h3>
-                <p>Deployed <code>Classified-Web-DoS</code> (50/100/200 cps, 300s block) on VIP; escalated attacker loss to 100% (136s timeout, 306 rule drops) with ACC logging 869 threats / 0 sessions.</p>
                 <ul>
-                    <li>Per-IP surgical rate limiting preventing resource exhaustion</li>
-                    <li>Zero impact to legitimate concurrent traffic</li>
-                    <li>Verified via <code>acc-source-ip-threat-metrics.png</code></li>
+                    <li>Configured Classified DoS profile on DMZ VIP tracking connection rates per unique source IP</li>
+                    <li>Enforced multi-tier thresholds (50/100/200 cps) with automated 300-second quarantine blocks</li>
+                    <li>Escalated attacking source to 100% packet loss (136s timeout) with 869 threat events logged</li>
+                    <li>Legitimate concurrent traffic experienced zero packet drops or latency degradation</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/Palo-Alto-Security/tree/main/14-classified-dos-per-source" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 15</span>
+                <span class="tag">Fast Convergence</span>
                 <h3>Sub-Second BGP Convergence via BFD</h3>
-                <p>Deployed BFD (250ms × 3 = 750ms) over IPsec VTI to Cisco CSR; reduced BGP failure teardown latency from 67 seconds (default timers) to 2 seconds (97.0% faster).</p>
                 <ul>
-                    <li>Sub-second failure detection over route-based VPN</li>
-                    <li>Eliminated standard 180s BGP hold-time blackholing</li>
-                    <li>Verified via <code>pa-system-logs-bfd-subsecond-teardown.png</code></li>
+                    <li>Deployed Bidirectional Forwarding Detection (BFD) profile (250ms × 3) across IPsec VTI</li>
+                    <li>Reduced BGP failure teardown latency from 67 seconds down to 2 seconds (97.0% improvement)</li>
+                    <li>Eliminated business traffic blackholing caused by standard 180-second BGP hold timers</li>
+                    <li>System monitor logs confirmed instant sub-second session teardown and alternate path promotion</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/Palo-Alto-Security/tree/main/15-bfd-subsecond-bgp-convergence" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
         </div>

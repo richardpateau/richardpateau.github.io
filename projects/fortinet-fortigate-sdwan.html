@@ -224,168 +224,183 @@
         <div class="domain-grid">
 
             <div class="domain-card">
-                <span class="tag">Module 01</span>
+                <span class="tag">Performance Routing</span>
                 <h3>SLA-Based Failover</h3>
-                <p>Configured real-time ICMP Performance SLA probes on dual WAN links. Injected next-hop ACL drop; verified sub-second failover with only 1–2 dropped pings before complete link migration.</p>
                 <ul>
-                    <li>Dynamic route withdrawal from FIB upon SLA breach</li>
-                    <li>Sustained zero TCP session resets</li>
-                    <li>Verified with continuous ping and <code>sd-wan-test.mp4</code></li>
+                    <li>Real-time ICMP Performance SLA probes monitoring jitter, latency, and packet loss</li>
+                    <li>Automated route withdrawal from FIB upon SLA threshold breach</li>
+                    <li>Sub-second failover with only 1–2 dropped pings before complete link migration</li>
+                    <li>Sustained zero TCP session resets verified via continuous ping and video evidence</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/fortinet-sd-wan/tree/main/01-sla-based-failover" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 02</span>
+                <span class="tag">Application Steering</span>
                 <h3>Application-Aware SaaS Steering</h3>
-                <p>Resolved SaaS and cloud domains via FortiGate DNS proxy with <code>cache-ttl 30</code>; dynamically steered cloud application flows based on domain metadata without client connection aborts.</p>
                 <ul>
-                    <li>Application steering without static destination IPs</li>
-                    <li>Policy route matches verified via kernel debugs</li>
-                    <li>Verified via <code>wget-successful.png</code></li>
+                    <li>FortiGate DNS proxy resolution with dynamic cache-ttl 30 enforcement</li>
+                    <li>Granular cloud application steering based on domain metadata without static IPs</li>
+                    <li>Kernel policy routing tables continuously updated with resolved cloud addresses</li>
+                    <li>Seamless SaaS breakout without triggering client connection resets or timeouts</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/fortinet-sd-wan/tree/main/02-application-aware-routing" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 03</span>
+                <span class="tag">Bandwidth Aggregation</span>
                 <h3>Active/Active Load Balancing</h3>
-                <p>Overcame single-link bottlenecks by enabling dual-WAN active/active Round-Robin flow balancing, achieving ~190 Mbps aggregate bandwidth across concurrent iPerf3 streams.</p>
                 <ul>
-                    <li>Simultaneous link saturation across MPLS &amp; Broadband</li>
-                    <li>Packet-level capture proof on port 2 &amp; port 3</li>
-                    <li>3 video test captures verifying dynamic balancing</li>
+                    <li>Dual-WAN active/active Round-Robin flow balancing eliminating single-link bottlenecks</li>
+                    <li>Concurrent circuit utilization achieving ~190 Mbps aggregate throughput</li>
+                    <li>Simultaneous link saturation across MPLS and Broadband verified via iPerf3</li>
+                    <li>Wire-level packet sniffer proof confirming balanced stream distribution across ports</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/fortinet-sd-wan/tree/main/03-active-active-load-balancing" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 04</span>
+                <span class="tag">Traffic Shaping</span>
                 <h3>Traffic Shaping &amp; Granular QoS</h3>
-                <p>Decoupled path steering from QoS limits; clamped an unthrottled 10 Mbps burst to a hard 2.0 Mbps ceiling to protect mission-critical traffic from link congestion.</p>
                 <ul>
-                    <li>Committed vs. Maximum bandwidth rate enforcement</li>
-                    <li>Tail-drop verification on low-priority bulk queues</li>
-                    <li>Verified via <code>io-graph-shaping.png</code></li>
+                    <li>Decoupled path steering from QoS rate enforcement to protect mission-critical flows</li>
+                    <li>Clamped unthrottled 10 Mbps burst traffic to a hard 2.0 Mbps rate ceiling</li>
+                    <li>Committed vs. Maximum bandwidth rate profiles enforced per interface</li>
+                    <li>Tail-drop verification on low-priority bulk queues documented via IO graphs</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/fortinet-sd-wan/tree/main/04-qos-traffic-shaping" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 05</span>
+                <span class="tag">Overlay Security</span>
                 <h3>IPsec Overlay on SD-WAN Zone</h3>
-                <p>Bound dual IPsec tunnels to a unified SD-WAN Zone; maintained active Security Associations across physical link cuts with floating blackhole safety routes.</p>
                 <ul>
-                    <li>Zero unencrypted leaks during link transitions</li>
-                    <li>Deterministic crypto SA failover</li>
-                    <li>Verified via <code>wireshark-icmp-esp.png</code></li>
+                    <li>Dual IPsec tunnels bound to a unified SD-WAN Zone across physical circuits</li>
+                    <li>Deterministic crypto Security Association (SA) failover during circuit cuts</li>
+                    <li>Floating blackhole safety routes preventing unencrypted egress during outages</li>
+                    <li>Packet-level verification confirming 100% encrypted ESP payload encapsulation</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/fortinet-sd-wan/tree/main/05-ipsec-overlay-sdwan" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 06</span>
+                <span class="tag">Brownout Detection</span>
                 <h3>Composite VoIP SLA Monitoring</h3>
-                <p>Configured composite SLA thresholds (Latency &lt;70ms, Jitter &lt;25ms, Loss &lt;3%). Injected impairment via Linux <code>tc netem</code>; failovers triggered at exact sequence borders.</p>
                 <ul>
-                    <li>Sub-second detection of brownout degradation</li>
-                    <li>Stream cut off at seq 99 and resumed at seq 100 on port3</li>
-                    <li>Verified via <code>sd-wan-latency-test.mp4</code></li>
+                    <li>Composite SLA thresholds monitoring latency (&lt;70ms), jitter (&lt;25ms), and loss (&lt;3%)</li>
+                    <li>Controlled brownout injection via inline Alpine Linux appliance running tc netem</li>
+                    <li>Sub-second detection triggering path failover at exact ICMP sequence borders</li>
+                    <li>Live stream cut off on port 2 at seq 99 and cleanly resumed on port 3 at seq 100</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/fortinet-sd-wan/tree/main/06-composite-voip-sla" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 07</span>
+                <span class="tag">Dynamic VPN Overlays</span>
                 <h3>ADVPN &amp; Dynamic Shortcuts</h3>
-                <p>Configured Hub BGP Route Reflection (AS 65000) and NHRP redirect triggers to dynamically instantiate direct spoke-to-spoke IPsec tunnels, bypassing Hub transit.</p>
                 <ul>
-                    <li>Reduced latency and Hub backplane utilization</li>
-                    <li>Shortcut tunnel counter incremented from 964 to 984</li>
-                    <li>Verified via <code>dynamic-tunnel-branch-2.png</code></li>
+                    <li>Hub BGP Route Reflection (AS 65000) with BGP Additional-Paths (adv-additional-path 4)</li>
+                    <li>Automated NHRP redirect triggers on transit routing detection</li>
+                    <li>On-demand spoke-to-spoke IPsec child shortcuts bypassing Hub datacenter entirely</li>
+                    <li>Packet counters confirmed shortcut forwarding (964 to 984 packets) with 50% latency drop</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/fortinet-sd-wan/tree/main/07-advpn-dynamic-shortcuts" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 08</span>
+                <span class="tag">Zero-Loss Resiliency</span>
                 <h3>Packet Duplication (Zero-Loss Voice)</h3>
-                <p>Cloned voice/video frames simultaneously over MPLS and Broadband overlays with kernel de-duplication at HQ; delivered 0% loss under 15–33% circuit degradation.</p>
                 <ul>
-                    <li>Un-duplicated stream suffered 17% loss; duplicated suffered <b>0%</b></li>
-                    <li>Kernel buffer discards redundant duplicate packets</li>
-                    <li>Verified via <code>diagnose-sniffer-de-duplication.png</code></li>
+                    <li>Simultaneous outbound frame replication across both MPLS and Broadband overlays</li>
+                    <li>Receiving Hub kernel buffer de-duplicates packets and drops redundant copies</li>
+                    <li>Delivered pristine 0.0% voice packet loss under active 15%–33% network degradation</li>
+                    <li>Proved contrast: un-duplicated stream suffered 17% drop while duplicated achieved 0%</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/fortinet-sd-wan/tree/main/08-packet-duplication-zero-loss" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 09</span>
+                <span class="tag">Multi-Tenancy</span>
                 <h3>Multi-VRF Segmentation (MP-BGP VPNv4)</h3>
-                <p>Segregated Corporate (VRF 10) and Guest/IoT (VRF 20) over a single SD-WAN overlay using MP-BGP VPNv4 with unique RDs, Route Targets, and ESP vpn-id tagging.</p>
                 <ul>
-                    <li>100% lateral tenant isolation at the FIB layer</li>
-                    <li>Zero multi-tunnel configuration overhead</li>
-                    <li>Verified cross-tenant pings completely blocked</li>
+                    <li>Segregated Corporate (VRF 10) and Guest/IoT (VRF 20) over a single SD-WAN overlay</li>
+                    <li>MP-BGP VPNv4 address family with Route Distinguishers, Route Targets, and ESP vpn-id</li>
+                    <li>100% lateral tenant isolation at the FIB layer without multi-tunnel overhead</li>
+                    <li>Zero packet leakage verified: cross-VRF ping and port sweep attempts completely dropped</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/fortinet-sd-wan/tree/main/09-multi-vrf-segmentation" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 10</span>
+                <span class="tag">Cloud Breakout</span>
                 <h3>Direct Internet Access (DIA) Steering</h3>
-                <p>Configured split-tunnel steering on edge spokes. Trusted FQDN targets break out locally via Broadband with SNAT; internal enterprise traffic routes over IPsec to HQ.</p>
                 <ul>
-                    <li>Eliminated latency-inducing traffic tromboning</li>
-                    <li>Verified DIA traffic egressed port 3 with 0 MPLS leaks</li>
-                    <li>Accessed public cloud over Verizon FiOS upstream</li>
+                    <li>Split-tunnel policy routing on branch edge spokes separating internet from internal WAN</li>
+                    <li>Trusted FQDN cloud targets break out locally via Broadband with Source NAT enabled</li>
+                    <li>Internal corporate traffic securely backhauled over encrypted IPsec overlay to HQ</li>
+                    <li>Wireshark verified 100% of DIA egressed port 3 with zero private circuit leakage</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/fortinet-sd-wan/tree/main/10-dia-saas-fqdn-steering" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 11</span>
+                <span class="tag">Automated Steering</span>
                 <h3>BGP Community to Route-Tag Steering</h3>
-                <p>Automated SD-WAN path steering from the routing control plane. HQ tagged routes with Community 65000:100; edge spokes matched tag and steered traffic without manual IP objects.</p>
                 <ul>
-                    <li>Zero-touch operational scalability across branch fleet</li>
-                    <li>Policy route dynamically compiled from tag into oif</li>
-                    <li>Verified route-map community match and wire shift</li>
+                    <li>Metadata-driven path steering automated directly from the BGP routing control plane</li>
+                    <li>HQ attaches BGP Community 65000:100 via route-maps; edge spokes match and write Route-Tag 100</li>
+                    <li>SD-WAN service rules dynamically compile target subnets from tags without manual IP objects</li>
+                    <li>Modifying rule member dynamically shifted live wire traffic between MPLS and Broadband</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/fortinet-sd-wan/tree/main/11-bgp-community-route-tag" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 12</span>
+                <span class="tag">Disaster Recovery</span>
                 <h3>Multi-Hub Dual-Region ADVPN (DR)</h3>
-                <p>Architected 4-tunnel spoke topology peering with Hub 1 (HQ, LocPrf 200) and Hub 2 (DC-2, LocPrf 100). Primary hub blackout resulted in zero dropped shortcut sessions.</p>
                 <ul>
-                    <li>Automated failover during complete primary DC outage</li>
-                    <li>Active spoke-to-spoke shortcut traffic sustained 0% loss</li>
-                    <li>Verified via administrative WAN shutdown on Hub 1</li>
+                    <li>4-tunnel spoke architecture peering with Primary Hub 1 (HQ) and Secondary Hub 2 (DR)</li>
+                    <li>BGP Route Reflection advertising Local-Preference 200 on Hub 1 and Local-Preference 100 on Hub 2</li>
+                    <li>Inter-hub Data Center Interconnect (DCI) IPsec tunnel syncing state</li>
+                    <li>Primary hub blackout resulted in automated promotion and 0% loss on active branch shortcuts</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/fortinet-sd-wan/tree/main/12-dual-hub-advpn-ha" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 13</span>
+                <span class="tag">Symmetric Routing</span>
                 <h3>Inbound BGP SLA Path Control</h3>
-                <p>Extended SD-WAN intelligence to inbound return traffic using dynamic BGP AS-Path prepending and Local-Preference adjustments based on SLA probe status.</p>
                 <ul>
-                    <li>Bidirectional traffic symmetry across WAN circuits</li>
-                    <li>Prevented asymmetric routing on return data flows</li>
-                    <li>Verified BGP RIB updates on upstream routers</li>
+                    <li>Extended SD-WAN intelligence to inbound return traffic to prevent asymmetric routing drops</li>
+                    <li>Dynamic BGP AS-Path prepending and Local-Preference adjustments based on probe metrics</li>
+                    <li>Upstream ISP routers automatically prefer optimal path matching branch outbound choice</li>
+                    <li>Verified stateful firewall inspection table symmetry during circuit degradation</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/fortinet-sd-wan/tree/main/13-inbound-bgp-sla-control" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 14</span>
+                <span class="tag">High Availability</span>
                 <h3>Sub-Second BFD Convergence</h3>
-                <p>Deployed Bidirectional Forwarding Detection (BFD) across BGP overlay peers, reducing circuit failure detection and convergence from 180 seconds to sub-second.</p>
                 <ul>
-                    <li>Sub-second dead-peer detection under silent link drop</li>
-                    <li>Hardware-assisted timer negotiation</li>
-                    <li>Verified via live packet sniffer during link pull</li>
+                    <li>Bidirectional Forwarding Detection (BFD) deployed across BGP overlay peers</li>
+                    <li>Reduced circuit failure detection and convergence from 180 seconds to sub-second</li>
+                    <li>Hardware-assisted timer negotiation detecting silent intermediate carrier drops</li>
+                    <li>Live packet sniffer verified instant BFD teardown and FIB route withdrawal</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/fortinet-sd-wan/tree/main/14-bfd-subsecond-convergence" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 15</span>
+                <span class="tag">NetDevOps &amp; CI/CD</span>
                 <h3>NetDevOps SD-WAN Automation</h3>
-                <p>Engineered an automated deployment and compliance validation pipeline using Python, Netmiko, and Jinja2 templates to push SD-WAN configs and audit state.</p>
                 <ul>
-                    <li>Automated spoke provisioning from JSON inventory</li>
-                    <li>CLI diff verification and structured logging</li>
-                    <li>Zero manual configuration errors across multi-site fabric</li>
+                    <li>Python automation pipeline using Netmiko and Jinja2 templates for zero-touch provisioning</li>
+                    <li>Automated branch deployment and configuration generation driven by JSON inventory</li>
+                    <li>Post-deployment CLI diff verification and structured execution logging</li>
+                    <li>Eliminated manual syntax errors and standardized deployment across multi-site fabric</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/fortinet-sd-wan/tree/main/15-netdevops-sdwan-automation" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
         </div>

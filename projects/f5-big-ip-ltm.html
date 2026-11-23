@@ -228,135 +228,147 @@
         <div class="domain-grid">
 
             <div class="domain-card">
-                <span class="tag">Module 01</span>
+                <span class="tag">TLS Offloading</span>
                 <h3>SSL Termination (HTTPS Offloading)</h3>
-                <p>Terminated TLS 1.3 on F5 virtual server with <code>CLIENTSSL-F5-LAB</code> profile; decrypted traffic into plaintext HTTP/1.1 across backend nodes, saving server CPU cycles.</p>
                 <ul>
-                    <li>TLS 1.3 negotiated on client-side leg (<code>172.16.0.8 ↔ .7</code>)</li>
-                    <li>Plaintext HTTP/1.1 forwarded to backend servers</li>
-                    <li>Verified via <code>http-termination.pcap</code> and decrypted TLS keys</li>
+                    <li>Client-side TLS 1.3 termination utilizing custom CLIENTSSL-F5-LAB certificate profile</li>
+                    <li>Offloaded cryptographic decryption overhead saving backend server CPU cycles</li>
+                    <li>Decrypted traffic forwarded as plaintext HTTP/1.1 across pool nodes with SNAT translation</li>
+                    <li>Wireshark capture verified TLS 1.3 client leg vs cleartext HTTP backend payload</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab/tree/main/01-ssl-termination" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 02</span>
+                <span class="tag">End-to-End Encryption</span>
                 <h3>SSL Bridging (End-to-End TLS)</h3>
-                <p>Terminated client TLS at F5, inspected HTTP payload, and re-encrypted traffic to backend NGINX nodes via <code>SERVERSSL-NGINX-LAB</code> on port 443.</p>
                 <ul>
-                    <li>Client TLS 1.3 + backend TLS 1.2 independent handshakes</li>
-                    <li>L7 visibility maintained on F5 while securing internal transit</li>
-                    <li>Active HTTPS health monitor (<code>MON-NGINX-HTTPS</code>)</li>
+                    <li>Terminated client TLS at BIG-IP edge to enable deep Layer 7 payload inspection</li>
+                    <li>Re-encrypted payload via SERVERSSL-NGINX-LAB establishing independent backend TLS 1.2 session</li>
+                    <li>Active HTTPS health monitor (MON-NGINX-HTTPS) polling backend nodes on port 443</li>
+                    <li>Verified full internal data-in-transit security complying with enterprise audit mandates</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab/tree/main/02-ssl-bridging" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 03</span>
+                <span class="tag">Edge Redirection</span>
                 <h3>HTTP-to-HTTPS Redirection</h3>
-                <p>Synthesized RFC-compliant <code>301 Moved Permanently</code> redirects entirely in the TMOS microkernel (TMM) with zero backend server hits.</p>
                 <ul>
-                    <li>Turnaround latency of just <b>110 µs</b> (<code>0.000110s</code>)</li>
-                    <li>Preserved full host and URI path: <code>https://[HTTP::host][HTTP::uri]</code></li>
-                    <li>Verified via <code>redirection.pcap</code></li>
+                    <li>RFC-compliant 301 Moved Permanently response synthesized directly in TMOS microkernel (TMM)</li>
+                    <li>Ultra-fast turnaround latency benchmarked at just 110 µs (0.000110s) with zero backend hits</li>
+                    <li>Preserved full client host context and requested URI path across redirection flow</li>
+                    <li>Wireshark packet capture confirmed edge response synthesis on tmm0 without server packets</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab/tree/main/07-http-to-https-redirection" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 04</span>
+                <span class="tag">Content Switching</span>
                 <h3>Layer 7 Host-Based Routing</h3>
-                <p>Multi-tenant content switching routing <code>app1.f5-lab.local</code> to <code>POOL-APP1-HTTPS</code> and <code>app2.f5-lab.local</code> to <code>POOL-APP2-HTTPS</code> on a single VIP.</p>
                 <ul>
-                    <li>Decrypted TLS 1.3 <code>Host:</code> header dissection in TMM</li>
-                    <li>Ultra-low overhead: <b>47.6K avg CPU cycles</b></li>
-                    <li>Blast-radius isolation: outage in App1 has zero impact on App2</li>
+                    <li>Multi-tenant content switching routing app1 and app2 subdomains on a single shared VIP</li>
+                    <li>High-performance iRule parsing decrypted TLS 1.3 Host headers with only 47.6K CPU cycles</li>
+                    <li>Complete blast-radius isolation: simulated outage in App1 caused zero disruption to App2</li>
+                    <li>Eliminated need for redundant public IP allocations and distinct virtual servers</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab/tree/main/10-host-based-routing" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 05</span>
+                <span class="tag">High Availability</span>
                 <h3>HTTP Health Monitoring &amp; Failover</h3>
-                <p>Configured <code>MON-NGINX-HTTP</code> (5s interval / 16s timeout) sending <code>GET /</code> and expecting <code>"NGINX WEB"</code>. Tested under active benchmark load.</p>
                 <ul>
-                    <li>Stopped NGINX on WEB01; evicted from pool in ≤16s</li>
-                    <li><code>wrk</code> benchmark sustained <b>266,212 reqs @ 4,435.49 req/s</b></li>
-                    <li><b>0 connect errors</b>, 100% availability shifted to WEB02</li>
+                    <li>Custom L7 HTTP health monitor (MON-NGINX-HTTP) configured with 5s interval and 16s timeout</li>
+                    <li>Simulated backend outage: stopped NGINX on WEB01 with automated pool eviction in ≤16s</li>
+                    <li>Active wrk benchmark sustained 266,212 requests @ 4,435.49 req/s with zero connect errors</li>
+                    <li>100% traffic shifted seamlessly to surviving node WEB02 with automatic restoration on recovery</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab/tree/main/09-http-health-monitoring" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 06</span>
+                <span class="tag">Dynamic Balancing</span>
                 <h3>Least Connections Load Balancing</h3>
-                <p>Dynamic socket balancing under high concurrency. Pre-skewed WEB02 with 7.54M background requests to prove connection count out-prioritizes historical load.</p>
                 <ul>
-                    <li>Balanced 1,000 concurrent sockets to <b>501 vs 499</b> equilibrium</li>
-                    <li>Instant failover shifted 995 active connections during fault</li>
-                    <li>Eliminated head-of-line blocking inherent to Round Robin</li>
+                    <li>Dynamic socket balancing evaluating live active connections rather than static ratios</li>
+                    <li>Pre-skewed WEB02 with 7.54M background requests to prove connection count priority</li>
+                    <li>Balanced 1,000 concurrent sockets to near-perfect 501 vs 499 active socket equilibrium</li>
+                    <li>Instant failover demonstration: shifted 995 active connections without dropping client sessions</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab/tree/main/06-least-connections" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 07</span>
+                <span class="tag">Session Affinity</span>
                 <h3>Source Address Persistence</h3>
-                <p>Layer 4 client IP affinity profile (<code>PERSIST-SOURCE-IP</code>) with 180-second sliding timeout table across independent test clients.</p>
                 <ul>
-                    <li>Client 1 (<code>172.16.0.8</code>) pinned to <code>WEB02</code></li>
-                    <li>Client 2 (<code>172.16.0.9</code>) pinned independently to <code>WEB01</code></li>
-                    <li>Verified via <code>tmsh show ltm persistence persist-records</code></li>
+                    <li>Layer 4 client IP affinity profile (PERSIST-SOURCE-IP) with 180-second sliding timeout</li>
+                    <li>Dual independent client verification: Client 1 pinned to WEB02 while Client 2 pinned to WEB01</li>
+                    <li>Persistence record table verified in real-time via tmsh show ltm persistence records</li>
+                    <li>Maintained connection stickiness across multiple sequential curl and browser transactions</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab/tree/main/03-source-address-persistence" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 08</span>
+                <span class="tag">Application Stickiness</span>
                 <h3>HTTP Cookie Insert Persistence</h3>
-                <p>Stateless client session stickiness injecting encrypted BIG-IP cookies (<code>BIGipServerPOOL-NGINX-WEB</code>) into HTTP responses.</p>
                 <ul>
-                    <li>100 consecutive requests delivered 100% stickiness to WEB02</li>
-                    <li>Decoded cookie value proving pool IP &amp; port encoding math</li>
-                    <li>Wireshark verified <b>1,849 pkts on WEB02 vs 50 on WEB01</b></li>
+                    <li>Stateless client session stickiness injecting encrypted BIG-IP cookies into HTTP responses</li>
+                    <li>100 consecutive requests delivered 100% session stickiness to designated backend node</li>
+                    <li>Decoded BIGipServer cookie value confirming underlying pool member IP and port math</li>
+                    <li>Wireshark capture verified 1,849 packets on pinned node vs only 50 initial setup packets on peer</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab/tree/main/12-cookie-persistence" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 09</span>
+                <span class="tag">Edge Security</span>
                 <h3>L7 Security Controls (LTM Policies)</h3>
-                <p>High-performance TMM edge policy (<code>POLICY-HTTPS-SECURITY</code>) blocking unauthorized paths (<code>/admin</code>, <code>/private</code>) and unsafe verbs (<code>TRACE</code>, <code>CONNECT</code>).</p>
                 <ul>
-                    <li>Immediate TCP <code>[RST]</code> termination at the edge</li>
-                    <li>Prevented <code>405 Method Not Allowed</code> backend banner leakage</li>
-                    <li>Verified via <code>policies.pcap</code> and tmsh execution stats</li>
+                    <li>High-performance TMM edge policy (POLICY-HTTPS-SECURITY) inspecting HTTP request attributes</li>
+                    <li>Blocked unauthorized paths (/admin, /private) and unsafe HTTP verbs (TRACE, CONNECT)</li>
+                    <li>Immediate TCP RST termination at the edge preventing backend 405 header information disclosure</li>
+                    <li>Verified execution statistics in tmsh and confirmed wire-level reset packets in Wireshark</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab/tree/main/05-security-controls" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 10</span>
+                <span class="tag">Rate Limiting</span>
                 <h3>Connection &amp; HTTP Rate Limiting</h3>
-                <p>Defense-in-depth rate limiting combining L4 TCP connection limits with L7 TMM session table rate limiting (20 req / 10s per source IP).</p>
                 <ul>
-                    <li>L4 clamped 100 concurrent conns to <b>50</b> (13,261 RST rejects)</li>
-                    <li>L7 synthesized <code>HTTP 429 Too Many Requests</code> in <b>670 µs</b></li>
-                    <li>Included RFC-compliant <code>Retry-After: 10</code> header</li>
+                    <li>Defense-in-depth rate limiting combining L4 connection clamping with L7 session table limits</li>
+                    <li>Layer 4 threshold clamped 100 concurrent connections to 50 (13,261 RST rejects logged)</li>
+                    <li>Layer 7 table iRule synthesized HTTP 429 Too Many Requests in 670 µs with Retry-After headers</li>
+                    <li>Absorbed volumetric application abuse at the BIG-IP perimeter without backend CPU spikes</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab/tree/main/08-http-rate-limiting" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 11</span>
+                <span class="tag">Egress NAT</span>
                 <h3>SNAT Pools &amp; Azure Multi-IP NIC</h3>
-                <p>Eliminated port exhaustion and management IP exposure by transitioning from Auto Map to a dedicated 2-IP SNAT pool (<code>172.16.0.10</code> &amp; <code>.11</code>).</p>
                 <ul>
-                    <li>Doubled egress ephemeral port capacity to 130,000+ sockets</li>
-                    <li>Self-IP <code>.4</code> reduced to 1.5% traffic (health checks only)</li>
-                    <li>Verified before &amp; after via <code>snat.pcap</code> and <code>snat-post-change.pcap</code></li>
+                    <li>Migrated from default Auto Map to dedicated multi-IP SNAT pool (172.16.0.10 and .11)</li>
+                    <li>Doubled egress ephemeral port capacity to 130,000+ sockets to prevent port exhaustion</li>
+                    <li>Isolated Self-IP (172.16.0.4) strictly to management and background health monitoring (1.5%)</li>
+                    <li>Wireshark captures proved 100% of application traffic egressed via designated pool addresses</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab/tree/main/04-snat" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
             <div class="domain-card">
-                <span class="tag">Module 12</span>
+                <span class="tag">Kernel Telemetry</span>
                 <h3>TMSH Operational Monitoring &amp; CMP</h3>
-                <p>Enterprise command-line telemetry and Clustered Multi-Processing (CMP) core distribution audit across <code>tmm0</code> and <code>tmm1</code>.</p>
                 <ul>
-                    <li>Audited 4.2M HTTP &amp; 494.4K HTTPS virtual server requests</li>
-                    <li>Near-perfect <b>49.97% / 50.03%</b> traffic symmetry across 638K reqs</li>
-                    <li>Pinpointed exact timestamp of member failure in kernel log</li>
+                    <li>Enterprise command-line telemetry inspecting virtual server, pool, and CMP distribution metrics</li>
+                    <li>Audited 4.2M HTTP and 494.4K HTTPS virtual server requests across dual TMOS cores</li>
+                    <li>Near-perfect 49.97% / 50.03% traffic symmetry documented across 638,000 test requests</li>
+                    <li>Pinpointed exact timestamp of member failure in kernel log (@2026/11/19 02:16:09) for root-cause triage</li>
                 </ul>
+                <a class="button" href="https://github.com/richardpateau/F5-BIGIP-LTM-Lab/tree/main/11-f5-operational-monitoring" target="_blank">Inspect Module on GitHub →</a>
             </div>
 
         </div>
